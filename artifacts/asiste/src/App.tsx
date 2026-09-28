@@ -896,10 +896,10 @@ function Letter({ content, onOpen }: { content: Content; onOpen: () => void }) {
 
   const lanterns = useMemo(
     () =>
-      Array.from({ length: 18 }).map(() => ({
+      Array.from({ length: 180 }).map(() => ({
         left: `${Math.random() * 92}%`,
         top: `${Math.random() * 85}%`,
-        size: `${36 + Math.random() * 46}px`,
+        size: `${86 + Math.random() * 96}px`,
         delay: `${(Math.random() * 0.7).toFixed(2)}s`,
         rise: `${20 + Math.random() * 60}px`,
       })),

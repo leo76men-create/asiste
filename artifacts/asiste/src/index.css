@@ -203,31 +203,7 @@
 .birthday-intro h1 { font-size:clamp(3.2rem, 13vw, 7rem); line-height:.92; letter-spacing:-.09em; max-width:620px; margin:0 0 18px; }
 .birthday-intro p { color:hsl(var(--muted-foreground)); max-width:360px; line-height:1.65; margin:0; }
 .birthday-intro .asiste-btn { margin-top:28px; }
-.intro-gear {
-  position: absolute;
-  top: 14%;
-  right: 5%;
-  width: 160px;
-  height: auto;
-  opacity: 0.9;
-} 
-.intro-gear-2 {
-  position: absolute;
-  bottom: 10%;
-  left: 6%;
-  width: 100px;
-  height: auto;
-  opacity: 0.7;
-}
 
-.intro-gear-3 {
-  position: absolute;
-  top: 55%;
-  right: 12%;
-  width: 70px;
-  height: auto;
-  opacity: 0.5;
-}
 .lantern-intro {
   position: fixed;
   inset: 0;
