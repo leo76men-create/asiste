@@ -784,13 +784,24 @@ function Nerd({ content }: { content: Content }) {
   );
 }
 
+const memoryPhotos = [
+  'assets/img/tequila/memoria/memoria1.png',
+  'assets/img/tequila/memoria/memoria2.png',
+  'assets/img/tequila/memoria/memoria3.png',
+  'assets/img/tequila/memoria/memoria4.png',
+];
+
+function shuffledMemoryCards() {
+  return [...memoryPhotos, ...memoryPhotos].sort(() => Math.random() - 0.5);
+}
+
 function MemoryGame({ content }: { content: Content }) {
-  const [cards, setCards] = useState(() => ['A', 'A', 'B', 'B', 'C', 'C', 'D', 'D'].sort(() => Math.random() - 0.5));
+  const [cards, setCards] = useState(shuffledMemoryCards);
   const [flipped, setFlipped] = useState<number[]>([]);
   const [matched, setMatched] = useState<number[]>([]);
   const [moves, setMoves] = useState(0);
   const [showReward, setShowReward] = useState(false);
-  const reset = () => { setCards(['A', 'A', 'B', 'B', 'C', 'C', 'D', 'D'].sort(() => Math.random() - 0.5)); setFlipped([]); setMatched([]); setMoves(0); setShowReward(false); };
+  const reset = () => { setCards(shuffledMemoryCards()); setFlipped([]); setMatched([]); setMoves(0); setShowReward(false); };
   const clickCard = (index: number) => {
     if (flipped.length === 2 || flipped.includes(index) || matched.includes(index)) return;
     const next = [...flipped, index];
@@ -809,7 +820,7 @@ function MemoryGame({ content }: { content: Content }) {
   return (
     <main className="asiste-main" style={{ maxWidth: 650, margin: '0 auto' }}>
       <div className="asiste-eyebrow">juego breve</div><h1 className="asiste-heading">Memoria <span className="asiste-script">suave.</span></h1><p className="asiste-subheading">Sin récord, sin ranking, sin motivo para hacerlo perfecto.</p>
-       <div className="asiste-card asiste-note" style={{ marginTop: 25, textAlign: 'center' }}><TequilaImage content={content} number={5} alt="Tequila completa, detalle decorativo" className="tequila-corner-image" /><div className="asiste-kicker">movimientos · {moves}</div><div className="asiste-memory">{cards.map((value, index) => <button className={`memory-card ${flipped.includes(index) || matched.includes(index) ? 'is-flipped' : ''} ${matched.includes(index) ? 'is-matched' : ''}`} onClick={() => clickCard(index)} key={`${value}-${index}`} aria-label={`Carta ${index + 1}`}>{value}</button>)}</div>{matched.length === cards.length && <p className="trivia-feedback">Listo. Tequila aprueba este resultado.</p>}<button className="asiste-btn asiste-btn-ghost" onClick={reset}><RotateCcw size={15} /> Reiniciar</button></div>
+       <div className="asiste-card asiste-note" style={{ marginTop: 25, textAlign: 'center' }}><TequilaImage content={content} number={5} alt="Tequila completa, detalle decorativo" className="tequila-corner-image" /><div className="asiste-kicker">movimientos · {moves}</div><div className="asiste-memory">{cards.map((photo, index) => { const isVisible = flipped.includes(index) || matched.includes(index); return <button className={`memory-card ${isVisible ? 'is-flipped' : ''} ${matched.includes(index) ? 'is-matched' : ''}`} onClick={() => clickCard(index)} key={index} aria-label={`Carta ${index + 1}`}>{isVisible && <img src={photo} alt="Tequila" className="memory-card-image" />}</button>; })}</div>{matched.length === cards.length && <p className="trivia-feedback">Listo. Tequila aprueba este resultado.</p>}<button className="asiste-btn asiste-btn-ghost" onClick={reset}><RotateCcw size={15} /> Reiniciar</button></div>
        {showReward && <TequilaReward content={content} onClose={() => setShowReward(false)} />}
     </main>
   );
@@ -896,12 +907,12 @@ function Letter({ content, onOpen }: { content: Content; onOpen: () => void }) {
 
   const lanterns = useMemo(
     () =>
-      Array.from({ length: 220 }).map(() => ({
+      Array.from({ length: 100 }).map(() => ({
         left: Math.random() * 94,
         top: Math.random() * 100,
         size: 34 + Math.random() * 40,
-        duration: 6 + Math.random() * 3.5,
-        delay: Math.random() * 2.6,
+        duration: 6 + Math.random() * 4.5,
+        delay: Math.random() * 3.6,
         drift: (Math.random() - 0.5) * 70,
         rise: 110 + Math.random() * 50,
       })),
