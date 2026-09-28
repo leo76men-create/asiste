@@ -1,0 +1,7 @@
+{
+  "escuela": ["escuela", "clase", "materia", "materias", "examen", "exámenes", "tarea", "tareas", "inglés", "ingles", "especialización", "proyecto", "proyectos", "equipo"],
+  "cansancio": ["cansada", "cansancio", "agotada", "agotado", "saturada", "saturado", "estrés", "estres", "no puedo más", "mucho"],
+  "preocupacion": ["preocupada", "preocupación", "preocupacion", "miedo", "ansiedad", "personal", "relación", "relacion", "triste", "tristeza"],
+  "organizacion": ["pendiente", "pendientes", "organizar", "organización", "organizacion", "tiempo", "decisión", "decision", "futuro", "plan", "planes", "trabajo"],
+  "entrenamiento": ["gym", "gimnasio", "cheer", "entrenar", "entrenamiento", "voleibol", "volley"]
+}

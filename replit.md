@@ -1,45 +1,48 @@
-# [Project name]
+# Asiste — asistente digital de cumpleaños
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+Un rincón digital personal para descansar, distraerse, escuchar música, ver algo, jugar o volver cuando se necesite.
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
-- `pnpm run typecheck` — full typecheck across all packages
-- `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+- `pnpm --filter @workspace/asiste run dev` — run the website through its managed workflow
+- `pnpm --filter @workspace/asiste run typecheck` — check the frontend
+- `pnpm --filter @workspace/asiste run build` — production build when `PORT` and `BASE_PATH` are set by the workflow
 
 ## Stack
 
 - pnpm workspaces, Node.js 24, TypeScript 5.9
-- API: Express 5
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
-- API codegen: Orval (from OpenAPI spec)
-- Build: esbuild (CJS bundle)
+- React + Vite, TypeScript, Tailwind CSS
+- Static content loaded from `artifacts/asiste/public/data/*.json`
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/asiste/src/App.tsx` — SPA, flows, local analysis and storage
+- `artifacts/asiste/src/index.css` — visual tokens, responsive layout and animation
+- `artifacts/asiste/public/data/` — editable personal content
+- `artifacts/asiste/ARQUITECTURA.md` — screen map and privacy/storage decisions
+- `artifacts/asiste/README.md` — customization and testing guide
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- No backend or authentication: personal text stays in the browser.
+- The birthday letter is shown once per browser/device and marks `carta_vista` only after entering.
+- The organizer is opt-in and is the only user content that persists beyond the current page.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+- Birthday intro and letter, with `?reset=1` and `?carta=1` test modes.
+- Six-option home screen, local free-text branching, rest, quiet breathing screen, distraction timing, music, entertainment, public dog/cat APIs, trivia, nerd facts, memory game and weighted surprise.
+- Optional local organizer and discreet WhatsApp/phone contact.
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- Keep personal details in `public/data/config.json`; do not hardcode them across the UI.
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Missing handwriting/font/signature/audio assets are intentional fallbacks; upload real files under `public/assets/` before sharing.
+- External video entries should remain verified URLs or clearly marked search placeholders.
 
 ## Pointers
 
-- See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details
+- See `artifacts/asiste/README.md` for the Spanish customization guide.

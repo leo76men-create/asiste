@@ -1,0 +1,58 @@
+[
+  {
+    "tema": "Harry Potter",
+    "pregunta": "¿Cómo se llama el banco de magos?",
+    "opciones": ["Gringotts", "Borgin", "Ollivanders", "Hogsmeade"],
+    "respuesta": 0,
+    "explicacion": "Gringotts es el banco mágico administrado por duendes."
+  },
+  {
+    "tema": "Harry Potter",
+    "pregunta": "¿Qué animal representa a Ravenclaw en las películas?",
+    "opciones": ["Cuervo", "Águila", "Serpiente", "Tejón"],
+    "respuesta": 1,
+    "explicacion": "En las películas, el símbolo de Ravenclaw es un águila."
+  },
+  {
+    "tema": "Harry Potter",
+    "pregunta": "¿Qué objeto encuentra Harry en el primer libro?",
+    "opciones": ["Un mapa", "Una snitch", "Una capa", "Todas las anteriores"],
+    "respuesta": 3,
+    "explicacion": "El mapa y la capa aparecen en la saga; la snitch también es central."
+  },
+  {
+    "tema": "Nerd",
+    "pregunta": "¿Qué transforma un engrane pequeño en uno grande?",
+    "opciones": ["Más velocidad", "Más torque", "Menos fricción siempre", "Nada"],
+    "respuesta": 1,
+    "explicacion": "Un engrane grande recibe más torque y gira más lento."
+  },
+  {
+    "tema": "Nerd",
+    "pregunta": "¿Qué mide un multímetro?",
+    "opciones": ["Solo temperatura", "Varias magnitudes eléctricas", "Peso", "Velocidad"],
+    "respuesta": 1,
+    "explicacion": "Puede medir, entre otras cosas, voltaje, corriente y resistencia."
+  },
+  {
+    "tema": "Random",
+    "pregunta": "¿Cuál de estos existe de verdad?",
+    "opciones": ["Café en gravedad cero", "Un robot con forma de perro", "Una flor que huele a chocolate", "Todo lo anterior"],
+    "respuesta": 3,
+    "explicacion": "La realidad tiene mejores detalles que la ficción."
+  },
+  {
+    "tema": "Random",
+    "pregunta": "¿Qué animal puede dormir de pie?",
+    "opciones": ["Caballo", "Delfín", "Pulpo", "Pingüino"],
+    "respuesta": 0,
+    "explicacion": "Los caballos pueden bloquear sus patas y descansar de pie."
+  },
+  {
+    "tema": "Random",
+    "pregunta": "¿Qué tiene ocho patas?",
+    "opciones": ["Una araña", "Un pulpo", "Ambos", "Un escarabajo"],
+    "respuesta": 2,
+    "explicacion": "La araña y el pulpo tienen ocho patas o brazos."
+  }
+]

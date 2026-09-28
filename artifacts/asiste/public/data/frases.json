@@ -1,0 +1,48 @@
+{
+  "saludos": [
+    "A ver, [[NOMBRE]].",
+    "Bienvenida, ingeniera.",
+    "Ok, modo tranquilo activado.",
+    "Qué gusto verte por aquí."
+  ],
+  "elecciones": [
+    "Buena elección.",
+    "Una cosa a la vez.",
+    "Esto suena bien.",
+    "El algoritmo aprueba."
+  ],
+  "nerd": [
+    "Ok, esto ya se puso nerd.",
+    "Nivel nerd: peligrosamente alto.",
+    "Modo nerd activado.",
+    "La ingeniería también puede ser un descanso."
+  ],
+  "tequila": [
+    "Tequila aprueba esta decisión.",
+    "Tequila recomienda perros.",
+    "Tequila está orgullosa de ti."
+  ],
+  "esquite": [
+    "Por cierto, el esquite blanco sigue siendo superior.",
+    "-50 puntos por seguir defendiendo el esquite amarillo."
+  ],
+  "sinProposito": [
+    "Esto no tiene absolutamente ningún propósito.",
+    "Esto no tiene ningún propósito y precisamente por eso está aquí.",
+    "El algoritmo decidió algo completamente innecesario."
+  ],
+  "descanso": [
+    "El café es opcional. El descanso no.",
+    "Sin agenda por unos minutos.",
+    "Aquí no hay nada que entregar."
+  ],
+  "entretenimiento": [
+    "Cinco minutos de contenido importante. Más o menos.",
+    "Te presento una distracción cuidadosamente seleccionada.",
+    "Esto puede esperar. Esta pantalla también."
+  ],
+  "gg": [
+    "Spotted... una pausa bastante bien planeada.",
+    "Spotted... ingeniera evitando otra pestaña."
+  ]
+}

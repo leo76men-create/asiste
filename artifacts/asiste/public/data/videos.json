@@ -1,0 +1,56 @@
+[
+  {
+    "id": "princesas",
+    "categoria": "Disney",
+    "subcategoria": "Princesas",
+    "titulo": "Búsqueda: canciones de princesas Disney",
+    "url": "https://www.youtube.com/results?search_query=canciones+princesas+Disney",
+    "minutos": 10,
+    "placeholder": true
+  },
+  {
+    "id": "zombies",
+    "categoria": "Disney",
+    "subcategoria": "Zombies",
+    "titulo": "Búsqueda: Disney Zombies",
+    "url": "https://www.youtube.com/results?search_query=Disney+Zombies",
+    "minutos": 20,
+    "placeholder": true
+  },
+  {
+    "id": "soy-luna",
+    "categoria": "Disney",
+    "subcategoria": "Soy Luna",
+    "titulo": "Búsqueda: Soy Luna",
+    "url": "https://www.youtube.com/results?search_query=Soy+Luna+clips",
+    "minutos": 10,
+    "placeholder": true
+  },
+  {
+    "id": "gossip",
+    "categoria": "Series",
+    "subcategoria": "Gossip Girl",
+    "titulo": "Búsqueda: Gossip Girl",
+    "url": "https://www.youtube.com/results?search_query=Gossip+Girl+clips",
+    "minutos": 10,
+    "placeholder": true
+  },
+  {
+    "id": "harry",
+    "categoria": "Harry Potter",
+    "subcategoria": "Clips",
+    "titulo": "Búsqueda: Harry Potter escenas favoritas",
+    "url": "https://www.youtube.com/results?search_query=Harry+Potter+escenas+favoritas",
+    "minutos": 20,
+    "placeholder": true
+  },
+  {
+    "id": "mecanismos",
+    "categoria": "Nerd",
+    "subcategoria": "Mecánica",
+    "titulo": "Búsqueda: mecanismos interesantes",
+    "url": "https://www.youtube.com/results?search_query=interesting+mechanisms+engineering",
+    "minutos": 10,
+    "placeholder": true
+  }
+]

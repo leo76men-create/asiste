@@ -1,0 +1,16 @@
+[
+  { "id": "perros", "titulo": "Perros", "peso": 11, "intro": "Tequila ha seleccionado perros para ti." },
+  { "id": "gatos", "titulo": "Gatos", "peso": 8, "intro": "El algoritmo cree que hoy toca un gato." },
+  { "id": "disney", "titulo": "Disney", "peso": 8, "intro": "El algoritmo decidió que hoy toca Disney." },
+  { "id": "yatra", "titulo": "Yatra", "peso": 7, "intro": "Una canción para cambiar de pestaña mental." },
+  { "id": "danny", "titulo": "Danny Ocean", "peso": 7, "intro": "Esto pide música y cero explicaciones." },
+  { "id": "trivia", "titulo": "Trivia", "peso": 8, "intro": "Una pregunta que no afecta tu calificación." },
+  { "id": "memoria", "titulo": "Mini juego", "peso": 9, "intro": "Dos minutos de concentración completamente opcional." },
+  { "id": "dato", "titulo": "Dato curioso nerd", "peso": 8, "intro": "Modo nerd activado." },
+  { "id": "harry", "titulo": "Harry Potter", "peso": 7, "intro": "Una visita breve al mundo mágico." },
+  { "id": "alicia", "titulo": "Alicia", "peso": 5, "intro": "Una pequeña puerta a otra parte." },
+  { "id": "soy-luna", "titulo": "Soy Luna", "peso": 4, "intro": "El algoritmo encontró patines imaginarios." },
+  { "id": "zombies", "titulo": "Zombies", "peso": 4, "intro": "Esto se puso ligeramente musical y sobrenatural." },
+  { "id": "absurda", "titulo": "Pregunta absurda", "peso": 8, "intro": "Esto no tiene absolutamente ningún propósito." },
+  { "id": "easter", "titulo": "Easter egg", "peso": 3, "intro": "Encontraste algo que no estaba haciendo nada." }
+]

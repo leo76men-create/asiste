@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Asiste — asistente digital de cumpleaños"
+description = "Un espacio digital personal y ligero para descansar, distraerse, escuchar música, jugar y volver cuando se necesite, con una experiencia de cumpleaños especial en la primera apertura."
+version = "1.0.0"
+id = "artifacts/asiste"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 20225
+
+[services.development]
+run = "pnpm --filter @workspace/asiste run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/asiste", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/asiste/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "20225"
+BASE_PATH = "/"

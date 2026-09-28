@@ -1,0 +1,37 @@
+[
+  {
+    "id": "yatra",
+    "titulo": "Sebastián Yatra",
+    "tipo": "artista",
+    "consulta": "Sebastian Yatra",
+    "icono": "music"
+  },
+  {
+    "id": "danny",
+    "titulo": "Danny Ocean",
+    "tipo": "artista",
+    "consulta": "Danny Ocean",
+    "icono": "music"
+  },
+  {
+    "id": "tranquilo",
+    "titulo": "Algo tranquilo",
+    "tipo": "playlist",
+    "consulta": "soft chill playlist",
+    "icono": "moon"
+  },
+  {
+    "id": "entrenar",
+    "titulo": "Algo para entrenar",
+    "tipo": "playlist",
+    "consulta": "workout pop playlist",
+    "icono": "bolt"
+  },
+  {
+    "id": "sorpresa",
+    "titulo": "Sorpréndeme",
+    "tipo": "random",
+    "consulta": "pop mix",
+    "icono": "sparkles"
+  }
+]

@@ -1,0 +1,82 @@
+[
+  {
+    "categoria": "Mecánica",
+    "titulo": "El diferencial",
+    "texto": "Permite que dos ruedas del mismo eje giren a velocidades distintas en una curva."
+  },
+  {
+    "categoria": "Mecánica",
+    "titulo": "El gato hidráulico",
+    "texto": "Usa la presión de un fluido para multiplicar una fuerza pequeña."
+  },
+  {
+    "categoria": "Mecánica",
+    "titulo": "El resorte",
+    "texto": "Almacena energía cuando se deforma y la devuelve cuando recupera su forma."
+  },
+  {
+    "categoria": "Robótica",
+    "titulo": "Un robot no necesita parecer humano",
+    "texto": "La forma depende de la tarea: ruedas, brazos, orugas y drones resuelven problemas distintos."
+  },
+  {
+    "categoria": "Robótica",
+    "titulo": "Los sensores son los sentidos",
+    "texto": "Cámaras, encoders y sensores de distancia le cuentan al sistema qué está pasando."
+  },
+  {
+    "categoria": "Robótica",
+    "titulo": "Control de retroalimentación",
+    "texto": "Un robot compara lo que quería hacer con lo que realmente hizo y corrige el movimiento."
+  },
+  {
+    "categoria": "Carros",
+    "titulo": "La suspensión",
+    "texto": "No solo hace el viaje cómodo: también mantiene el contacto de las llantas con el camino."
+  },
+  {
+    "categoria": "Carros",
+    "titulo": "El motor respira",
+    "texto": "La mezcla de aire y combustible necesita entrar y salir con tiempos muy precisos."
+  },
+  {
+    "categoria": "Carros",
+    "titulo": "Aerodinámica",
+    "texto": "Un cambio pequeño en el flujo de aire puede cambiar mucho la estabilidad."
+  },
+  {
+    "categoria": "Ingeniería",
+    "titulo": "La tolerancia existe por algo",
+    "texto": "Ninguna pieza real es perfecta; diseñar es decidir qué variación sigue funcionando."
+  },
+  {
+    "categoria": "Ingeniería",
+    "titulo": "La palanca",
+    "texto": "Con el punto de apoyo correcto, una fuerza pequeña puede mover algo mucho más pesado."
+  },
+  {
+    "categoria": "Ingeniería",
+    "titulo": "El prototipo responde",
+    "texto": "Un prototipo no tiene que ser bonito: tiene que contestar una pregunta."
+  },
+  {
+    "categoria": "Mecanismos",
+    "titulo": "Levas",
+    "texto": "Una leva transforma un giro en un movimiento repetido hacia arriba, abajo o de lado."
+  },
+  {
+    "categoria": "Mecanismos",
+    "titulo": "Engranes planetarios",
+    "texto": "Varios engranes alrededor de uno central permiten muchas relaciones en poco espacio."
+  },
+  {
+    "categoria": "Mecanismos",
+    "titulo": "La cremallera",
+    "texto": "Convierte el giro de un piñón en un movimiento lineal; la dirección de un carro la usa."
+  },
+  {
+    "categoria": "Mecanismos",
+    "titulo": "La polea",
+    "texto": "Puede cambiar la dirección de una fuerza y, con varias, repartir el esfuerzo."
+  }
+]

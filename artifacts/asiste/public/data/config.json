@@ -1,0 +1,11 @@
+{
+  "nombre": "[[NOMBRE]]",
+  "tuNombre": "[[TU NOMBRE]]",
+  "whatsapp": "[[NÚMERO CON LADA, sin +, ej. 5215512345678]]",
+  "telefono": "[[+52...]]",
+  "starbucksUrl": "https://www.starbucks.com.mx/",
+  "appTitle": "Asiste",
+  "tagline": "Un pequeño lugar para cuando quieras",
+  "contactoAvisoDias": 10,
+  "audio": "assets/audio/cancion.mp3"
+}
