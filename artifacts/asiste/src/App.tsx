@@ -896,10 +896,10 @@ function Letter({ content, onOpen }: { content: Content; onOpen: () => void }) {
 
   const lanterns = useMemo(
     () =>
-      Array.from({ length: 220 }).map(() => ({
+      Array.from({ length: 22 }).map(() => ({
         left: Math.random() * 94,
         top: Math.random() * 100,
-        size: 84 + Math.random() * 90,
+        size: 34 + Math.random() * 40,
         duration: 6 + Math.random() * 3.5,
         delay: Math.random() * 2.6,
         drift: (Math.random() - 0.5) * 70,
@@ -944,16 +944,15 @@ function Letter({ content, onOpen }: { content: Content; onOpen: () => void }) {
           ))}
         </div>
       )}
-      <span className="asiste-spark one"><Star size={13} /></span><span className="asiste-spark two"><Sparkles size={12} /></span><span className="asiste-spark three"><Star size={10} /></span>
       <article className="asiste-letter">
+        <img className="letter-hat-decoration" src="assets/img/tequila/tequi_hat.png" alt="Tequila con sombrero de fiesta" />
         <div className="letter-seal"><Gift size={29} strokeWidth={1.4} aria-hidden="true" /></div>
         <div className="asiste-eyebrow">archivo de cumpleaños · 01</div>
         <h1>Para ti, <span className="asiste-script">{replacePersonal('[[NOMBRE]]', content.config)}.</span></h1>
         <div className="letter-copy">{content.carta.parrafos.map((paragraph, index) => <p key={`${paragraph}-${index}`}>{replacePersonal(paragraph, content.config)}</p>)}</div>
         {signatureUrl ? <img className="letter-signature-image" src={signatureUrl} alt={`Firma de ${content.config.tuNombre}`} /> : <div className="letter-signature">{replacePersonal(content.carta.firma, content.config)}</div>}
-         <TequilaImage content={content} number={5} alt="Tequila, detalle de la carta" className="tequila-letter-decoration" />
         <div className="asiste-actions"><button className="asiste-btn asiste-btn-primary" onClick={onOpen}>Entrar <ArrowRight size={16} /></button></div>
-        <div className="asiste-kicker" style={{ marginTop: 24 }}>hecho con rosa suave, metal y un poco de magia</div>
+        
       </article>
     </main>
   );
