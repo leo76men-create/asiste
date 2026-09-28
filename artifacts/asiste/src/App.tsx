@@ -142,9 +142,9 @@ const fallbackContent: Content = {
     nombre: '[[NOMBRE]]',
     tuNombre: '[[TU NOMBRE]]',
     starbucksUrl: 'https://www.starbucks.com.mx/',
-    appTitle: 'Tu espacio',
-    tagline: 'Un pequeño lugar para cuando quieras',
-    brandLogo: 'assets/img/rosa.png',
+    appTitle: '',
+    tagline: '',
+    brandLogo: '',
   },
   carta: {
     parrafos: [
@@ -918,7 +918,7 @@ function Letter({ content, onOpen }: { content: Content; onOpen: () => void }) {
 function BirthdayIntro({ content, onOpen }: { content: Content; onOpen: () => void }) {
   return (
     <main className="birthday-intro asiste-main">
-      <div className="intro-gear" aria-hidden="true">⚙</div>
+      <img className="intro-gear" src="assets/img/linterna.png" alt="" aria-hidden="true" />
       <div className="asiste-eyebrow">un archivo pequeño para ti</div>
       <h1>Feliz cumpleaños, <span className="asiste-script">{replacePersonal('[[NOMBRE]]', content.config)}.</span></h1>
       <p>Hay algo aquí que hice pensando en ti.</p>
