@@ -21,6 +21,7 @@ Un rincón digital personal para descansar, distraerse, escuchar música, ver al
 - `artifacts/asiste/public/data/` — editable personal content
 - `artifacts/asiste/ARQUITECTURA.md` — screen map and privacy/storage decisions
 - `artifacts/asiste/README.md` — customization and testing guide
+- `artifacts/asiste/PERSONALIZACION.md` — file-by-file editing map
 
 ## Architecture decisions
 
@@ -32,7 +33,7 @@ Un rincón digital personal para descansar, distraerse, escuchar música, ver al
 
 - Birthday intro and letter, with `?reset=1` and `?carta=1` test modes.
 - Six-option home screen, local free-text branching, rest, quiet breathing screen, distraction timing, music, entertainment, public dog/cat APIs, trivia, nerd facts, memory game and weighted surprise.
-- Optional local organizer and discreet WhatsApp/phone contact.
+- Optional local organizer, Tequila easter eggs, editable entertainment, and local music preferences.
 
 ## User preferences
 

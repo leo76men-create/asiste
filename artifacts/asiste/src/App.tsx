@@ -17,19 +17,18 @@ import {
   Film,
   Gamepad2,
   Gift,
-  Heart,
+  ImagePlus,
   ListTodo,
   Moon,
   Music2,
-  PawPrint,
-  Phone,
   Play,
+  Plus,
   RotateCcw,
   Send,
   Shuffle,
   Sparkles,
   Star,
-  Utensils,
+  Trash2,
   Wrench,
   X,
 } from 'lucide-react';
@@ -50,8 +49,7 @@ type Screen =
   | 'nerd'
   | 'game'
   | 'surprise'
-  | 'organizer'
-  | 'contact';
+  | 'organizer';
 
 type IconType = typeof Coffee;
 type PhraseBook = Record<string, string[]>;
@@ -59,11 +57,11 @@ type PhraseBook = Record<string, string[]>;
 interface Config {
   nombre: string;
   tuNombre: string;
-  whatsapp: string;
-  telefono: string;
   starbucksUrl: string;
+  appTitle: string;
+  tagline?: string;
+  brandLogo?: string;
   audio?: string;
-  contactoAvisoDias?: number;
 }
 
 interface Carta {
@@ -78,6 +76,13 @@ interface MusicItem {
   consulta: string;
   url?: string;
   icono?: string;
+}
+
+interface MusicSituation {
+  id: string;
+  titulo: string;
+  descripcion?: string;
+  items: MusicItem[];
 }
 
 interface VideoItem {
@@ -115,6 +120,7 @@ interface TequilaData {
   frases: string[];
   datos: string[];
   fotos: string[];
+  roles?: Record<string, string>;
 }
 
 interface Content {
@@ -122,6 +128,7 @@ interface Content {
   carta: Carta;
   frases: PhraseBook;
   musica: MusicItem[];
+  musicaSituaciones: MusicSituation[];
   videos: VideoItem[];
   trivia: TriviaItem[];
   datos: Fact[];
@@ -134,9 +141,10 @@ const fallbackContent: Content = {
   config: {
     nombre: '[[NOMBRE]]',
     tuNombre: '[[TU NOMBRE]]',
-    whatsapp: '',
-    telefono: '',
     starbucksUrl: 'https://www.starbucks.com.mx/',
+    appTitle: 'Tu espacio',
+    tagline: 'Un pequeño lugar para cuando quieras',
+    brandLogo: 'assets/img/rosa.png',
   },
   carta: {
     parrafos: [
@@ -153,6 +161,10 @@ const fallbackContent: Content = {
     { id: 'yatra', titulo: 'Sebastián Yatra', consulta: 'Sebastian Yatra' },
     { id: 'danny', titulo: 'Danny Ocean', consulta: 'Danny Ocean' },
     { id: 'tranquilo', titulo: 'Algo tranquilo', consulta: 'soft chill playlist' },
+  ],
+  musicaSituaciones: [
+    { id: 'tranquila', titulo: 'Cuando necesitas bajar revoluciones', items: [{ id: 'fallback-tranquila', titulo: 'Algo tranquilo', tipo: 'playlist', consulta: 'soft chill playlist' }] },
+    { id: 'energia', titulo: 'Cuando necesitas un empujoncito', items: [{ id: 'fallback-energia', titulo: 'Algo para moverte', tipo: 'playlist', consulta: 'upbeat pop playlist' }] },
   ],
   videos: [],
   trivia: [
@@ -176,7 +188,26 @@ const fallbackContent: Content = {
     { id: 'absurda', titulo: 'Algo inútil', peso: 1, intro: 'Esto no tiene absolutamente ningún propósito.' },
   ],
   palabras: {},
-  tequila: { frases: ['Tequila aprueba esta decisión.'], datos: [], fotos: [] },
+  tequila: {
+    fotos: [
+      'assets/img/tequila/tequila1.png',
+      'assets/img/tequila/tequila2.png',
+      'assets/img/tequila/tequila3.png',
+      'assets/img/tequila/tequila4.png',
+      'assets/img/tequila/tequila5.png',
+      'assets/img/tequila/tequila6.png',
+    ],
+    frases: ['Tequila aprueba esta decisión.', 'Tequila está orgullosa de ti.'],
+    datos: [],
+    roles: {
+      '1': 'nariz de cerca · humor, errores y boop',
+      '2': 'acostada de lado · descanso y compañía silenciosa',
+      '3': 'mirando desde el piso · juicio y aprobación',
+      '4': 'oscura, mirando a cámara · reveal de Sorpréndeme',
+      '5': 'cuerpo completo · decoración',
+      '6': 'recibiendo cariño · recompensa',
+    },
+  },
 };
 
 const initialSession = {
@@ -276,12 +307,13 @@ async function loadJson<T>(file: string, fallback: T): Promise<T> {
 }
 
 async function loadContent(): Promise<Content> {
-  const [config, carta, frases, musica, videos, trivia, datos, sorprende, palabras, tequila] =
+  const [config, carta, frases, musica, musicaSituaciones, videos, trivia, datos, sorprende, palabras, tequila] =
     await Promise.all([
       loadJson('config.json', fallbackContent.config),
       loadJson('carta.json', fallbackContent.carta),
       loadJson('frases.json', fallbackContent.frases),
       loadJson('musica.json', fallbackContent.musica),
+      loadJson('musica_situaciones.json', fallbackContent.musicaSituaciones),
       loadJson('videos.json', fallbackContent.videos),
       loadJson('trivia.json', fallbackContent.trivia),
       loadJson('datos_curiosos.json', fallbackContent.datos),
@@ -289,7 +321,7 @@ async function loadContent(): Promise<Content> {
       loadJson('palabras_clave.json', fallbackContent.palabras),
       loadJson('tequila.json', fallbackContent.tequila),
     ]);
-  return { config, carta, frases, musica, videos, trivia, datos, sorprende, palabras, tequila };
+  return { config, carta, frases, musica, musicaSituaciones, videos, trivia, datos, sorprende, palabras, tequila };
 }
 
 function pickPhrase(book: PhraseBook, key: string, config: Config) {
@@ -307,7 +339,7 @@ function normalize(text: string) {
     .replace(/[\u0300-\u036f]/g, '');
 }
 
-function PageHeader({ screen, onHome }: { screen: Screen; onHome: () => void }) {
+function PageHeader({ screen, onHome, config }: { screen: Screen; onHome: () => void; config: Config }) {
   const labels: Partial<Record<Screen, string>> = {
     write: 'papelito temporal',
     rest: 'descanso',
@@ -320,15 +352,14 @@ function PageHeader({ screen, onHome }: { screen: Screen; onHome: () => void }) 
     game: 'juego breve',
     surprise: 'azar amable',
     organizer: 'organizador opcional',
-    contact: 'línea discreta',
   };
   return (
     <header className="asiste-topbar">
       <button className="asiste-wordmark" onClick={onHome} aria-label="Volver al inicio">
-        <span className="asiste-mark">A/</span>
+        <BrandMark config={config} />
         <span>
-          <strong>Asiste</strong>
-          <span className="asiste-kicker" style={{ display: 'block' }}>módulo personal</span>
+          <strong>{config.appTitle}</strong>
+          <span className="asiste-kicker" style={{ display: 'block' }}>{config.tagline || 'módulo personal'}</span>
         </span>
       </button>
       {screen !== 'home' && (
@@ -338,6 +369,15 @@ function PageHeader({ screen, onHome }: { screen: Screen; onHome: () => void }) 
       )}
       {labels[screen] && <span className="asiste-kicker asiste-header-label">{labels[screen]}</span>}
     </header>
+  );
+}
+
+function BrandMark({ config }: { config: Config }) {
+  const [showFallback, setShowFallback] = useState(!config.brandLogo);
+  return showFallback ? (
+    <span className="asiste-mark asiste-mark-fallback" aria-hidden="true">✿</span>
+  ) : (
+    <img className="asiste-mark asiste-mark-image" src={config.brandLogo} alt="" onError={() => setShowFallback(true)} />
   );
 }
 
@@ -362,6 +402,7 @@ function ChoiceCard({ icon: Icon, title, description, id, onClick }: ChoiceProps
 
 function Home({ content, onNavigate }: { content: Content; onNavigate: (screen: Screen) => void }) {
   const [greeting, setGreeting] = useState('');
+  const [booped, setBooped] = useState(false);
   useEffect(() => {
     setGreeting(pickPhrase(content.frases, 'saludos', content.config));
   }, [content]);
@@ -384,23 +425,69 @@ function Home({ content, onNavigate }: { content: Content; onNavigate: (screen: 
           <p>No tienes que hacer nada con lo que pase por aquí.</p>
           <p className="asiste-muted-text">Lo que escribas no se guarda. El organizador solo aparece si tú lo eliges.</p>
         </div>
-        <div className="asiste-card asiste-note">
-          <div className="asiste-eyebrow">atajos discretos</div>
-          <div className="asiste-actions">
-            <button className="asiste-small-link" onClick={() => onNavigate('organizer')}><ListTodo size={13} /> Organizador opcional</button>
-            <button className="asiste-small-link" onClick={() => onNavigate('contact')}><Heart size={13} /> Contacto</button>
-          </div>
-        </div>
       </section>
+      <button className="boop-trigger" onClick={() => setBooped(true)} aria-label="Boop secreto">·</button>
+      {booped && <TequilaCallout content={content} number={1} text="Boop. Tequila estaba aquí." title="Easter egg encontrado." />}
     </main>
+  );
+}
+
+function tequilaPhoto(content: Content, number: number) {
+  return content.tequila.fotos[number - 1];
+}
+
+function TequilaImage({ content, number, alt, className = 'tequila-image' }: { content: Content; number: number; alt: string; className?: string }) {
+  const [visible, setVisible] = useState(true);
+  const src = tequilaPhoto(content, number);
+  if (!src || !visible) return null;
+  return <img className={className} src={src} alt={alt} onError={() => setVisible(false)} />;
+}
+
+function TequilaCallout({ content, number, text, title }: { content: Content; number: number; text: string; title?: string }) {
+  return (
+    <div className="tequila-callout">
+      <TequilaImage content={content} number={number} alt={`Tequila, foto ${number}`} />
+      <div>
+        {title && <strong>{title}</strong>}
+        <p>{text}</p>
+      </div>
+    </div>
+  );
+}
+
+function TequilaReward({ content, onClose }: { content: Content; onClose: () => void }) {
+  return (
+    <aside className="tequila-reward" role="status">
+      <TequilaImage content={content} number={6} alt="Tequila recibiendo cariño" className="tequila-reward-image" />
+      <div><strong>Tequila está orgullosa de ti.</strong><button className="asiste-small-link" onClick={onClose}>cerrar</button></div>
+    </aside>
+  );
+}
+
+function LocalPhotoPicker({ label, photos, onChange }: { label: string; photos: string[]; onChange: (photos: string[]) => void }) {
+  const addPhotos = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files ?? []).filter((file) => file.type.startsWith('image/'));
+    onChange([...photos, ...files.map((file) => URL.createObjectURL(file))]);
+    event.target.value = '';
+  };
+  return (
+    <div className="photo-picker">
+      <label className="asiste-chip photo-picker-label">
+        <ImagePlus size={14} /> {label}
+        <input type="file" accept="image/*" multiple onChange={addPhotos} />
+      </label>
+      {photos.length > 0 && <div className="photo-picker-preview">{photos.map((photo, index) => <img src={photo} alt={`Foto agregada ${index + 1}`} key={photo} />)}</div>}
+    </div>
   );
 }
 
 function FreeText({ content, onNavigate }: { content: Content; onNavigate: (screen: Screen) => void }) {
   const [value, setValue] = useState('');
   const [result, setResult] = useState<{ intro: string; question: string; options: { label: string; screen: Screen }[] } | null>(null);
+  const [tequilaMessage, setTequilaMessage] = useState(false);
   const analyze = () => {
     const normalized = normalize(value.trim());
+    setTequilaMessage(normalized.includes('esquite'));
     if (!normalized) {
       setResult({
         intro: 'No tienes que escribir nada.',
@@ -446,6 +533,7 @@ function FreeText({ content, onNavigate }: { content: Content; onNavigate: (scre
         <section className="asiste-card asiste-note" style={{ marginTop: 28 }}>
           <div className="asiste-eyebrow">{result.intro}</div>
           <h2 style={{ fontSize: 22, margin: '8px 0 20px' }}>{result.question}</h2>
+           {tequilaMessage && <TequilaCallout content={content} number={3} text="-50 puntos por seguir defendiendo el esquite amarillo." />}
           <div className="asiste-actions">{result.options.map((option) => <button className="asiste-btn asiste-btn-primary" key={option.label} onClick={() => onNavigate(option.screen)}>{option.label} <ChevronRight size={16} /></button>)}</div>
           <button className="asiste-small-link" onClick={() => setResult(null)} style={{ marginTop: 18 }}>Escribir otra cosa</button>
         </section>
@@ -479,23 +567,27 @@ function Rest({ content, onNavigate }: { content: Content; onNavigate: (screen: 
       {step === 'coffee' && <section className="asiste-card asiste-note" style={{ marginTop: 28 }}><div className="asiste-eyebrow">pregunta opcional</div><h2>¿Ya tomaste café?</h2><div className="asiste-actions"><button className="asiste-btn asiste-btn-primary" onClick={() => chooseCoffee('si')}>Sí</button><button className="asiste-btn asiste-btn-muted" onClick={() => chooseCoffee('todavia')}>Todavía no</button><button className="asiste-btn asiste-btn-ghost" onClick={() => chooseCoffee('no')}>No quiero café</button></div></section>}
       {step === 'coffee-time' && <section className="asiste-card asiste-note" style={{ marginTop: 28 }}><div className="asiste-eyebrow">sin presión</div><h2>¿Tienes tiempo de ir por uno?</h2><div className="asiste-actions"><a className="asiste-btn asiste-btn-primary" href={content.config.starbucksUrl} target="_blank" rel="noreferrer">Abrir Starbucks <ExternalLink size={15} /></a><button className="asiste-btn asiste-btn-ghost" onClick={() => { setMessage('Está bien. Puede esperar.'); setStep(foodQuestion ? 'food' : 'done'); }}>No por ahora</button></div></section>}
       {step === 'food' && <section className="asiste-card asiste-note" style={{ marginTop: 28 }}><div className="asiste-eyebrow">pregunta extra, solo si quieres</div><h2>¿Ya comiste?</h2><div className="asiste-actions"><button className="asiste-btn asiste-btn-primary" onClick={() => { sessionState.hasEaten = 'si'; setMessage('Ok.'); setStep('done'); }}>Sí</button><button className="asiste-btn asiste-btn-ghost" onClick={() => { sessionState.hasEaten = 'no'; setMessage('Ok.'); setStep('done'); }}>No</button></div></section>}
-      {step === 'done' && <section className="asiste-card asiste-note" style={{ marginTop: 28 }}><Coffee size={24} color="hsl(var(--accent))" /><h2>{message || 'Perfecto.'}</h2><p>¿Quieres quedarte aquí o cambiar de aire?</p><div className="asiste-actions"><button className="asiste-btn asiste-btn-primary" onClick={() => onNavigate('quiet')}>Algo tranquilo</button><button className="asiste-btn asiste-btn-ghost" onClick={() => onNavigate('distract')}>Despejarme</button></div></section>}
+       {step === 'done' && <section className="asiste-card asiste-note" style={{ marginTop: 28 }}><Coffee size={24} color="hsl(var(--accent))" /><h2>{message || 'Perfecto.'}</h2><TequilaCallout content={content} number={3} text="Tequila aprueba esta decisión." /><p>¿Quieres quedarte aquí o cambiar de aire?</p><div className="asiste-actions"><button className="asiste-btn asiste-btn-primary" onClick={() => onNavigate('quiet')}>Algo tranquilo</button><button className="asiste-btn asiste-btn-ghost" onClick={() => onNavigate('distract')}>Despejarme</button></div></section>}
     </main>
   );
 }
 
-function Quiet({ onNavigate }: { onNavigate: (screen: Screen) => void }) {
+function Quiet({ content, onNavigate }: { content: Content; onNavigate: (screen: Screen) => void }) {
   const [minutes, setMinutes] = useState<number | null>(null);
   const [running, setRunning] = useState(false);
   const [seconds, setSeconds] = useState(0);
+  const [showReward, setShowReward] = useState(false);
   useEffect(() => {
     if (!running || seconds <= 0) return;
     const timer = window.setInterval(() => setSeconds((value) => value - 1), 1000);
     return () => window.clearInterval(timer);
   }, [running, seconds]);
-  useEffect(() => {
-    if (running && seconds === 0 && minutes !== null) setRunning(false);
-  }, [running, seconds, minutes]);
+   useEffect(() => {
+     if (running && seconds === 0 && minutes !== null) {
+       setRunning(false);
+       setShowReward(true);
+     }
+   }, [running, seconds, minutes]);
   const start = (value: number) => { setMinutes(value); setSeconds(value * 60); setRunning(true); };
   return (
     <main className="asiste-main" style={{ maxWidth: 720, margin: '0 auto' }}>
@@ -504,12 +596,14 @@ function Quiet({ onNavigate }: { onNavigate: (screen: Screen) => void }) {
         <div className="asiste-eyebrow" style={{ marginTop: 25 }}>pantalla tranquila</div>
         <h1 className="asiste-heading">No tienes que <span className="asiste-script">hablar.</span></h1>
         <p className="asiste-subheading">La respiración visual es opcional. Puedes salir cuando quieras.</p>
+         <TequilaCallout content={content} number={2} text="Tequila se queda aquí contigo, sin decir nada." />
         <div className="breathing-circle" aria-label="Círculo de respiración visual" />
         <div className="asiste-actions" style={{ justifyContent: 'center' }}>
           {[1, 2, 3].map((value) => <button className={`asiste-chip ${minutes === value ? 'is-active' : ''}`} key={value} onClick={() => start(value)}>{value} min</button>)}
         </div>
         {minutes !== null && <p className="asiste-kicker">{running ? `${Math.ceil(seconds / 60)} min · puedes salir en cualquier momento` : 'Terminó el tiempo elegido.'}</p>}
         <button className="asiste-btn asiste-btn-ghost" onClick={() => onNavigate('home')}>Volver cuando quieras</button>
+         {showReward && <TequilaReward content={content} onClose={() => setShowReward(false)} />}
       </div>
     </main>
   );
@@ -554,13 +648,24 @@ function Distract({ content, onNavigate }: { content: Content; onNavigate: (scre
 }
 
 function Entertainment({ content, onNavigate }: { content: Content; onNavigate: (screen: Screen) => void }) {
-  const [category, setCategory] = useState<'disney' | 'series' | 'animals' | 'potter'>('disney');
+  const [category, setCategory] = useState<'disney' | 'series' | 'animals' | 'potter' | 'tequila' | 'custom'>('disney');
   const [animal, setAnimal] = useState<'dog' | 'cat' | null>(null);
   const [count, setCount] = useState('1');
   const [animalUrls, setAnimalUrls] = useState<string[]>([]);
+  const [localAnimalPhotos, setLocalAnimalPhotos] = useState<string[]>([]);
+  const [localTequilaPhotos, setLocalTequilaPhotos] = useState<string[]>([]);
+  const [customVideos, setCustomVideos] = useState<VideoItem[]>(() => {
+    try { return JSON.parse(storageGet('asiste-contenido-personal') ?? '[]') as VideoItem[]; } catch { return []; }
+  });
+  const [showEditor, setShowEditor] = useState(false);
+  const [newTitle, setNewTitle] = useState('');
+  const [newUrl, setNewUrl] = useState('');
+  const [newMinutes, setNewMinutes] = useState('10');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
-  const videos = content.videos.filter((item) => category === 'disney' ? item.categoria === 'Disney' : category === 'series' ? item.categoria === 'Series' : category === 'potter' ? item.categoria === 'Harry Potter' : false);
+  const videos = category === 'custom'
+    ? customVideos
+    : content.videos.filter((item) => category === 'disney' ? item.categoria === 'Disney' : category === 'series' ? item.categoria === 'Series' : category === 'potter' ? item.categoria === 'Harry Potter' : false);
   const fetchAnimals = async () => {
     if (!animal) return;
     setLoading(true); setError(false);
@@ -583,19 +688,37 @@ function Entertainment({ content, onNavigate }: { content: Content; onNavigate: 
     }
   };
   useEffect(() => { if (animal) void fetchAnimals(); }, [animal]);
+  const addCustomVideo = () => {
+    if (!newTitle.trim() || !newUrl.trim()) return;
+    const next = [...customVideos, { id: `personal-${Date.now()}`, categoria: 'Personalizado', titulo: newTitle.trim(), url: newUrl.trim(), minutos: Number(newMinutes) || 10 }];
+    setCustomVideos(next);
+    storageSet('asiste-contenido-personal', JSON.stringify(next));
+    setNewTitle('');
+    setNewUrl('');
+    setNewMinutes('10');
+  };
+  const removeCustomVideo = (id: string) => {
+    const next = customVideos.filter((item) => item.id !== id);
+    setCustomVideos(next);
+    storageSet('asiste-contenido-personal', JSON.stringify(next));
+  };
   return (
     <main className="asiste-main">
       <div className="asiste-eyebrow">pantalla para ver</div>
       <h1 className="asiste-heading">Algo para <span className="asiste-script">ver.</span></h1>
-      <p className="asiste-subheading">Las búsquedas son abiertas. Asiste no va a fingir saber tu catálogo exacto.</p>
+      <p className="asiste-subheading">Las búsquedas son abiertas. Puedes dejar lo predefinido o armar tu propia selección.</p>
       <div className="asiste-toolbar" role="tablist" aria-label="Categorías de entretenimiento">
-        {([['disney', 'Disney'], ['series', 'Series'], ['animals', 'Animales'], ['potter', 'Harry Potter']] as const).map(([id, label]) => <button className={`asiste-chip ${category === id ? 'is-active' : ''}`} onClick={() => { setCategory(id); setAnimal(null); }} key={id} role="tab" aria-selected={category === id}>{label}</button>)}
+        {([['disney', 'Disney'], ['series', 'Series'], ['animals', 'Animales'], ['potter', 'Harry Potter'], ['tequila', 'Tequila'], ['custom', 'Mi selección']] as const).map(([id, label]) => <button className={`asiste-chip ${category === id ? 'is-active' : ''}`} onClick={() => { setCategory(id); setAnimal(null); }} key={id} role="tab" aria-selected={category === id}>{label}</button>)}
       </div>
       {category === 'animals' ? (
         <section className="asiste-card asiste-note" style={{ marginTop: 18 }}>
-          {!animal ? <><h2>¿Cuántos perros o gatos necesitas?</h2><div className="asiste-actions"><button className="asiste-btn asiste-btn-primary" onClick={() => setAnimal('dog')}><Dog size={16} /> Perros</button><button className="asiste-btn asiste-btn-ghost" onClick={() => setAnimal('cat')}>Gatos</button></div></> : <><div className="asiste-toolbar">{['1', '5', '10'].map((item) => <button className={`asiste-chip ${count === item ? 'is-active' : ''}`} key={item} onClick={() => setCount(item)}>{item}</button>)}<button className="asiste-chip" onClick={() => setCount(String(Math.ceil(Math.random() * 8)))}>Sorpréndeme</button></div>{loading && <div className="asiste-loading">Buscando caritas en la red pública...</div>}{error && <div className="asiste-error">Los animales están teniendo problemas técnicos. <button className="asiste-small-link" onClick={() => void fetchAnimals()}>Reintentar</button></div>}{animalUrls.length > 0 && <div className="animal-gallery">{animalUrls.map((url) => <img src={url} alt={animal === 'dog' ? 'Perro sorpresa' : 'Gato sorpresa'} key={url} />)}</div>}<div className="asiste-actions"><button className="asiste-btn asiste-btn-muted" onClick={() => void fetchAnimals()}><RotateCcw size={15} /> Más</button><button className="asiste-small-link" onClick={() => setAnimal(null)}>Cambiar</button></div></>}</section>
+          {!animal ? <><h2>¿Cuántos perros o gatos necesitas?</h2><p>También puedes agregar fotos propias, solo se quedan en esta visita.</p><div className="asiste-actions"><button className="asiste-btn asiste-btn-primary" onClick={() => setAnimal('dog')}><Dog size={16} /> Perros</button><button className="asiste-btn asiste-btn-ghost" onClick={() => setAnimal('cat')}>Gatos</button></div><LocalPhotoPicker label="Agregar fotos de animales" photos={localAnimalPhotos} onChange={setLocalAnimalPhotos} /></> : <><div className="asiste-toolbar">{['1', '5', '10'].map((item) => <button className={`asiste-chip ${count === item ? 'is-active' : ''}`} key={item} onClick={() => setCount(item)}>{item}</button>)}<button className="asiste-chip" onClick={() => setCount(String(Math.ceil(Math.random() * 8)))}>Sorpréndeme</button></div>{loading && <div className="asiste-loading">Buscando caritas en la red pública...</div>}{error && <div className="asiste-error"><TequilaCallout content={content} number={1} text="Los animales están teniendo problemas técnicos. Tequila quizá tapó la cámara." /><button className="asiste-small-link" onClick={() => void fetchAnimals()}>Reintentar</button></div>}{(animalUrls.length > 0 || localAnimalPhotos.length > 0) && <div className="animal-gallery">{animal === 'dog' && <TequilaImage content={content} number={4} alt="Tequila mirando a cámara" className="animal-tequila-photo" />}{localAnimalPhotos.map((url) => <img src={url} alt="Foto propia de animal" key={url} />)}{animalUrls.map((url) => <img src={url} alt={animal === 'dog' ? 'Perro sorpresa' : 'Gato sorpresa'} key={url} />)}</div>}<LocalPhotoPicker label="Agregar más fotos" photos={localAnimalPhotos} onChange={setLocalAnimalPhotos} /><div className="asiste-actions"><button className="asiste-btn asiste-btn-muted" onClick={() => void fetchAnimals()}><RotateCcw size={15} /> Más</button><button className="asiste-small-link" onClick={() => setAnimal(null)}>Cambiar</button></div></>}</section>
+      ) : category === 'tequila' ? (
+        <section className="asiste-card asiste-note" style={{ marginTop: 18 }}><h2>Archivo de Tequila</h2><p>Estas fotos son detalles escondidos del espacio. Puedes sumar más desde tu dispositivo.</p><div className="tequila-gallery">{content.tequila.fotos.map((photo, index) => <img src={photo} alt={`Tequila, foto ${index + 1}`} key={photo} onError={(event) => { event.currentTarget.style.display = 'none'; }} />)}{localTequilaPhotos.map((photo, index) => <img src={photo} alt={`Foto extra de Tequila ${index + 1}`} key={photo} />)}</div><LocalPhotoPicker label="Agregar fotos de Tequila" photos={localTequilaPhotos} onChange={setLocalTequilaPhotos} /></section>
       ) : category === 'potter' ? (
         <section className="asiste-card asiste-note" style={{ marginTop: 18 }}><h2>Una visita breve al mundo mágico</h2><div className="asiste-actions"><button className="asiste-btn asiste-btn-primary" onClick={() => onNavigate('trivia')}>Trivia</button><button className="asiste-btn asiste-btn-ghost" onClick={() => onNavigate('surprise')}>Sortear casa</button></div>{videos.map((item) => <a className="asiste-small-link" style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0' }} href={item.url} target="_blank" rel="noreferrer" key={item.id}>{item.titulo} <ExternalLink size={14} /></a>)}</section>
+      ) : category === 'custom' ? (
+        <section className="asiste-card asiste-note" style={{ marginTop: 18 }}><div className="organizer-heading"><div><h2>Mi selección</h2><p>Agrega o elimina lo que sí quieras encontrar aquí.</p></div><button className="asiste-chip" onClick={() => setShowEditor((value) => !value)}><Plus size={14} /> Agregar</button></div>{showEditor && <div className="custom-editor"><input className="asiste-input" value={newTitle} onChange={(event) => setNewTitle(event.target.value)} placeholder="Título" aria-label="Título del contenido" /><input className="asiste-input" value={newUrl} onChange={(event) => setNewUrl(event.target.value)} placeholder="URL o búsqueda pública" aria-label="URL del contenido" /><div className="asiste-actions"><input className="asiste-input" type="number" min="1" value={newMinutes} onChange={(event) => setNewMinutes(event.target.value)} aria-label="Minutos" /><button className="asiste-btn asiste-btn-primary" onClick={addCustomVideo}>Guardar</button></div></div>}{videos.length === 0 && <p className="asiste-muted-text">Todavía no agregas nada.</p>}{videos.map((item) => <div className="custom-content-row" key={item.id}><a className="asiste-card asiste-result" href={item.url} target="_blank" rel="noreferrer"><span className="choice-icon"><Film size={18} /></span><div><h3>{item.titulo}</h3><p>{item.minutos} min · contenido personal</p></div><ExternalLink size={16} /></a><button className="asiste-small-link" onClick={() => removeCustomVideo(item.id)} aria-label={`Eliminar ${item.titulo}`}><Trash2 size={14} /></button></div>)}</section>
       ) : (
         <section className="asiste-card asiste-note" style={{ marginTop: 18 }}><h2>{category === 'disney' ? 'Disney para no decidir demasiado' : 'Serie de respaldo'}</h2>{videos.length === 0 && <p>Agrega contenido en `public/data/videos.json`.</p>}{videos.map((item) => <a className="asiste-card asiste-result" style={{ marginTop: 10 }} href={item.url} target="_blank" rel="noreferrer" key={item.id}><span className="choice-icon"><Film size={18} /></span><div><h3>{item.titulo}</h3><p>{item.subcategoria} · {item.minutos} min</p></div><ExternalLink size={16} /></a>)}</section>
       )}
@@ -604,12 +727,31 @@ function Entertainment({ content, onNavigate }: { content: Content; onNavigate: 
 }
 
 function Music({ content }: { content: Content }) {
+  const [customMusic, setCustomMusic] = useState<MusicItem[]>(() => {
+    try { return JSON.parse(storageGet('asiste-musica-personal') ?? '[]') as MusicItem[]; } catch { return []; }
+  });
+  const [showAdd, setShowAdd] = useState(false);
+  const [newTaste, setNewTaste] = useState('');
+  const addTaste = () => {
+    if (!newTaste.trim()) return;
+    const next = [...customMusic, { id: `gusto-${Date.now()}`, titulo: newTaste.trim(), tipo: 'mi gusto', consulta: newTaste.trim() }];
+    setCustomMusic(next);
+    storageSet('asiste-musica-personal', JSON.stringify(next));
+    setNewTaste('');
+  };
+  const removeTaste = (id: string) => {
+    const next = customMusic.filter((item) => item.id !== id);
+    setCustomMusic(next);
+    storageSet('asiste-musica-personal', JSON.stringify(next));
+  };
+  const MusicLink = ({ item }: { item: MusicItem }) => <a className="asiste-card asiste-result" href={item.url || `https://open.spotify.com/search/${encodeURIComponent(item.consulta)}`} target="_blank" rel="noreferrer" key={item.id}><span className="choice-icon"><Music2 size={18} /></span><div><h3>{item.titulo}</h3><p>{item.tipo || 'búsqueda en Spotify'}</p></div><span className="asiste-kicker">abrir <Play size={11} style={{ verticalAlign: 'middle' }} /></span></a>;
   return (
     <main className="asiste-main">
       <div className="asiste-eyebrow">banda sonora opcional</div>
       <h1 className="asiste-heading">Dale play a <span className="asiste-script">algo.</span></h1>
-      <p className="asiste-subheading">No hay reproductor propio. Tú decides qué artista se queda.</p>
-      <div className="asiste-two-col" style={{ marginTop: 28 }}>{content.musica.map((item) => <a className="asiste-card asiste-result" href={item.url || `https://open.spotify.com/search/${encodeURIComponent(item.consulta)}`} target="_blank" rel="noreferrer" key={item.id}><span className="choice-icon"><Music2 size={18} /></span><div><h3>{item.titulo}</h3><p>{item.tipo || 'búsqueda en Spotify'}</p></div><span className="asiste-kicker">abrir <Play size={11} style={{ verticalAlign: 'middle' }} /></span></a>)}</div>
+      <p className="asiste-subheading">No hay reproductor propio. Tú decides qué artista se queda y puedes agregar tus gustos.</p>
+      <section className="asiste-card asiste-note" style={{ marginTop: 28 }}><div className="organizer-heading"><div><h2>Tus gustos</h2><p>Morat, artistas y búsquedas que tú agregues.</p></div><button className="asiste-chip" onClick={() => setShowAdd((value) => !value)}><Plus size={14} /> Agregar</button></div>{showAdd && <div className="custom-editor"><input className="asiste-input" value={newTaste} onChange={(event) => setNewTaste(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter') addTaste(); }} placeholder="Artista, canción o playlist" aria-label="Nuevo gusto musical" /><button className="asiste-btn asiste-btn-primary" onClick={addTaste}>Guardar</button></div>}<div className="asiste-two-col" style={{ marginTop: 18 }}>{[...content.musica, ...customMusic].map((item) => <div className="custom-content-row" key={item.id}><MusicLink item={item} />{customMusic.some((custom) => custom.id === item.id) && <button className="asiste-small-link" onClick={() => removeTaste(item.id)} aria-label={`Eliminar ${item.titulo}`}><Trash2 size={14} /></button>}</div>)}</div></section>
+      <section className="asiste-section"><div className="asiste-section-title"><h2>Canciones para distintas situaciones</h2><span>editable en JSON</span></div>{content.musicaSituaciones.map((situation) => <div className="asiste-card asiste-note music-situation" key={situation.id}><h3>{situation.titulo}</h3>{situation.descripcion && <p className="asiste-muted-text">{situation.descripcion}</p>}<div className="asiste-two-col">{situation.items.map((item) => <MusicLink item={item} key={item.id} />)}</div></div>)}</section>
     </main>
   );
 }
@@ -617,12 +759,14 @@ function Music({ content }: { content: Content }) {
 function Trivia({ content }: { content: Content }) {
   const [question, setQuestion] = useState(0);
   const [answer, setAnswer] = useState<number | null>(null);
+  const [showReward, setShowReward] = useState(false);
   const current = content.trivia[question % content.trivia.length] ?? fallbackContent.trivia[0];
   return (
     <main className="asiste-main" style={{ maxWidth: 720, margin: '0 auto' }}>
       <div className="asiste-eyebrow">{current.tema} · sin examen</div>
       <h1 className="asiste-heading">Una pregunta <span className="asiste-script">inofensiva.</span></h1>
-      <section className="asiste-card asiste-note" style={{ marginTop: 26 }}><h2 style={{ fontSize: 21 }}>{current.pregunta}</h2><div className="asiste-actions">{current.opciones.map((option, index) => <button className={`asiste-chip ${answer === index ? 'is-active' : ''}`} onClick={() => setAnswer(index)} key={option}>{option}</button>)}</div>{answer !== null && <p className="trivia-feedback">{answer === current.respuesta ? 'Correcto. Sistema estable.' : `Casi. Era: ${current.opciones[current.respuesta]}.`} {current.explicacion}</p>}<button className="asiste-small-link" onClick={() => { setQuestion((value) => value + 1); setAnswer(null); }} style={{ marginTop: 12 }}>Otra pregunta <ArrowRight size={14} /></button></section>
+       <section className="asiste-card asiste-note" style={{ marginTop: 26 }}><h2 style={{ fontSize: 21 }}>{current.pregunta}</h2><div className="asiste-actions">{current.opciones.map((option, index) => <button className={`asiste-chip ${answer === index ? 'is-active' : ''}`} onClick={() => { setAnswer(index); setShowReward(true); }} key={option}>{option}</button>)}</div>{answer !== null && <p className="trivia-feedback">{answer === current.respuesta ? 'Correcto. Sistema estable.' : `Casi. Era: ${current.opciones[current.respuesta]}.`} {current.explicacion}</p>}<button className="asiste-small-link" onClick={() => { setQuestion((value) => value + 1); setAnswer(null); setShowReward(false); }} style={{ marginTop: 12 }}>Otra pregunta <ArrowRight size={14} /></button></section>
+       {showReward && <TequilaReward content={content} onClose={() => setShowReward(false)} />}
     </main>
   );
 }
@@ -640,12 +784,13 @@ function Nerd({ content }: { content: Content }) {
   );
 }
 
-function MemoryGame() {
+function MemoryGame({ content }: { content: Content }) {
   const [cards, setCards] = useState(() => ['A', 'A', 'B', 'B', 'C', 'C', 'D', 'D'].sort(() => Math.random() - 0.5));
   const [flipped, setFlipped] = useState<number[]>([]);
   const [matched, setMatched] = useState<number[]>([]);
   const [moves, setMoves] = useState(0);
-  const reset = () => { setCards(['A', 'A', 'B', 'B', 'C', 'C', 'D', 'D'].sort(() => Math.random() - 0.5)); setFlipped([]); setMatched([]); setMoves(0); };
+  const [showReward, setShowReward] = useState(false);
+  const reset = () => { setCards(['A', 'A', 'B', 'B', 'C', 'C', 'D', 'D'].sort(() => Math.random() - 0.5)); setFlipped([]); setMatched([]); setMoves(0); setShowReward(false); };
   const clickCard = (index: number) => {
     if (flipped.length === 2 || flipped.includes(index) || matched.includes(index)) return;
     const next = [...flipped, index];
@@ -653,7 +798,9 @@ function MemoryGame() {
     if (next.length === 2) {
       setMoves((value) => value + 1);
       if (cards[next[0]] === cards[next[1]]) {
-        setMatched((value) => [...value, ...next]); setFlipped([]);
+         const nextMatched = [...matched, ...next];
+         setMatched(nextMatched); setFlipped([]);
+         if (nextMatched.length === cards.length) setShowReward(true);
       } else {
         window.setTimeout(() => setFlipped([]), 650);
       }
@@ -662,7 +809,8 @@ function MemoryGame() {
   return (
     <main className="asiste-main" style={{ maxWidth: 650, margin: '0 auto' }}>
       <div className="asiste-eyebrow">juego breve</div><h1 className="asiste-heading">Memoria <span className="asiste-script">suave.</span></h1><p className="asiste-subheading">Sin récord, sin ranking, sin motivo para hacerlo perfecto.</p>
-      <div className="asiste-card asiste-note" style={{ marginTop: 25, textAlign: 'center' }}><div className="asiste-kicker">movimientos · {moves}</div><div className="asiste-memory">{cards.map((value, index) => <button className={`memory-card ${flipped.includes(index) || matched.includes(index) ? 'is-flipped' : ''} ${matched.includes(index) ? 'is-matched' : ''}`} onClick={() => clickCard(index)} key={`${value}-${index}`} aria-label={`Carta ${index + 1}`}>{value}</button>)}</div>{matched.length === cards.length && <p className="trivia-feedback">Listo. Tequila aprueba este resultado.</p>}<button className="asiste-btn asiste-btn-ghost" onClick={reset}><RotateCcw size={15} /> Reiniciar</button></div>
+       <div className="asiste-card asiste-note" style={{ marginTop: 25, textAlign: 'center' }}><TequilaImage content={content} number={5} alt="Tequila completa, detalle decorativo" className="tequila-corner-image" /><div className="asiste-kicker">movimientos · {moves}</div><div className="asiste-memory">{cards.map((value, index) => <button className={`memory-card ${flipped.includes(index) || matched.includes(index) ? 'is-flipped' : ''} ${matched.includes(index) ? 'is-matched' : ''}`} onClick={() => clickCard(index)} key={`${value}-${index}`} aria-label={`Carta ${index + 1}`}>{value}</button>)}</div>{matched.length === cards.length && <p className="trivia-feedback">Listo. Tequila aprueba este resultado.</p>}<button className="asiste-btn asiste-btn-ghost" onClick={reset}><RotateCcw size={15} /> Reiniciar</button></div>
+       {showReward && <TequilaReward content={content} onClose={() => setShowReward(false)} />}
     </main>
   );
 }
@@ -693,33 +841,25 @@ function Surprise({ content, onNavigate }: { content: Content; onNavigate: (scre
     <main className="asiste-main" style={{ maxWidth: 680, margin: '0 auto' }}>
       <div className="asiste-eyebrow">azar amable</div><h1 className="asiste-heading">Que decida la <span className="asiste-script">ruleta.</span></h1><p className="asiste-subheading">No son instrucciones, solo una chispa.</p>
       <section className="asiste-card asiste-note" style={{ textAlign: 'center', marginTop: 28 }}><div className={`asiste-wheel ${spinning ? 'is-spinning' : ''}`} aria-hidden="true" /><p>{result?.intro || 'La ruleta está esperando una señal.'}</p>{result && <><h2>{result.titulo}</h2><div className="asiste-actions" style={{ justifyContent: 'center' }}><button className="asiste-btn asiste-btn-primary" onClick={openResult}>{['absurda', 'easter'].includes(result.id) ? 'Otra' : 'Abrir'} {['absurda', 'easter'].includes(result.id) ? <Shuffle size={16} /> : <ArrowRight size={16} />}</button><button className="asiste-btn asiste-btn-ghost" onClick={spin}>Otra</button></div></>} {!result && <button className="asiste-btn asiste-btn-primary" onClick={spin} disabled={spinning}><Sparkles size={16} /> {spinning ? 'girando...' : 'Sorpréndeme'}</button>}</section>
+       {result?.id === 'perros' && <TequilaCallout content={content} number={4} text="Tequila ha seleccionado perros para ti." title="El algoritmo te está viendo." />}
     </main>
   );
 }
 
-function Organizer() {
+function Organizer({ content }: { content: Content }) {
   const [enabled, setEnabled] = useState(() => storageGet('asiste-organizer') === 'on');
   const [task, setTask] = useState('');
   const [tasks, setTasks] = useState<{ text: string; done: boolean }[]>(() => { try { return JSON.parse(storageGet('asiste-pendientes') ?? '[]'); } catch { return []; } });
   const [timer, setTimer] = useState(0);
+  const [showReward, setShowReward] = useState(false);
   useEffect(() => { if (!timer) return; const interval = window.setInterval(() => setTimer((value) => Math.max(0, value - 1)), 1000); return () => window.clearInterval(interval); }, [timer]);
   const persist = (next: { text: string; done: boolean }[]) => { setTasks(next); storageSet('asiste-pendientes', JSON.stringify(next)); };
   const add = () => { if (!task.trim()) return; persist([...tasks, { text: task.trim(), done: false }]); setTask(''); };
   return (
     <main className="asiste-main" style={{ maxWidth: 720, margin: '0 auto' }}>
       <div className="asiste-eyebrow">solo si te sirve</div><h1 className="asiste-heading">Una cosa <span className="asiste-script">a la vez.</span></h1><p className="asiste-subheading">Se guarda solo en este dispositivo y únicamente porque tú activaste esta parte.</p>
-      <section className="asiste-card asiste-note" style={{ marginTop: 25 }}><div className="organizer-heading"><div><h2 style={{ fontSize: 18, margin: 0 }}>Pendientes locales</h2><p style={{ fontSize: 13, marginTop: 5 }}>Sin calendario, metas ni estadísticas.</p></div><button className={`asiste-chip ${enabled ? 'is-active' : ''}`} onClick={() => { const next = !enabled; setEnabled(next); storageSet('asiste-organizer', next ? 'on' : 'off'); }}>{enabled ? 'activo' : 'activar'}</button></div>{enabled && <><div style={{ display: 'flex', gap: 8, marginTop: 18 }}><input className="asiste-input" value={task} onChange={(event) => setTask(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter') add(); }} placeholder="pendiente pequeño" aria-label="Nuevo pendiente" /><button className="asiste-btn asiste-btn-primary" onClick={add}><Check size={16} /></button></div><div style={{ marginTop: 12 }}>{tasks.length === 0 ? <p className="asiste-muted-text">Todavía no hay pendientes. Qué paz.</p> : tasks.map((item, index) => <div className={`asiste-task ${item.done ? 'is-done' : ''}`} key={`${item.text}-${index}`}><label><input type="checkbox" checked={item.done} onChange={() => persist(tasks.map((taskItem, taskIndex) => taskIndex === index ? { ...taskItem, done: !taskItem.done } : taskItem))} /><span>{item.text}</span></label><button className="asiste-small-link" onClick={() => persist(tasks.filter((_, taskIndex) => taskIndex !== index))} aria-label={`Borrar ${item.text}`}><X size={14} /></button></div>)}</div><div className="asiste-actions" style={{ marginTop: 18 }}><button className="asiste-btn asiste-btn-muted" onClick={() => setTimer(timer ? 0 : 25 * 60)}><Clock3 size={15} /> {timer ? `${Math.floor(timer / 60)}:${String(timer % 60).padStart(2, '0')}` : 'Temporizador 25 min'}</button><button className="asiste-small-link" onClick={() => { const pending = tasks.find((item) => !item.done); if (pending) window.alert(`Uno solo: ${pending.text}`); }}>Elegir uno solo para empezar</button></div></>}</section>
-    </main>
-  );
-}
-
-function Contact({ config }: { config: Config }) {
-  const whatsapp = config.whatsapp.replace(/\D/g, '');
-  const phone = config.telefono || config.whatsapp;
-  return (
-    <main className="asiste-main" style={{ maxWidth: 680, margin: '0 auto' }}>
-      <div className="asiste-eyebrow">línea discreta</div><h1 className="asiste-heading">¿Quieres <span className="asiste-script">escribirle</span>?</h1><p className="asiste-subheading">Solo te dejo el acceso. Tú eliges si lo usas.</p>
-      <section className="asiste-card asiste-note" style={{ marginTop: 28 }}><Phone size={20} color="hsl(var(--accent))" /><h2 style={{ fontSize: 20, margin: '15px 0 5px' }}>Contacto editable</h2><p>Este acceso no aparece como notificación ni como respuesta a lo que escribas.</p><div className="asiste-actions">{whatsapp && <a className="asiste-btn asiste-btn-primary" href={`https://wa.me/${whatsapp}`} target="_blank" rel="noreferrer">Mensaje <ExternalLink size={15} /></a>}{phone && <a className="asiste-btn asiste-btn-ghost" href={`tel:${phone}`}>Llamada</a>}</div>{!whatsapp && !phone && <p className="asiste-muted-text">Agrega WhatsApp y teléfono en `public/data/config.json`.</p>}</section>
+       <section className="asiste-card asiste-note" style={{ marginTop: 25 }}><div className="organizer-heading"><div><h2 style={{ fontSize: 18, margin: 0 }}>Pendientes locales</h2><p style={{ fontSize: 13, marginTop: 5 }}>Sin calendario, metas ni estadísticas.</p></div><button className={`asiste-chip ${enabled ? 'is-active' : ''}`} onClick={() => { const next = !enabled; setEnabled(next); storageSet('asiste-organizer', next ? 'on' : 'off'); }}>{enabled ? 'activo' : 'activar'}</button></div>{enabled && <><div style={{ display: 'flex', gap: 8, marginTop: 18 }}><input className="asiste-input" value={task} onChange={(event) => setTask(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter') add(); }} placeholder="pendiente pequeño" aria-label="Nuevo pendiente" /><button className="asiste-btn asiste-btn-primary" onClick={add}><Check size={16} /></button></div><div style={{ marginTop: 12 }}>{tasks.length === 0 ? <><TequilaCallout content={content} number={5} text="Nada pendiente. Tequila descansa." /></> : tasks.map((item, index) => <div className={`asiste-task ${item.done ? 'is-done' : ''}`} key={`${item.text}-${index}`}><label><input type="checkbox" checked={item.done} onChange={() => { if (!item.done) setShowReward(true); persist(tasks.map((taskItem, taskIndex) => taskIndex === index ? { ...taskItem, done: !taskItem.done } : taskItem)); }} /><span>{item.text}</span></label><button className="asiste-small-link" onClick={() => persist(tasks.filter((_, taskIndex) => taskIndex !== index))} aria-label={`Borrar ${item.text}`}><Trash2 size={14} /></button></div>)}</div><div className="asiste-actions" style={{ marginTop: 18 }}><button className="asiste-btn asiste-btn-muted" onClick={() => setTimer(timer ? 0 : 25 * 60)}><Clock3 size={15} /> {timer ? `${Math.floor(timer / 60)}:${String(timer % 60).padStart(2, '0')}` : 'Temporizador 25 min'}</button><button className="asiste-small-link" onClick={() => { const pending = tasks.find((item) => !item.done); if (pending) window.alert(`Uno solo: ${pending.text}`); }}>Elegir uno solo para empezar</button></div></>}</section>
+       {showReward && <TequilaReward content={content} onClose={() => setShowReward(false)} />}
     </main>
   );
 }
@@ -767,6 +907,7 @@ function Letter({ content, onOpen }: { content: Content; onOpen: () => void }) {
         <h1>Para ti, <span className="asiste-script">{replacePersonal('[[NOMBRE]]', content.config)}.</span></h1>
         <div className="letter-copy">{content.carta.parrafos.map((paragraph, index) => <p key={`${paragraph}-${index}`}>{replacePersonal(paragraph, content.config)}</p>)}</div>
         {signatureUrl ? <img className="letter-signature-image" src={signatureUrl} alt={`Firma de ${content.config.tuNombre}`} /> : <div className="letter-signature">{replacePersonal(content.carta.firma, content.config)}</div>}
+         <TequilaImage content={content} number={5} alt="Tequila, detalle de la carta" className="tequila-letter-decoration" />
         <div className="asiste-actions"><button className="asiste-btn asiste-btn-primary" onClick={onOpen}>Entrar <ArrowRight size={16} /></button></div>
         <div className="asiste-kicker" style={{ marginTop: 24 }}>hecho con rosa suave, metal y un poco de magia</div>
       </article>
@@ -821,25 +962,23 @@ function AppShell() {
   return (
     <div className="asiste-app">
       <div className="asiste-shell">
-        <PageHeader screen={screen} onHome={() => navigate('home')} />
+        <PageHeader screen={screen} onHome={() => navigate('home')} config={content.config} />
         <OptionalAudio path={content.config.audio} />
         {screen === 'home' && <Home content={content} onNavigate={navigate} />}
         {screen === 'write' && <FreeText content={content} onNavigate={navigate} />}
         {screen === 'rest' && <Rest content={content} onNavigate={navigate} />}
-        {screen === 'quiet' && <Quiet onNavigate={navigate} />}
+        {screen === 'quiet' && <Quiet content={content} onNavigate={navigate} />}
         {screen === 'distract' && <Distract content={content} onNavigate={navigate} />}
         {screen === 'music' && <Music content={content} />}
         {screen === 'entertainment' && <Entertainment content={content} onNavigate={navigate} />}
         {screen === 'trivia' && <Trivia content={content} />}
         {screen === 'nerd' && <Nerd content={content} />}
-        {screen === 'game' && <MemoryGame />}
+        {screen === 'game' && <MemoryGame content={content} />}
         {screen === 'surprise' && <Surprise content={content} onNavigate={navigate} />}
-        {screen === 'organizer' && <Organizer />}
-        {screen === 'contact' && <Contact config={content.config} />}
+        {screen === 'organizer' && <Organizer content={content} />}
         <footer className="asiste-footer-links">
           {screen !== 'home' && <button className="asiste-small-link" onClick={() => navigate('home')}><ArrowLeft size={13} /> Inicio</button>}
-          {screen === 'home' && <button className="asiste-small-link" onClick={() => navigate('contact')}><Heart size={13} /> Contacto discreto</button>}
-          <span>Asiste · espacio personal</span>
+          <span>{content.config.appTitle} · espacio personal</span>
         </footer>
       </div>
     </div>

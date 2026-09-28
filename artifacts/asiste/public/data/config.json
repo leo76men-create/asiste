@@ -1,11 +1,9 @@
 {
-  "nombre": "[[NOMBRE]]",
-  "tuNombre": "[[TU NOMBRE]]",
-  "whatsapp": "[[NÚMERO CON LADA, sin +, ej. 5215512345678]]",
-  "telefono": "[[+52...]]",
+  "nombre": "Xime",
+  "tuNombre": "Leo",
   "starbucksUrl": "https://www.starbucks.com.mx/",
-  "appTitle": "Asiste",
+  "appTitle": "Tu espacio",
   "tagline": "Un pequeño lugar para cuando quieras",
-  "contactoAvisoDias": 10,
+  "brandLogo": "assets/img/rosa.png",
   "audio": "assets/audio/cancion.mp3"
 }

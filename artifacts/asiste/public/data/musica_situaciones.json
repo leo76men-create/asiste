@@ -1,0 +1,53 @@
+[
+  {
+    "id": "tranquila",
+    "titulo": "Cuando necesitas bajar revoluciones",
+    "descripcion": "Estas son búsquedas provisionales para que las cambies por canciones concretas.",
+    "items": [
+      {
+        "id": "situacion-atardecer",
+        "titulo": "Para ver el techo un rato",
+        "tipo": "playlist",
+        "consulta": "soft indie chill playlist"
+      },
+      {
+        "id": "situacion-lluvia",
+        "titulo": "Para una tarde de lluvia",
+        "tipo": "playlist",
+        "consulta": "rainy day calm playlist"
+      }
+    ]
+  },
+  {
+    "id": "energia",
+    "titulo": "Cuando necesitas un empujoncito",
+    "descripcion": "Canciones provisionales para hacer algo sin convertirlo en misión.",
+    "items": [
+      {
+        "id": "situacion-caminar",
+        "titulo": "Para caminar o arreglarte",
+        "tipo": "playlist",
+        "consulta": "upbeat pop playlist"
+      },
+      {
+        "id": "situacion-entrenar",
+        "titulo": "Para entrenar",
+        "tipo": "playlist",
+        "consulta": "workout pop playlist"
+      }
+    ]
+  },
+  {
+    "id": "compania",
+    "titulo": "Cuando solo quieres compañía de fondo",
+    "descripcion": "Puedes cambiar estas búsquedas por tus canciones de confianza.",
+    "items": [
+      {
+        "id": "situacion-favoritas",
+        "titulo": "Tus favoritas",
+        "tipo": "playlist",
+        "consulta": "my favorite songs playlist"
+      }
+    ]
+  }
+]

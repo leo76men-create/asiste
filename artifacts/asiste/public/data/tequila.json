@@ -1,5 +1,20 @@
 {
-  "fotos": [],
+  "fotos": [
+    "assets/img/tequila/tequila1.png",
+    "assets/img/tequila/tequila2.png",
+    "assets/img/tequila/tequila3.png",
+    "assets/img/tequila/tequila4.png",
+    "assets/img/tequila/tequila5.png",
+    "assets/img/tequila/tequila6.png"
+  ],
+  "roles": {
+    "1": "nariz de cerca · humor, errores y boop",
+    "2": "acostada de lado · descanso y compañía silenciosa",
+    "3": "mirando desde el piso · juicio y aprobación",
+    "4": "oscura, mirando a cámara · reveal de Sorpréndeme",
+    "5": "cuerpo completo · decoración",
+    "6": "recibiendo cariño · recompensa"
+  },
   "frases": [
     "Tequila aprueba esta decisión.",
     "Tequila recomienda perros.",
