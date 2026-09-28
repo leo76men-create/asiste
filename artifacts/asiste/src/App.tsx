@@ -919,6 +919,8 @@ function BirthdayIntro({ content, onOpen }: { content: Content; onOpen: () => vo
   return (
     <main className="birthday-intro asiste-main">
       <img className="intro-gear" src="assets/img/linterna.png" alt="" aria-hidden="true" />
+      <img className="intro-gear-2" src="assets/img/linterna.png" alt="" aria-hidden="true" />
+      <img className="intro-gear-3" src="assets/img/linterna.png" alt="" aria-hidden="true" />
       <div className="asiste-eyebrow">un archivo pequeño para ti</div>
       <h1>Feliz cumpleaños, <span className="asiste-script">{replacePersonal('[[NOMBRE]]', content.config)}.</span></h1>
       <p>Hay algo aquí que hice pensando en ti.</p>

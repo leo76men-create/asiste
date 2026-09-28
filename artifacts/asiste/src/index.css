@@ -207,10 +207,26 @@
   position: absolute;
   top: 14%;
   right: 5%;
-  width: 90px;
+  width: 160px;
   height: auto;
-  opacity: 0.22;
-  animation: asiste-spin 30s linear infinite;
+  opacity: 0.9;
+} 
+.intro-gear-2 {
+  position: absolute;
+  bottom: 10%;
+  left: 6%;
+  width: 100px;
+  height: auto;
+  opacity: 0.7;
+}
+
+.intro-gear-3 {
+  position: absolute;
+  top: 55%;
+  right: 12%;
+  width: 70px;
+  height: auto;
+  opacity: 0.5;
 }
 .asiste-letter { max-width:650px; width:100%; padding:clamp(24px, 6vw, 58px); position:relative; background:hsl(37 52% 96% / .92); border:1px solid hsl(34 22% 82%); box-shadow: 14px 17px 0 hsl(var(--primary) / .13), var(--shadow-soft); transform:rotate(-.8deg); font-family:'Mi Letra', Caveat, cursive; }
 .asiste-letter::before { content:'AS-014'; position:absolute; right:22px; top:19px; font:10px var(--app-font-mono); color:hsl(var(--muted-foreground)); }
@@ -260,8 +276,20 @@
 .asiste-spark.one { top:10%; right:10%; } .asiste-spark.two { top:38%; left:3%; animation-delay:1s; } .asiste-spark.three { bottom:10%; right:15%; animation-delay:1.8s; }
 .asiste-loading { padding:28px; text-align:center; color:hsl(var(--muted-foreground)); }
 .asiste-hero { position:relative; padding:8px 0 28px; }
-.asiste-hero::after { content:'⚙'; position:absolute; right:4%; top:0; font-size:70px; color:hsl(var(--primary) / .11); transform:rotate(15deg); animation:asiste-float 5s ease-in-out infinite; }
-.asiste-small-link { background:none; border:0; padding:0; color:hsl(var(--accent)); cursor:pointer; text-decoration:underline; text-underline-offset:3px; }
+.asiste-hero::after {
+  content: '';
+  position: absolute;
+  right: 4%;
+  top: 0;
+  width: 80px;
+  height: 80px;
+  background-image: url('/assets/img/linterna.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 0.5;
+  transform: rotate(15deg);
+  animation: asiste-float 5s ease-in-out infinite;
+}
 .asiste-muted-text { color:hsl(var(--muted-foreground)); font-size:13px; }
 .asiste-header-label { margin-left:auto; }
 .optional-audio { display:flex; justify-content:flex-end; margin:-12px 0 18px; }
