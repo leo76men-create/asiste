@@ -892,14 +892,57 @@ function OptionalAudio({ path }: { path?: string }) {
 function Letter({ content, onOpen }: { content: Content; onOpen: () => void }) {
   const [ready, setReady] = useState(false);
   const [signatureUrl, setSignatureUrl] = useState<string | null>(null);
+  const [lanternsPhase, setLanternsPhase] = useState<'in' | 'leaving' | 'gone'>('in');
+
+  const lanterns = useMemo(
+    () =>
+      Array.from({ length: 18 }).map(() => ({
+        left: `${Math.random() * 92}%`,
+        top: `${Math.random() * 85}%`,
+        size: `${36 + Math.random() * 46}px`,
+        delay: `${(Math.random() * 0.7).toFixed(2)}s`,
+        rise: `${20 + Math.random() * 60}px`,
+      })),
+    []
+  );
+
   useEffect(() => {
     void document.fonts?.ready.finally(() => setReady(true));
     const signature = new Image();
     signature.onload = () => setSignatureUrl('assets/img/firma.png');
     signature.src = 'assets/img/firma.png';
   }, []);
+
+  useEffect(() => {
+    const leaveTimer = window.setTimeout(() => setLanternsPhase('leaving'), 2400);
+    const goneTimer = window.setTimeout(() => setLanternsPhase('gone'), 3300);
+    return () => {
+      window.clearTimeout(leaveTimer);
+      window.clearTimeout(goneTimer);
+    };
+  }, []);
+
   return (
     <main className={`asiste-letter-wrap asiste-main ${ready ? 'is-ready' : ''}`}>
+      {lanternsPhase !== 'gone' && (
+        <div className={`lantern-intro ${lanternsPhase === 'leaving' ? 'is-leaving' : ''}`} aria-hidden="true">
+          {lanterns.map((lantern, index) => (
+            <img
+              key={index}
+              className="lantern-intro-item"
+              src="assets/img/linterna.png"
+              alt=""
+              style={{
+                left: lantern.left,
+                top: lantern.top,
+                width: lantern.size,
+                animationDelay: lantern.delay,
+                ['--rise' as string]: lantern.rise,
+              }}
+            />
+          ))}
+        </div>
+      )}
       <span className="asiste-spark one"><Star size={13} /></span><span className="asiste-spark two"><Sparkles size={12} /></span><span className="asiste-spark three"><Star size={10} /></span>
       <article className="asiste-letter">
         <div className="letter-seal"><Gift size={29} strokeWidth={1.4} aria-hidden="true" /></div>

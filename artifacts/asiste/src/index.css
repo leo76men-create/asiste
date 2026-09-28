@@ -228,6 +228,39 @@
   height: auto;
   opacity: 0.5;
 }
+.lantern-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: auto;
+}
+
+.lantern-intro-item {
+  position: absolute;
+  height: auto;
+  opacity: 0;
+  animation: lantern-float-in 0.6s ease forwards, asiste-float 4s ease-in-out infinite;
+  animation-delay: inherit;
+}
+
+.lantern-intro.is-leaving {
+  pointer-events: none;
+}
+
+.lantern-intro.is-leaving .lantern-intro-item {
+  animation: lantern-fly-out 0.9s ease forwards;
+  animation-delay: inherit;
+}
+
+@keyframes lantern-float-in {
+  0% { opacity: 0; transform: translateY(30px) scale(.8); }
+  60% { opacity: 1; }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes lantern-fly-out {
+  to { opacity: 0; transform: translateY(calc(var(--rise, 40px) * -1)) scale(.65); }
+}
 .asiste-letter { max-width:650px; width:100%; padding:clamp(24px, 6vw, 58px); position:relative; background:hsl(37 52% 96% / .92); border:1px solid hsl(34 22% 82%); box-shadow: 14px 17px 0 hsl(var(--primary) / .13), var(--shadow-soft); transform:rotate(-.8deg); font-family:'Mi Letra', Caveat, cursive; }
 .asiste-letter::before { content:'AS-014'; position:absolute; right:22px; top:19px; font:10px var(--app-font-mono); color:hsl(var(--muted-foreground)); }
 .asiste-letter .letter-seal { font:28px var(--app-font-mono); color:hsl(var(--primary)); margin-bottom:28px; }
@@ -281,8 +314,8 @@
   position: absolute;
   right: 4%;
   top: 0;
-  width: 80px;
-  height: 80px;
+  width: 180px;
+  height: 180px;
   background-image: url('/assets/img/linterna.png');
   background-size: contain;
   background-repeat: no-repeat;
