@@ -223,19 +223,27 @@
   pointer-events: none;
 }
 
-.lantern-intro.is-leaving .lantern-intro-item {
-  animation: lantern-fly-out 0.9s ease forwards;
-  animation-delay: inherit;
+.lantern-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  overflow: hidden;
 }
 
-@keyframes lantern-float-in {
-  0% { opacity: 0; transform: translateY(30px) scale(.8); }
-  60% { opacity: 1; }
-  100% { opacity: 1; transform: translateY(0) scale(1); }
+.lantern-intro-item {
+  height: auto;
+  opacity: 0;
+  animation-name: lantern-rise;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: forwards;
 }
 
-@keyframes lantern-fly-out {
-  to { opacity: 0; transform: translateY(calc(var(--rise, 40px) * -1)) scale(.65); }
+@keyframes lantern-rise {
+  0% { opacity: 0; transform: translate(0, 0) scale(.85); }
+  12% { opacity: 1; transform: translate(calc(var(--drift) * 0.15), calc(var(--rise) * -0.12)) scale(1); }
+  82% { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--drift), calc(var(--rise) * -1)) scale(1.06); }
 }
 .asiste-letter { max-width:650px; width:100%; padding:clamp(24px, 6vw, 58px); position:relative; background:hsl(37 52% 96% / .92); border:1px solid hsl(34 22% 82%); box-shadow: 14px 17px 0 hsl(var(--primary) / .13), var(--shadow-soft); transform:rotate(-.8deg); font-family:'Mi Letra', Caveat, cursive; }
 .asiste-letter::before { content:'AS-014'; position:absolute; right:22px; top:19px; font:10px var(--app-font-mono); color:hsl(var(--muted-foreground)); }

@@ -892,16 +892,18 @@ function OptionalAudio({ path }: { path?: string }) {
 function Letter({ content, onOpen }: { content: Content; onOpen: () => void }) {
   const [ready, setReady] = useState(false);
   const [signatureUrl, setSignatureUrl] = useState<string | null>(null);
-  const [lanternsPhase, setLanternsPhase] = useState<'in' | 'leaving' | 'gone'>('in');
+  const [lanternsVisible, setLanternsVisible] = useState(true);
 
   const lanterns = useMemo(
     () =>
-      Array.from({ length: 800 }).map(() => ({
-        left: `${Math.random() * 92}%`,
-        top: `${Math.random() * 85}%`,
-        size: `${86 + Math.random() * 96}px`,
-        delay: `${(Math.random() * 0.7).toFixed(2)}s`,
-        rise: `${20 + Math.random() * 60}px`,
+      Array.from({ length: 22 }).map(() => ({
+        left: Math.random() * 94,
+        top: Math.random() * 100,
+        size: 34 + Math.random() * 40,
+        duration: 6 + Math.random() * 3.5,
+        delay: Math.random() * 2.6,
+        drift: (Math.random() - 0.5) * 70,
+        rise: 110 + Math.random() * 50,
       })),
     []
   );
@@ -914,18 +916,14 @@ function Letter({ content, onOpen }: { content: Content; onOpen: () => void }) {
   }, []);
 
   useEffect(() => {
-    const leaveTimer = window.setTimeout(() => setLanternsPhase('leaving'), 2400);
-    const goneTimer = window.setTimeout(() => setLanternsPhase('gone'), 3300);
-    return () => {
-      window.clearTimeout(leaveTimer);
-      window.clearTimeout(goneTimer);
-    };
+    const hideTimer = window.setTimeout(() => setLanternsVisible(false), 11500);
+    return () => window.clearTimeout(hideTimer);
   }, []);
 
   return (
     <main className={`asiste-letter-wrap asiste-main ${ready ? 'is-ready' : ''}`}>
-      {lanternsPhase !== 'gone' && (
-        <div className={`lantern-intro ${lanternsPhase === 'leaving' ? 'is-leaving' : ''}`} aria-hidden="true">
+      {lanternsVisible && (
+        <div className="lantern-intro" aria-hidden="true">
           {lanterns.map((lantern, index) => (
             <img
               key={index}
@@ -933,11 +931,14 @@ function Letter({ content, onOpen }: { content: Content; onOpen: () => void }) {
               src="assets/img/linterna.png"
               alt=""
               style={{
-                left: lantern.left,
-                top: lantern.top,
-                width: lantern.size,
-                animationDelay: lantern.delay,
-                ['--rise' as string]: lantern.rise,
+                position: 'absolute',
+                left: `${lantern.left}%`,
+                top: `${lantern.top}%`,
+                width: `${lantern.size}px`,
+                animationDuration: `${lantern.duration}s`,
+                animationDelay: `${lantern.delay}s`,
+                ['--drift' as string]: `${lantern.drift}px`,
+                ['--rise' as string]: `${lantern.rise}vh`,
               }}
             />
           ))}
