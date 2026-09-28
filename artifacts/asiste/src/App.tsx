@@ -896,7 +896,7 @@ function Letter({ content, onOpen }: { content: Content; onOpen: () => void }) {
 
   const lanterns = useMemo(
     () =>
-      Array.from({ length: 22 }).map(() => ({
+      Array.from({ length: 220 }).map(() => ({
         left: Math.random() * 94,
         top: Math.random() * 100,
         size: 34 + Math.random() * 40,
@@ -945,10 +945,12 @@ function Letter({ content, onOpen }: { content: Content; onOpen: () => void }) {
         </div>
       )}
       <article className="asiste-letter">
-        <img className="letter-hat-decoration" src="assets/img/tequila/tequi_hat.png" alt="Tequila con sombrero de fiesta" />
         <div className="letter-seal"><Gift size={29} strokeWidth={1.4} aria-hidden="true" /></div>
         <div className="asiste-eyebrow">archivo de cumpleaños · 01</div>
-        <h1>Para ti, <span className="asiste-script">{replacePersonal('[[NOMBRE]]', content.config)}.</span></h1>
+        <div className="letter-title-row">
+          <h1>Para ti, <span className="asiste-script">{replacePersonal('[[NOMBRE]]', content.config)}.</span></h1>
+          <img className="letter-hat-decoration" src="assets/img/tequila/tequi_hat.png" alt="Tequila con sombrero de fiesta" />
+        </div>
         <div className="letter-copy">{content.carta.parrafos.map((paragraph, index) => <p key={`${paragraph}-${index}`}>{replacePersonal(paragraph, content.config)}</p>)}</div>
         {signatureUrl ? <img className="letter-signature-image" src={signatureUrl} alt={`Firma de ${content.config.tuNombre}`} /> : <div className="letter-signature">{replacePersonal(content.carta.firma, content.config)}</div>}
         <div className="asiste-actions"><button className="asiste-btn asiste-btn-primary" onClick={onOpen}>Entrar <ArrowRight size={16} /></button></div>

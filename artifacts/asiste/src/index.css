@@ -298,8 +298,8 @@
   position: absolute;
   right: 4%;
   top: 0;
-  width: 180px;
-  height: 180px;
+  width: 80px;
+  height: 80px;
   background-image: url('/assets/img/linterna.png');
   background-size: contain;
   background-repeat: no-repeat;
@@ -329,6 +329,23 @@
 .tequila-reward strong { display:block; font-size:13px; }
 .tequila-reward .asiste-small-link { display:block; margin-top:3px; font-size:11px; }
 .tequila-letter-decoration { display:block; width:62px; height:62px; object-fit:contain; object-position:left bottom; margin:15px 0 -4px; }
+.letter-title-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.letter-hat-decoration {
+  width: 56px;
+  height: 56px;
+  min-width: 56px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid hsl(var(--card));
+  box-shadow: 0 4px 10px hsl(var(--foreground) / .15);
+  transform: rotate(-4deg);
+}
 .tequila-corner-image { display:block; width:58px; height:58px; object-fit:contain; margin:0 0 8px auto; }
 .animal-tequila-photo { width:100%; aspect-ratio:1; object-fit:cover; border-radius:15px; border:3px solid white; box-shadow:var(--shadow-card); }
 .tequila-gallery { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin:18px 0; }
