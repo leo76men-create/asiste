@@ -49,7 +49,8 @@ type Screen =
   | 'nerd'
   | 'game'
   | 'surprise'
-  | 'organizer';
+  | 'organizer'
+  | 'house';
 
 type IconType = typeof Coffee;
 type PhraseBook = Record<string, string[]>;
@@ -716,7 +717,7 @@ function Entertainment({ content, onNavigate }: { content: Content; onNavigate: 
       ) : category === 'tequila' ? (
         <section className="asiste-card asiste-note" style={{ marginTop: 18 }}><h2>Archivo de Tequila</h2><p>Estas fotos son detalles escondidos del espacio. Puedes sumar más desde tu dispositivo.</p><div className="tequila-gallery">{content.tequila.fotos.map((photo, index) => <img src={photo} alt={`Tequila, foto ${index + 1}`} key={photo} onError={(event) => { event.currentTarget.style.display = 'none'; }} />)}{localTequilaPhotos.map((photo, index) => <img src={photo} alt={`Foto extra de Tequila ${index + 1}`} key={photo} />)}</div><LocalPhotoPicker label="Agregar fotos de Tequila" photos={localTequilaPhotos} onChange={setLocalTequilaPhotos} /></section>
       ) : category === 'potter' ? (
-        <section className="asiste-card asiste-note" style={{ marginTop: 18 }}><h2>Una visita breve al mundo mágico</h2><div className="asiste-actions"><button className="asiste-btn asiste-btn-primary" onClick={() => onNavigate('trivia')}>Trivia</button><button className="asiste-btn asiste-btn-ghost" onClick={() => onNavigate('surprise')}>Sortear casa</button></div>{videos.map((item) => <a className="asiste-small-link" style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0' }} href={item.url} target="_blank" rel="noreferrer" key={item.id}>{item.titulo} <ExternalLink size={14} /></a>)}</section>
+        <section className="asiste-card asiste-note" style={{ marginTop: 18 }}><h2>Una visita breve al mundo mágico</h2><div className="asiste-actions"><button className="asiste-btn asiste-btn-primary" onClick={() => onNavigate('trivia')}>Trivia</button><button className="asiste-btn asiste-btn-ghost" onClick={() => onNavigate('house')}>Sortear casa</button></div>{videos.map((item) => <a className="asiste-small-link" style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0' }} href={item.url} target="_blank" rel="noreferrer" key={item.id}>{item.titulo} <ExternalLink size={14} /></a>)}</section>
       ) : category === 'custom' ? (
         <section className="asiste-card asiste-note" style={{ marginTop: 18 }}><div className="organizer-heading"><div><h2>Mi selección</h2><p>Agrega o elimina lo que sí quieras encontrar aquí.</p></div><button className="asiste-chip" onClick={() => setShowEditor((value) => !value)}><Plus size={14} /> Agregar</button></div>{showEditor && <div className="custom-editor"><input className="asiste-input" value={newTitle} onChange={(event) => setNewTitle(event.target.value)} placeholder="Título" aria-label="Título del contenido" /><input className="asiste-input" value={newUrl} onChange={(event) => setNewUrl(event.target.value)} placeholder="URL o búsqueda pública" aria-label="URL del contenido" /><div className="asiste-actions"><input className="asiste-input" type="number" min="1" value={newMinutes} onChange={(event) => setNewMinutes(event.target.value)} aria-label="Minutos" /><button className="asiste-btn asiste-btn-primary" onClick={addCustomVideo}>Guardar</button></div></div>}{videos.length === 0 && <p className="asiste-muted-text">Todavía no agregas nada.</p>}{videos.map((item) => <div className="custom-content-row" key={item.id}><a className="asiste-card asiste-result" href={item.url} target="_blank" rel="noreferrer"><span className="choice-icon"><Film size={18} /></span><div><h3>{item.titulo}</h3><p>{item.minutos} min · contenido personal</p></div><ExternalLink size={16} /></a><button className="asiste-small-link" onClick={() => removeCustomVideo(item.id)} aria-label={`Eliminar ${item.titulo}`}><Trash2 size={14} /></button></div>)}</section>
       ) : (
@@ -957,7 +958,6 @@ function Letter({ content, onOpen }: { content: Content; onOpen: () => void }) {
       )}
       <article className="asiste-letter">
         <div className="letter-seal"><Gift size={29} strokeWidth={1.4} aria-hidden="true" /></div>
-        <div className="asiste-eyebrow">archivo de cumpleaños · 01</div>
         <div className="letter-title-row">
           <h1>Para ti, <span className="asiste-script">{replacePersonal('[[NOMBRE]]', content.config)}.</span></h1>
           <img className="letter-hat-decoration" src="assets/img/tequila/tequi_hat.png" alt="Tequila con sombrero de fiesta" />
@@ -974,10 +974,63 @@ function Letter({ content, onOpen }: { content: Content; onOpen: () => void }) {
 function BirthdayIntro({ content, onOpen }: { content: Content; onOpen: () => void }) {
   return (
     <main className="birthday-intro asiste-main">
-      <div className="asiste-eyebrow">un archivo pequeño para ti</div>
       <h1>Feliz cumpleaños, <span className="asiste-script">{replacePersonal('[[NOMBRE]]', content.config)}.</span></h1>
       <p>Hay algo aquí que hice pensando en ti.</p>
       <button className="asiste-btn asiste-btn-primary" onClick={onOpen}>Abrir <ArrowRight size={16} /></button>
+    </main>
+  );
+}
+
+interface HouseInfo {
+  id: string;
+  nombre: string;
+  colorA: string;
+  colorB: string;
+  rasgo: string;
+  foto: string;
+}
+
+const houses: HouseInfo[] = [
+  { id: 'gryffindor', nombre: 'Gryffindor', colorA: '#740001', colorB: '#D3A625', rasgo: 'valiente hasta cuando no hace falta.', foto: 'assets/img/tequila/casas/gryffindor.png' },
+  { id: 'ravenclaw', nombre: 'Ravenclaw', colorA: '#0E1A40', colorB: '#946B2D', rasgo: 'con la respuesta correcta y sin que se la pidan.', foto: 'assets/img/tequila/casas/ravenclaw.png' },
+  { id: 'hufflepuff', nombre: 'Hufflepuff', colorA: '#FFDB00', colorB: '#372E29', rasgo: 'leal incluso cuando nadie está mirando.', foto: 'assets/img/tequila/casas/hufflepuff.png' },
+  { id: 'slytherin', nombre: 'Slytherin', colorA: '#1A472A', colorB: '#AAAAAA', rasgo: 'ambiciosa y con un plan para todo.', foto: 'assets/img/tequila/casas/slytherin.png' },
+];
+
+function HouseSorting() {
+  const [sorting, setSorting] = useState(false);
+  const [result, setResult] = useState<HouseInfo | null>(null);
+  const sort = () => {
+    setSorting(true);
+    setResult(null);
+    window.setTimeout(() => {
+      const options = houses.filter((house) => house.id !== sessionState.lastCategory);
+      const pick = options[Math.floor(Math.random() * options.length)] ?? houses[0];
+      sessionState.lastCategory = pick.id;
+      setResult(pick);
+      setSorting(false);
+    }, 1400);
+  };
+  return (
+    <main className="asiste-main" style={{ maxWidth: 640, margin: '0 auto' }}>
+      <div className="asiste-eyebrow">el sombrero decide</div>
+      <h1 className="asiste-heading">Sorteo de <span className="asiste-script">casa.</span></h1>
+      <p className="asiste-subheading">Solo por diversión. No es un test de personalidad, es un botón.</p>
+      <section className="asiste-card asiste-note house-sorting" style={{ marginTop: 26, textAlign: 'center' }}>
+        <div className={`house-hat ${sorting ? 'is-thinking' : ''}`} aria-hidden="true">🎩</div>
+        {!result && !sorting && <button className="asiste-btn asiste-btn-primary" onClick={sort}><Shuffle size={16} /> Ponte el sombrero</button>}
+        {sorting && <p className="asiste-kicker">Pensándolo bien...</p>}
+        {result && (
+          <>
+            <div className="house-result" style={{ background: `linear-gradient(135deg, ${result.colorA}, ${result.colorB})` }}>
+              <img src={result.foto} alt={`Tequila vestida de ${result.nombre}`} className="house-tequila-photo" onError={(event) => { event.currentTarget.style.display = 'none'; }} />
+              <h2>{result.nombre}</h2>
+              <p>Tequila también quedó ahí: {result.rasgo}</p>
+            </div>
+            <button className="asiste-btn asiste-btn-ghost" onClick={sort} style={{ marginTop: 18 }}><RotateCcw size={15} /> Sortear otra vez</button>
+          </>
+        )}
+      </section>
     </main>
   );
 }
@@ -1030,6 +1083,7 @@ function AppShell() {
         {screen === 'nerd' && <Nerd content={content} />}
         {screen === 'game' && <MemoryGame content={content} />}
         {screen === 'surprise' && <Surprise content={content} onNavigate={navigate} />}
+        {screen === 'house' && <HouseSorting />}
         {screen === 'organizer' && <Organizer content={content} />}
         <footer className="asiste-footer-links">
           {screen !== 'home' && <button className="asiste-small-link" onClick={() => navigate('home')}><ArrowLeft size={13} /> Inicio</button>}

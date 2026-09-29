@@ -246,7 +246,7 @@
   100% { opacity: 0; transform: translate(var(--drift), calc(var(--rise) * -1)) scale(1.06); }
 }
 .asiste-letter { max-width:650px; width:100%; padding:clamp(24px, 6vw, 58px); position:relative; background:hsl(37 52% 96% / .92); border:1px solid hsl(34 22% 82%); box-shadow: 14px 17px 0 hsl(var(--primary) / .13), var(--shadow-soft); transform:rotate(-.8deg); font-family:'Mi Letra', Caveat, cursive; }
-.asiste-letter::before { content:'AS-014'; position:absolute; right:22px; top:19px; font:10px var(--app-font-mono); color:hsl(var(--muted-foreground)); }
+
 .asiste-letter .letter-seal { font:28px var(--app-font-mono); color:hsl(var(--primary)); margin-bottom:28px; }
 .asiste-letter h1 { font-size:clamp(2.4rem, 11vw, 5.2rem); line-height:.93; letter-spacing:-.09em; max-width:500px; margin:0 0 25px; }
 .asiste-letter .letter-copy { font-size:17px; line-height:1.8; max-width:500px; }
@@ -283,6 +283,41 @@
 .asiste-wheel.is-spinning { animation:asiste-spin .9s cubic-bezier(.2,.8,.3,1); }
 .asiste-memory { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; max-width:420px; margin:18px auto; }
 .memory-card { aspect-ratio:1; border:0; border-radius:12px; background:hsl(var(--secondary)); color:transparent; cursor:pointer; transition:transform .25s ease, background .25s ease; overflow: hidden; padding: 0; }
+.house-hat {
+  font-size: 60px;
+  margin: 6px 0 22px;
+  display: inline-block;
+}
+.house-hat.is-thinking {
+  animation: asiste-float 0.6s ease-in-out infinite;
+}
+.house-result {
+  border-radius: 20px;
+  padding: 28px 20px;
+  color: white;
+  margin-top: 10px;
+  box-shadow: var(--shadow-soft);
+}
+.house-result h2 {
+  margin: 12px 0 6px;
+  font-size: 26px;
+  letter-spacing: -0.03em;
+}
+.house-result p {
+  margin: 0;
+  font-size: 13px;
+  opacity: 0.92;
+  max-width: 320px;
+  margin-inline: auto;
+}
+.house-tequila-photo {
+  width: 84px;
+  height: 84px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
 .memory-card.is-flipped, .memory-card.is-matched { background:hsl(var(--card)); color:hsl(var(--foreground)); border:1px solid hsl(var(--border)); transform:rotateY(180deg); }
 .memory-card-image {
   width: 100%;
