@@ -54,5 +54,891 @@
     "opciones": ["Una araña", "Un pulpo", "Ambos", "Un escarabajo"],
     "respuesta": 2,
     "explicacion": "La araña y el pulpo tienen ocho patas o brazos."
-  }
+  },
+    {
+      "tema": "Harry Potter",
+      "pregunta": "¿Cómo se llama el banco de los magos?",
+      "opciones": ["Gringotts", "Ollivanders", "Borgin", "Honeydukes"],
+      "respuesta": 0,
+      "explicacion": "Gringotts es el banco mágico administrado por duendes."
+    },
+    {
+      "tema": "Harry Potter",
+      "pregunta": "¿Qué animal representa a Gryffindor?",
+      "opciones": ["Serpiente", "Águila", "León", "Tejón"],
+      "respuesta": 2,
+      "explicacion": "El león es el símbolo de Gryffindor."
+    },
+    {
+      "tema": "Harry Potter",
+      "pregunta": "¿Qué animal representa a Ravenclaw en las películas?",
+      "opciones": ["Cuervo", "Águila", "Búho", "Halcón"],
+      "respuesta": 1,
+      "explicacion": "En las películas, el símbolo de Ravenclaw es un águila."
+    },
+    {
+      "tema": "Harry Potter",
+      "pregunta": "¿Qué animal representa a Hufflepuff?",
+      "opciones": ["Tejón", "Zorro", "Oso", "Nutria"],
+      "respuesta": 0,
+      "explicacion": "El tejón es el símbolo de Hufflepuff."
+    },
+    {
+      "tema": "Harry Potter",
+      "pregunta": "¿Qué animal representa a Slytherin?",
+      "opciones": ["Dragón", "Serpiente", "Lagarto", "Cocodrilo"],
+      "respuesta": 1,
+      "explicacion": "La serpiente representa a Slytherin."
+    },
+    {
+      "tema": "Harry Potter",
+      "pregunta": "¿Cómo se llama la lechuza de Harry?",
+      "opciones": ["Crookshanks", "Hedwig", "Scabbers", "Fawkes"],
+      "respuesta": 1,
+      "explicacion": "Hedwig es la lechuza blanca de Harry."
+    },
+    {
+      "tema": "Harry Potter",
+      "pregunta": "¿Qué animal es Crookshanks?",
+      "opciones": ["Lechuza", "Gato", "Rata", "Perro"],
+      "respuesta": 1,
+      "explicacion": "Crookshanks es el gato de Hermione."
+    },
+    {
+      "tema": "Harry Potter",
+      "pregunta": "¿Quién es el director de Hogwarts durante gran parte de la saga?",
+      "opciones": ["Severus Snape", "Albus Dumbledore", "Minerva McGonagall", "Remus Lupin"],
+      "respuesta": 1,
+      "explicacion": "Albus Dumbledore es director de Hogwarts durante la mayor parte de la historia."
+    },
+    {
+      "tema": "Harry Potter",
+      "pregunta": "¿Qué asignatura enseña la profesora McGonagall?",
+      "opciones": ["Pociones", "Transformaciones", "Encantamientos", "Astronomía"],
+      "respuesta": 1,
+      "explicacion": "Minerva McGonagall enseña Transformaciones."
+    },
+    {
+      "tema": "Harry Potter",
+      "pregunta": "¿Qué asignatura enseña Snape durante buena parte de la saga?",
+      "opciones": ["Pociones", "Herbología", "Vuelo", "Adivinación"],
+      "respuesta": 0,
+      "explicacion": "Snape es profesor de Pociones durante gran parte de la saga."
+    },
+    {
+      "tema": "Harry Potter",
+      "pregunta": "¿Qué objeto permite ver recuerdos?",
+      "opciones": ["Pensadero", "Mapa del Merodeador", "Espejo de Oesed", "Giratiempo"],
+      "respuesta": 0,
+      "explicacion": "El Pensadero permite almacenar y observar recuerdos."
+    },
+    {
+      "tema": "Harry Potter",
+      "pregunta": "¿Qué objeto muestra el deseo más profundo de una persona?",
+      "opciones": ["La Snitch", "El Espejo de Oesed", "La Varita de Saúco", "El Pensadero"],
+      "respuesta": 1,
+      "explicacion": "El Espejo de Oesed muestra el deseo más profundo de quien lo observa."
+    },
+    {
+      "tema": "Harry Potter",
+      "pregunta": "¿Qué objeto permite viajar en el tiempo?",
+      "opciones": ["Giratiempo", "Pensadero", "Portkey", "Mapa del Merodeador"],
+      "respuesta": 0,
+      "explicacion": "El Giratiempo permite retroceder en el tiempo bajo ciertas condiciones."
+    },
+    {
+      "tema": "Harry Potter",
+      "pregunta": "¿Qué objeto muestra la ubicación de las personas dentro de Hogwarts?",
+      "opciones": ["Mapa del Merodeador", "Espejo de Oesed", "Giratiempo", "Pensadero"],
+      "respuesta": 0,
+      "explicacion": "El Mapa del Merodeador muestra las ubicaciones de las personas dentro de Hogwarts."
+    },
+    {
+      "tema": "Harry Potter",
+      "pregunta": "¿Cómo se llama el tren que lleva a los estudiantes a Hogwarts?",
+      "opciones": ["Expreso de Hogwarts", "Expreso Mágico", "Hogwarts Express", "Tren de Hogsmeade"],
+      "respuesta": 2,
+      "explicacion": "El tren que lleva a los alumnos a Hogwarts es el Hogwarts Express."
+    },
+    {
+      "tema": "Harry Potter",
+      "pregunta": "¿Desde qué andén sale el Hogwarts Express?",
+      "opciones": ["7 1/2", "9 3/4", "10 1/2", "8 3/4"],
+      "respuesta": 1,
+      "explicacion": "El Hogwarts Express parte del andén nueve y tres cuartos."
+    },
+    {
+      "tema": "Harry Potter",
+      "pregunta": "¿Qué deporte se juega sobre escobas?",
+      "opciones": ["Quidditch", "Gobstones", "Duelo", "Carrera de escobas"],
+      "respuesta": 0,
+      "explicacion": "El Quidditch es el deporte mágico que se juega volando sobre escobas."
+    },
+    {
+      "tema": "Harry Potter",
+      "pregunta": "¿Qué pelota dorada intenta atrapar el buscador?",
+      "opciones": ["Quaffle", "Bludger", "Snitch dorada", "Golden Ball"],
+      "respuesta": 2,
+      "explicacion": "El buscador intenta atrapar la Snitch dorada."
+    },
+    {
+      "tema": "Harry Potter",
+      "pregunta": "¿Cuál es la mascota de Hermione?",
+      "opciones": ["Hedwig", "Crookshanks", "Fang", "Scabbers"],
+      "respuesta": 1,
+      "explicacion": "Crookshanks es el gato de Hermione."
+    },
+    {
+      "tema": "Harry Potter",
+      "pregunta": "¿Quién es el mejor amigo de Harry que pertenece a la familia Weasley?",
+      "opciones": ["Fred", "George", "Ron", "Percy"],
+      "respuesta": 2,
+      "explicacion": "Ron Weasley es uno de los mejores amigos de Harry."
+    },
+    {
+      "tema": "Harry Potter",
+      "pregunta": "¿Cómo se llama la tienda de bromas de Fred y George?",
+      "opciones": ["Honeydukes", "Sortilegios Weasley", "Borgin & Burkes", "Zonko's"],
+      "respuesta": 1,
+      "explicacion": "Fred y George crean Sortilegios Weasley en Hogsmeade."
+    },
+    {
+      "tema": "Harry Potter",
+      "pregunta": "¿Qué dulce mágico hace que la lengua de Ron se alargue?",
+      "opciones": ["Grageas Bertie Bott", "Lenguas de caramelo", "Chocolate Frog", "Fizzing Whizzbees"],
+      "respuesta": 1,
+      "explicacion": "Las lenguas de caramelo de Sortilegios Weasley tienen ese efecto."
+    },
+    {
+      "tema": "Harry Potter",
+      "pregunta": "¿Qué criatura es Dobby?",
+      "opciones": ["Duende", "Elfo doméstico", "Dementor", "Hipogrifo"],
+      "respuesta": 1,
+      "explicacion": "Dobby es un elfo doméstico."
+    },
+    {
+      "tema": "Harry Potter",
+      "pregunta": "¿Qué criatura es Buckbeak?",
+      "opciones": ["Hipogrifo", "Dragón", "Thestral", "Grifo"],
+      "respuesta": 0,
+      "explicacion": "Buckbeak es un hipogrifo."
+    },
+    {
+      "tema": "Harry Potter",
+      "pregunta": "¿Qué criatura puede ser vista principalmente por personas que han presenciado la muerte?",
+      "opciones": ["Dementor", "Thestral", "Hipogrifo", "Basilisco"],
+      "respuesta": 1,
+      "explicacion": "Los Thestrals son visibles para quienes han comprendido y experimentado la muerte."
+    },
+    {
+      "tema": "Harry Potter",
+      "pregunta": "¿Qué hechizo se utiliza para desarmar a un oponente?",
+      "opciones": ["Expelliarmus", "Expecto Patronum", "Lumos", "Protego"],
+      "respuesta": 0,
+      "explicacion": "Expelliarmus hace que el oponente suelte su arma o varita."
+    },
+    {
+      "tema": "Harry Potter",
+      "pregunta": "¿Qué hechizo produce luz en la punta de la varita?",
+      "opciones": ["Nox", "Lumos", "Accio", "Alohomora"],
+      "respuesta": 1,
+      "explicacion": "Lumos crea luz en la punta de la varita."
+    },
+    {
+      "tema": "Harry Potter",
+      "pregunta": "¿Qué hechizo apaga la luz creada por Lumos?",
+      "opciones": ["Nox", "Finite", "Obliviate", "Silencio"],
+      "respuesta": 0,
+      "explicacion": "Nox apaga la luz producida por Lumos."
+    },
+    {
+      "tema": "Harry Potter",
+      "pregunta": "¿Qué hechizo se utiliza para atraer un objeto hacia el mago?",
+      "opciones": ["Accio", "Wingardium Leviosa", "Depulso", "Aguamenti"],
+      "respuesta": 0,
+      "explicacion": "Accio es el encantamiento de convocación."
+    },
+    {
+      "tema": "Harry Potter",
+      "pregunta": "¿Cuál es el nombre de la prisión mágica?",
+      "opciones": ["Azkaban", "Durmstrang", "Gringotts", "Nurmengard"],
+      "respuesta": 0,
+      "explicacion": "Azkaban es la prisión de los magos."
+    },
+    {
+      "tema": "Harry Potter",
+      "pregunta": "¿Quién es el padrino de Harry?",
+      "opciones": ["Remus Lupin", "Sirius Black", "Arthur Weasley", "Alastor Moody"],
+      "respuesta": 1,
+      "explicacion": "Sirius Black es el padrino de Harry."
+    },
+    {
+      "tema": "Harry Potter",
+      "pregunta": "¿Qué animal puede adoptar Sirius Black mediante su habilidad de animago?",
+      "opciones": ["Lobo", "Perro negro", "Gato", "Cuervo"],
+      "respuesta": 1,
+      "explicacion": "Sirius puede transformarse en un gran perro negro."
+    },
+    {
+      "tema": "Harry Potter",
+      "pregunta": "¿Qué forma tiene el Patronus de Harry?",
+      "opciones": ["Ciervo", "Lobo", "Águila", "Caballo"],
+      "respuesta": 0,
+      "explicacion": "El Patronus de Harry tiene la forma de un ciervo."
+    },
+    {
+      "tema": "Harry Potter",
+      "pregunta": "¿Qué forma tiene el Patronus de Hermione?",
+      "opciones": ["Nutria", "Gato", "Conejo", "Cisne"],
+      "respuesta": 0,
+      "explicacion": "El Patronus de Hermione tiene forma de nutria."
+    },
+    {
+      "tema": "Harry Potter",
+      "pregunta": "¿Qué objeto destruye Hermione en la Cámara de los Secretos?",
+      "opciones": ["Una varita", "Un diario", "Un medallón", "Una copa"],
+      "respuesta": 1,
+      "explicacion": "Hermione ayuda a destruir el diario de Tom Riddle usando un colmillo de basilisco."
+    },
+    {
+      "tema": "Disney",
+      "pregunta": "¿Cómo se llama el camaleón de Rapunzel?",
+      "opciones": ["Bruno", "Pascal", "Maximus", "Flit"],
+      "respuesta": 1,
+      "explicacion": "Pascal es el pequeño camaleón y compañero de Rapunzel."
+    },
+    {
+      "tema": "Disney",
+      "pregunta": "¿Cómo se llama el caballo de Rapunzel?",
+      "opciones": ["Angus", "Phil", "Maximus", "Duke"],
+      "respuesta": 2,
+      "explicacion": "Maximus es el caballo de la guardia que persigue a Flynn."
+    },
+    {
+      "tema": "Disney",
+      "pregunta": "¿Qué instrumento toca Miguel en Coco?",
+      "opciones": ["Violín", "Piano", "Guitarra", "Trompeta"],
+      "respuesta": 2,
+      "explicacion": "Miguel sueña con ser músico y toca la guitarra."
+    },
+    {
+      "tema": "Disney",
+      "pregunta": "¿Cómo se llama el reino de Frozen?",
+      "opciones": ["Corona", "Agrabah", "Auradon", "Arendelle"],
+      "respuesta": 3,
+      "explicacion": "Anna y Elsa son princesas de Arendelle."
+    },
+    {
+      "tema": "Disney",
+      "pregunta": "¿Qué animal es Timón?",
+      "opciones": ["Nutria", "Suricata", "Mangosta", "Comadreja"],
+      "respuesta": 1,
+      "explicacion": "Timón es un suricata."
+    },
+    {
+      "tema": "Disney",
+      "pregunta": "¿Qué animal es Pumba?",
+      "opciones": ["Tapir", "Búfalo", "Jabalí", "Cerdo"],
+      "respuesta": 2,
+      "explicacion": "Pumba es un facóquero, un tipo de jabalí africano."
+    },
+    {
+      "tema": "Disney",
+      "pregunta": "¿Cómo se llama la princesa de La Princesa y el Sapo?",
+      "opciones": ["Naveen", "Charlotte", "Lottie", "Tiana"],
+      "respuesta": 3,
+      "explicacion": "Tiana es la protagonista de La Princesa y el Sapo."
+    },
+    {
+      "tema": "Disney",
+      "pregunta": "¿Qué animal es Stitch?",
+      "opciones": ["Perro", "Alienígena", "Koala", "Experimento humano"],
+      "respuesta": 1,
+      "explicacion": "Stitch es un experimento genético extraterrestre."
+    },
+    {
+      "tema": "Disney",
+      "pregunta": "¿Qué número de experimento es Stitch?",
+      "opciones": ["404", "777", "101", "626"],
+      "respuesta": 3,
+      "explicacion": "Stitch es el Experimento 626."
+    },
+    {
+      "tema": "Disney",
+      "pregunta": "¿Qué objeto mágico pierde Cenicienta?",
+      "opciones": ["Una corona", "Una llave", "Un zapato de cristal", "Un collar"],
+      "respuesta": 2,
+      "explicacion": "Cenicienta pierde uno de sus zapatos de cristal al escapar del baile."
+    },
+    {
+      "tema": "Disney",
+      "pregunta": "¿Qué animal acompaña a Mulán?",
+      "opciones": ["Mushu", "Un dragón y un grillo", "Cri-Kee", "Solo un caballo"],
+      "respuesta": 1,
+      "explicacion": "Mushu es un pequeño dragón y Cri-Kee es un grillo que la acompaña."
+    },
+    {
+      "tema": "Disney",
+      "pregunta": "¿Qué película de Disney tiene un restaurante llamado Gusteau's?",
+      "opciones": ["Up", "Soul", "Luca", "Ratatouille"],
+      "respuesta": 3,
+      "explicacion": "Gusteau's es el restaurante de Ratatouille."
+    },
+    {
+      "tema": "Disney",
+      "pregunta": "¿Qué animal es Meeko?",
+      "opciones": ["Zorro", "Ardilla", "Mapache", "Nutria"],
+      "respuesta": 2,
+      "explicacion": "Meeko es el mapache amigo de Pocahontas."
+    },
+    {
+      "tema": "Disney",
+      "pregunta": "¿Cuál es el nombre del país donde vive Mirabel?",
+      "opciones": ["México", "Perú", "Brasil", "Colombia"],
+      "respuesta": 3,
+      "explicacion": "Encanto está ambientada en Colombia."
+    },
+    {
+      "tema": "Disney",
+      "pregunta": "¿Cómo se llama la casa mágica de Encanto?",
+      "opciones": ["Casita Madrigal", "Casa Encantada", "La Madriguera", "La Casita"],
+      "respuesta": 3,
+      "explicacion": "La casa de la familia Madrigal es conocida como La Casita."
+    },
+
+    {
+      "tema": "Soy Luna",
+      "pregunta": "¿Cómo se llama la protagonista de Soy Luna?",
+      "opciones": ["Ámbar", "Nina", "Jazmín", "Luna Valente"],
+      "respuesta": 3,
+      "explicacion": "Luna Valente es la protagonista de Soy Luna."
+    },
+    {
+      "tema": "Soy Luna",
+      "pregunta": "¿Qué actividad deportiva es central en Soy Luna?",
+      "opciones": ["Gimnasia", "Patinaje", "Natación", "Tenis"],
+      "respuesta": 1,
+      "explicacion": "El patinaje sobre ruedas es una parte fundamental de la serie."
+    },
+    {
+      "tema": "Soy Luna",
+      "pregunta": "¿Cómo se llama el lugar donde patinan los protagonistas?",
+      "opciones": ["Roller Club", "Moon Roller", "Jam & Roller", "Patines Park"],
+      "respuesta": 2,
+      "explicacion": "Jam & Roller es el lugar central para el patinaje y muchas de las historias."
+    },
+    {
+      "tema": "Soy Luna",
+      "pregunta": "¿Cómo se llama el chico argentino que se enamora de Luna?",
+      "opciones": ["Simón", "Nico", "Ramiro", "Matteo"],
+      "respuesta": 3,
+      "explicacion": "Matteo Balsano es uno de los personajes principales y tiene una relación importante con Luna."
+    },
+    {
+      "tema": "Soy Luna",
+      "pregunta": "¿Quién es una de las principales rivales de Luna?",
+      "opciones": ["Yam", "Jim", "Nina", "Ámbar"],
+      "respuesta": 3,
+      "explicacion": "Ámbar Smith es una de las principales rivales de Luna."
+    },
+    {
+      "tema": "Soy Luna",
+      "pregunta": "¿Cómo se llama el mejor amigo de Luna?",
+      "opciones": ["Matteo", "Gastón", "Nico", "Simón"],
+      "respuesta": 3,
+      "explicacion": "Simón es uno de los amigos más cercanos de Luna."
+    },
+    {
+      "tema": "Soy Luna",
+      "pregunta": "¿Qué instrumento toca Simón?",
+      "opciones": ["Piano", "Batería", "Violín", "Guitarra"],
+      "respuesta": 3,
+      "explicacion": "Simón es músico y toca principalmente la guitarra."
+    },
+    {
+      "tema": "Soy Luna",
+      "pregunta": "¿De qué país se muda Luna a Argentina?",
+      "opciones": ["México", "Brasil", "España", "México no, Estados Unidos"],
+      "respuesta": 3,
+      "explicacion": "Luna se muda desde México a Buenos Aires, Argentina."
+    },
+    {
+      "tema": "Soy Luna",
+      "pregunta": "¿Qué objeto está especialmente relacionado con la identidad de Luna?",
+      "opciones": ["Una varita", "Una guitarra eléctrica", "Una corona", "Sus patines"],
+      "respuesta": 3,
+      "explicacion": "Los patines son una parte fundamental de su vida y de la serie."
+    },
+    {
+      "tema": "Soy Luna",
+      "pregunta": "¿Qué tipo de serie es Soy Luna?",
+      "opciones": ["Documental", "Terror", "Ciencia ficción", "Musical juvenil"],
+      "respuesta": 3,
+      "explicacion": "Soy Luna es una serie juvenil musical con una fuerte presencia del patinaje."
+    },
+
+    {
+      "tema": "Zombies",
+      "pregunta": "¿Cómo se llama el protagonista zombie de Zombies?",
+      "opciones": ["Wyatt", "A-Li", "Willa", "Zed"],
+      "respuesta": 3,
+      "explicacion": "Zed Necrodopolis es el protagonista de la saga Zombies."
+    },
+    {
+      "tema": "Zombies",
+      "pregunta": "¿Cómo se llama la protagonista humana?",
+      "opciones": ["Willa", "Eliza", "Zoey", "Addison"],
+      "respuesta": 3,
+      "explicacion": "Addison Wells es la protagonista humana."
+    },
+    {
+      "tema": "Zombies",
+      "pregunta": "¿Cómo se llama la ciudad donde viven Zed y Addison?",
+      "opciones": ["Auradon", "Riverdale", "Sunnydale", "Seabrook"],
+      "respuesta": 3,
+      "explicacion": "La historia ocurre principalmente en Seabrook."
+    },
+    {
+      "tema": "Zombies",
+      "pregunta": "¿Qué deporte practica Zed?",
+      "opciones": ["Fútbol", "Básquetbol", "Hockey", "Fútbol americano"],
+      "respuesta": 3,
+      "explicacion": "Zed juega fútbol americano en Seabrook."
+    },
+    {
+      "tema": "Zombies",
+      "pregunta": "¿Qué caracteriza a Addison al inicio de la saga?",
+      "opciones": ["Una peluca blanca", "Su cabello rosa", "Su uniforme verde", "Su cabello naturalmente azul"],
+      "respuesta": 0,
+      "explicacion": "Addison utiliza una peluca blanca para ocultar su cabello naturalmente rubio."
+    },
+    {
+      "tema": "Zombies",
+      "pregunta": "¿Qué grupo aparece en Zombies 2?",
+      "opciones": ["Hombres lobo", "Vampiros", "Sirenas", "Brujas"],
+      "respuesta": 0,
+      "explicacion": "Zombies 2 introduce a los hombres lobo de Seabrook."
+    },
+    {
+      "tema": "Zombies",
+      "pregunta": "¿Qué aparece en Zombies 3?",
+      "opciones": ["Aliens", "Piratas", "Dragones", "Robots"],
+      "respuesta": 0,
+      "explicacion": "Zombies 3 introduce a los extraterrestres."
+    },
+    {
+      "tema": "Zombies",
+      "pregunta": "¿Cómo se llama la hermana de Zed?",
+      "opciones": ["Zoey", "Willa", "Eliza", "Wynter"],
+      "respuesta": 0,
+      "explicacion": "Zoey es la hermana menor de Zed."
+    },
+    {
+      "tema": "Zombies",
+      "pregunta": "¿Qué personaje zombie es conocida por ser muy inteligente y tecnológica?",
+      "opciones": ["Eliza", "Addison", "Willa", "Zoey"],
+      "respuesta": 0,
+      "explicacion": "Eliza es una zombie muy inteligente y con grandes habilidades tecnológicas."
+    },
+    {
+      "tema": "Zombies",
+      "pregunta": "¿Qué tienen en común los grupos de Zombies?",
+      "opciones": ["Todos viven en planetas distintos", "Todos intentan convivir en Seabrook", "Todos son estudiantes de magia", "Todos pertenecen a la misma familia"],
+      "respuesta": 1,
+      "explicacion": "La saga gira alrededor de diferentes grupos que intentan convivir en Seabrook."
+    },
+
+    {
+      "tema": "Descendientes",
+      "pregunta": "¿Cómo se llama la hija de Maléfica?",
+      "opciones": ["Evie", "Uma", "Audrey", "Mal"],
+      "respuesta": 3,
+      "explicacion": "Mal es la hija de Maléfica."
+    },
+    {
+      "tema": "Descendientes",
+      "pregunta": "¿Quién es la hija de la Reina Malvada?",
+      "opciones": ["Mal", "Jane", "Lonnie", "Evie"],
+      "respuesta": 3,
+      "explicacion": "Evie es la hija de la Reina Malvada."
+    },
+    {
+      "tema": "Descendientes",
+      "pregunta": "¿Quién es el hijo de Jafar?",
+      "opciones": ["Carlos", "Ben", "Gil", "Jay"],
+      "respuesta": 3,
+      "explicacion": "Jay es el hijo de Jafar."
+    },
+    {
+      "tema": "Descendientes",
+      "pregunta": "¿Quién es el hijo de Cruella de Vil?",
+      "opciones": ["Jay", "Ben", "Chad", "Carlos"],
+      "respuesta": 3,
+      "explicacion": "Carlos es el hijo de Cruella de Vil."
+    },
+    {
+      "tema": "Descendientes",
+      "pregunta": "¿Cómo se llama el hijo de Bella y Bestia?",
+      "opciones": ["Chad", "Doug", "Carlos", "Ben"],
+      "respuesta": 3,
+      "explicacion": "Ben es el hijo de Bella y Bestia."
+    },
+    {
+      "tema": "Descendientes",
+      "pregunta": "¿Dónde viven originalmente los villanos y sus hijos?",
+      "opciones": ["Auradon", "Arendelle", "Seabrook", "Isla de los Perdidos"],
+      "respuesta": 3,
+      "explicacion": "Los villanos y sus descendientes viven originalmente en la Isla de los Perdidos."
+    },
+    {
+      "tema": "Descendientes",
+      "pregunta": "¿Cómo se llama el reino donde viven los héroes?",
+      "opciones": ["Arendelle", "Agrabah", "Corona", "Auradon"],
+      "respuesta": 3,
+      "explicacion": "Auradon es el reino donde viven los descendientes de los héroes."
+    },
+    {
+      "tema": "Descendientes",
+      "pregunta": "¿Quién es la hija de Úrsula?",
+      "opciones": ["Mal", "Evie", "Audrey", "Uma"],
+      "respuesta": 3,
+      "explicacion": "Uma es la hija de Úrsula."
+    },
+    {
+      "tema": "Descendientes",
+      "pregunta": "¿Qué objeto mágico busca Mal en la primera película?",
+      "opciones": ["La espada de Arturo", "La lámpara de Aladdín", "El espejo mágico", "La varita del Hada Madrina"],
+      "respuesta": 3,
+      "explicacion": "Mal intenta conseguir la varita del Hada Madrina."
+    },
+    {
+      "tema": "Descendientes",
+      "pregunta": "¿Qué color se asocia especialmente con Mal?",
+      "opciones": ["Verde", "Azul", "Amarillo", "Morado"],
+      "respuesta": 3,
+      "explicacion": "El morado es uno de los colores más característicos de Mal."
+    },
+
+    {
+      "tema": "Mecatrónica",
+      "pregunta": "¿Qué componente permite detectar si hay un objeto cerca sin tocarlo?",
+      "opciones": ["Motor", "Engrane", "Rodamiento", "Sensor de proximidad"],
+      "respuesta": 3,
+      "explicacion": "Los sensores de proximidad pueden detectar objetos sin necesidad de contacto físico."
+    },
+    {
+      "tema": "Mecatrónica",
+      "pregunta": "¿Qué hace principalmente un motor eléctrico?",
+      "opciones": ["Convierte movimiento en luz", "Almacena aire", "Mide temperatura", "Convierte energía eléctrica en movimiento"],
+      "respuesta": 3,
+      "explicacion": "Un motor eléctrico convierte energía eléctrica en energía mecánica."
+    },
+    {
+      "tema": "Mecatrónica",
+      "pregunta": "¿Qué sensor se utiliza comúnmente para medir temperatura?",
+      "opciones": ["Encoder", "LDR", "Ultrasónico", "Termistor"],
+      "respuesta": 3,
+      "explicacion": "Un termistor cambia su resistencia dependiendo de la temperatura."
+    },
+    {
+      "tema": "Mecatrónica",
+      "pregunta": "¿Qué hace un encoder?",
+      "opciones": ["Enfría un motor", "Aumenta el voltaje", "Mide peso directamente", "Mide posición o movimiento"],
+      "respuesta": 3,
+      "explicacion": "Los encoders permiten conocer posición, velocidad o desplazamiento de un eje."
+    },
+    {
+      "tema": "Mecatrónica",
+      "pregunta": "¿Qué componente se utiliza para controlar automáticamente una máquina industrial?",
+      "opciones": ["Audífono", "Cámara fotográfica", "Bocina", "PLC"],
+      "respuesta": 3,
+      "explicacion": "Un PLC es un controlador utilizado ampliamente en automatización industrial."
+    },
+    {
+      "tema": "Mecatrónica",
+      "pregunta": "¿Qué hace un actuador?",
+      "opciones": ["Solo almacena datos", "Mide colores", "Guarda energía", "Produce una acción física"],
+      "respuesta": 3,
+      "explicacion": "Un actuador transforma una señal de control en una acción física, como movimiento."
+    },
+    {
+      "tema": "Mecatrónica",
+      "pregunta": "¿Qué componente permite que un robot sepa cuánto ha girado un eje?",
+      "opciones": ["Bomba", "Resistencia", "Fusible", "Encoder"],
+      "respuesta": 3,
+      "explicacion": "Un encoder puede proporcionar información sobre la posición angular de un eje."
+    },
+    {
+      "tema": "Mecatrónica",
+      "pregunta": "¿Para qué sirve un servomotor?",
+      "opciones": ["Generar aire comprimido", "Medir temperatura", "Filtrar corriente", "Controlar con precisión posición o movimiento"],
+      "respuesta": 3,
+      "explicacion": "Los servomotores se utilizan cuando se necesita controlar con precisión posición, velocidad o torque."
+    },
+    {
+      "tema": "Mecatrónica",
+      "pregunta": "¿Qué componente puede utilizarse para detectar una línea negra en un robot móvil?",
+      "opciones": ["Termopar", "Micrófono", "Encoder solamente", "Sensor infrarrojo"],
+      "respuesta": 3,
+      "explicacion": "Los sensores infrarrojos pueden detectar diferencias de reflectividad entre superficies claras y oscuras."
+    },
+    {
+      "tema": "Mecatrónica",
+      "pregunta": "¿Qué significa que un robot tenga 6 grados de libertad?",
+      "opciones": ["Tiene seis motores obligatoriamente", "Pesa seis kilogramos", "Tiene seis sensores", "Puede tener seis movimientos independientes"],
+      "respuesta": 3,
+      "explicacion": "Seis grados de libertad representan seis movimientos independientes posibles de posición y orientación."
+    },
+
+    {
+      "tema": "Mecánica",
+      "pregunta": "¿Qué ocurre normalmente cuando un engrane pequeño mueve uno grande?",
+      "opciones": ["Aumenta la velocidad", "No cambia nada", "Desaparece la fricción", "Aumenta el torque y disminuye la velocidad"],
+      "respuesta": 3,
+      "explicacion": "Un engrane grande gira más lento pero puede recibir mayor torque."
+    },
+    {
+      "tema": "Mecánica",
+      "pregunta": "¿Para qué sirve un rodamiento?",
+      "opciones": ["Aumentar el peso", "Generar electricidad", "Medir temperatura", "Reducir la fricción entre piezas en movimiento"],
+      "respuesta": 3,
+      "explicacion": "Los rodamientos permiten que un eje gire con menor fricción."
+    },
+    {
+      "tema": "Mecánica",
+      "pregunta": "¿Qué sucede con el torque si aplicas una fuerza más lejos del eje de giro?",
+      "opciones": ["Disminuye siempre", "Desaparece", "No cambia nunca", "Aumenta"],
+      "respuesta": 3,
+      "explicacion": "El torque depende de la fuerza y de la distancia respecto al eje."
+    },
+    {
+      "tema": "Mecánica",
+      "pregunta": "¿Por qué una llave más larga facilita aflojar una tuerca?",
+      "opciones": ["Porque elimina el peso", "Porque reduce la gravedad", "Porque aumenta la fricción", "Porque aumenta el brazo de palanca"],
+      "respuesta": 3,
+      "explicacion": "Una llave más larga aumenta la distancia al eje y permite generar más torque con la misma fuerza."
+    },
+    {
+      "tema": "Mecánica",
+      "pregunta": "¿Para qué sirve un diferencial en un automóvil?",
+      "opciones": ["Enfría el motor", "Aumenta el voltaje", "Frena las ruedas", "Permite que las ruedas giren a diferentes velocidades en una curva"],
+      "respuesta": 3,
+      "explicacion": "El diferencial permite que las ruedas motrices recorran una curva girando a velocidades diferentes."
+    },
+    {
+      "tema": "Mecánica",
+      "pregunta": "¿Qué función cumple principalmente un amortiguador?",
+      "opciones": ["Generar electricidad", "Aumentar la velocidad", "Enfriar las llantas", "Controlar las oscilaciones de la suspensión"],
+      "respuesta": 3,
+      "explicacion": "El amortiguador ayuda a controlar los movimientos y rebotes de la suspensión."
+    },
+    {
+      "tema": "Mecánica",
+      "pregunta": "¿Qué hace una transmisión en un automóvil?",
+      "opciones": ["Solo enfría el motor", "Mide la gasolina", "Controla las luces", "Transfiere y modifica el movimiento del motor hacia las ruedas"],
+      "respuesta": 3,
+      "explicacion": "La transmisión transmite la potencia del motor y modifica velocidad y torque según las condiciones."
+    },
+
+    {
+      "tema": "Ciencia",
+      "pregunta": "¿Qué planeta es conocido como el planeta rojo?",
+      "opciones": ["Venus", "Júpiter", "Mercurio", "Marte"],
+      "respuesta": 3,
+      "explicacion": "Marte tiene una apariencia rojiza debido principalmente a óxidos de hierro en su superficie."
+    },
+    {
+      "tema": "Ciencia",
+      "pregunta": "¿Qué órgano bombea la sangre por el cuerpo?",
+      "opciones": ["Pulmón", "Hígado", "Riñón", "Corazón"],
+      "respuesta": 3,
+      "explicacion": "El corazón bombea la sangre a través del sistema circulatorio."
+    },
+    {
+      "tema": "Ciencia",
+      "pregunta": "¿Qué gas necesitan principalmente las plantas para realizar fotosíntesis?",
+      "opciones": ["Oxígeno", "Helio", "Nitrógeno", "Dióxido de carbono"],
+      "respuesta": 3,
+      "explicacion": "Las plantas utilizan dióxido de carbono, agua y luz para realizar la fotosíntesis."
+    },
+    {
+      "tema": "Ciencia",
+      "pregunta": "¿Qué fuerza mantiene a los planetas en órbita alrededor del Sol?",
+      "opciones": ["Magnetismo", "Fricción", "Electricidad", "Gravedad"],
+      "respuesta": 3,
+      "explicacion": "La gravedad del Sol mantiene a los planetas ligados a sus órbitas."
+    },
+    {
+      "tema": "Ciencia",
+      "pregunta": "¿Qué metal es líquido a temperatura ambiente?",
+      "opciones": ["Hierro", "Aluminio", "Cobre", "Mercurio"],
+      "respuesta": 3,
+      "explicacion": "El mercurio es un metal que permanece líquido a temperatura ambiente."
+    },
+    {
+      "tema": "Ciencia",
+      "pregunta": "¿Qué parte de una célula contiene normalmente su material genético?",
+      "opciones": ["Membrana", "Ribosoma", "Citoplasma solamente", "Núcleo"],
+      "respuesta": 3,
+      "explicacion": "En las células eucariotas, el ADN se encuentra principalmente dentro del núcleo."
+    },
+
+    {
+      "tema": "Animales",
+      "pregunta": "¿Qué animal puede dormir mientras una parte de su cerebro permanece despierta?",
+      "opciones": ["Gato", "Elefante", "Conejo", "Delfín"],
+      "respuesta": 3,
+      "explicacion": "Los delfines pueden realizar un descanso unihemisférico, manteniendo activo un hemisferio cerebral mientras descansan."
+    },
+    {
+      "tema": "Animales",
+      "pregunta": "¿Cuántos corazones tiene un pulpo?",
+      "opciones": ["Uno", "Dos", "Ocho", "Tres"],
+      "respuesta": 3,
+      "explicacion": "Los pulpos tienen tres corazones."
+    },
+    {
+      "tema": "Animales",
+      "pregunta": "¿Qué animal tiene huellas dactilares sorprendentemente parecidas a las humanas?",
+      "opciones": ["Tigre", "Pingüino", "Canguro", "Koala"],
+      "respuesta": 3,
+      "explicacion": "Los koalas tienen huellas dactilares muy parecidas a las humanas."
+    },
+    {
+      "tema": "Animales",
+      "pregunta": "¿Cuál de estos animales es un mamífero?",
+      "opciones": ["Pingüino", "Cocodrilo", "Tortuga", "Delfín"],
+      "respuesta": 3,
+      "explicacion": "El delfín es un mamífero marino."
+    },
+    {
+      "tema": "Animales",
+      "pregunta": "¿Qué animal puede regenerar partes de su cuerpo y es famoso por sus capacidades de regeneración?",
+      "opciones": ["Caballo", "Águila", "Panda", "Ajolote"],
+      "respuesta": 3,
+      "explicacion": "El ajolote tiene una extraordinaria capacidad para regenerar ciertas partes de su cuerpo."
+    },
+
+    {
+      "tema": "Cultura general",
+      "pregunta": "¿Cuál es el planeta más grande del sistema solar?",
+      "opciones": ["Saturno", "Neptuno", "Tierra", "Júpiter"],
+      "respuesta": 3,
+      "explicacion": "Júpiter es el planeta más grande del sistema solar."
+    },
+    {
+      "tema": "Cultura general",
+      "pregunta": "¿Cuántos lados tiene un hexágono?",
+      "opciones": ["5", "7", "8", "6"],
+      "respuesta": 3,
+      "explicacion": "Un hexágono tiene seis lados."
+    },
+    {
+      "tema": "Cultura general",
+      "pregunta": "¿Cuál es el océano más grande del planeta?",
+      "opciones": ["Atlántico", "Índico", "Ártico", "Pacífico"],
+      "respuesta": 3,
+      "explicacion": "El océano Pacífico es el más grande de la Tierra."
+    },
+    {
+      "tema": "Cultura general",
+      "pregunta": "¿Cuántos colores tiene tradicionalmente el arcoíris?",
+      "opciones": ["5", "6", "8", "7"],
+      "respuesta": 3,
+      "explicacion": "Tradicionalmente se describen siete colores: rojo, naranja, amarillo, verde, azul, añil y violeta."
+    },
+    {
+      "tema": "Cultura general",
+      "pregunta": "¿Cuál es el idioma con más hablantes nativos del mundo?",
+      "opciones": ["Inglés", "Español", "Francés", "Chino mandarín"],
+      "respuesta": 3,
+      "explicacion": "El chino mandarín tiene la mayor cantidad de hablantes nativos."
+    },
+    {
+      "tema": "Cultura general",
+      "pregunta": "¿Cuál es el símbolo químico del oro?",
+      "opciones": ["Or", "Ag", "Go", "Au"],
+      "respuesta": 3,
+      "explicacion": "El símbolo Au proviene del latín aurum."
+    },
+    {
+      "tema": "Cultura general",
+      "pregunta": "¿Cuántos huesos tiene aproximadamente un adulto humano?",
+      "opciones": ["106", "306", "406", "206"],
+      "respuesta": 3,
+      "explicacion": "Un adulto humano tiene normalmente alrededor de 206 huesos."
+    },
+
+    {
+      "tema": "Random",
+      "pregunta": "¿Cuál de estos animales existe realmente?",
+      "opciones": ["Unicornio", "Dragón azul gigante", "Caballo invisible", "Axolote"],
+      "respuesta": 3,
+      "explicacion": "El ajolote es un anfibio real originario de México."
+    },
+    {
+      "tema": "Random",
+      "pregunta": "¿Cuál de estos alimentos puede flotar en agua?",
+      "opciones": ["Moneda", "Piedra", "Llave de acero", "Manzana"],
+      "respuesta": 3,
+      "explicacion": "Las manzanas tienen una densidad menor que la del agua y pueden flotar."
+    },
+    {
+      "tema": "Random",
+      "pregunta": "¿Qué tiene ocho patas?",
+      "opciones": ["Una araña", "Un pulpo", "Un escarabajo", "Ambos"],
+      "respuesta": 3,
+      "explicacion": "Las arañas tienen ocho patas y los pulpos tienen ocho brazos."
+    },
+    {
+      "tema": "Random",
+      "pregunta": "¿Qué animal puede cambiar de color para camuflarse?",
+      "opciones": ["Elefante", "Jirafa", "Pingüino", "Camaleón"],
+      "respuesta": 3,
+      "explicacion": "Los camaleones pueden cambiar la coloración de su piel, entre otras razones, para comunicación y camuflaje."
+    },
+    {
+      "tema": "Random",
+      "pregunta": "¿Cuál de estos objetos funciona principalmente gracias al magnetismo?",
+      "opciones": ["Vaso", "Cuchara de madera", "Globo", "Brújula"],
+      "respuesta": 3,
+      "explicacion": "La aguja de una brújula se orienta debido al campo magnético terrestre."
+    },
+    {
+      "tema": "Random",
+      "pregunta": "¿Qué ocurre normalmente con un cubo de hielo cuando lo dejas fuera del congelador?",
+      "opciones": ["Se convierte en vapor inmediatamente", "Se vuelve más pesado", "Se convierte en sal", "Se derrite"],
+      "respuesta": 3,
+      "explicacion": "Al absorber calor del ambiente, el hielo alcanza su punto de fusión y se convierte en agua."
+    },
+    {
+      "tema": "Random",
+      "pregunta": "¿Qué objeto cotidiano probablemente tiene un pequeño motor eléctrico?",
+      "opciones": ["Lápiz", "Vaso de vidrio", "Regla", "Ventilador"],
+      "respuesta": 3,
+      "explicacion": "Los ventiladores utilizan un motor eléctrico para hacer girar sus aspas."
+    },
+    {
+      "tema": "Random",
+      "pregunta": "¿Qué animal es famoso por construir presas?",
+      "opciones": ["Nutria", "Mapache", "Panda", "Castor"],
+      "respuesta": 3,
+      "explicacion": "Los castores construyen presas utilizando ramas, troncos y otros materiales."
+    },
+    {
+      "tema": "Random",
+      "pregunta": "¿Cuál de estos objetos puede funcionar como una palanca?",
+      "opciones": ["Una hoja de papel", "Un vaso", "Una almohada", "Un destapador"],
+      "respuesta": 3,
+      "explicacion": "Un destapador utiliza el principio de la palanca para levantar la tapa."
+    },
+    {
+      "tema": "Random",
+      "pregunta": "¿Qué sucede cuando acercas dos polos iguales de un imán?",
+      "opciones": ["Se atraen", "Se derriten", "No ocurre nada", "Se repelen"],
+      "respuesta": 3,
+      "explicacion": "Los polos magnéticos iguales se repelen y los opuestos se atraen."
+    }
+  
+  
 ]

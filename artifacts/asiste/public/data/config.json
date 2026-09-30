@@ -5,9 +5,25 @@
   "appTitle": " ",
   "tagline": " ",
   "brandLogo": " ",
-  "audio": "assets/audio/cancion.mp3"
+  "audio": "assets/audio/cancion.mp3",
   "audioCarta": "assets/audio/carta.mp3",
   "audioMenu": "assets/audio/menu.mp3",
   "audioHarry": "assets/audio/harry.mp3",
+  "audioPistas": {
+    "home": "assets/audio/menu.mp3",
+    "write": "assets/audio/escribir.mp3",
+    "rest": "assets/audio/descanso.mp3",
+    "quiet": "assets/audio/tranquila.mp3",
+    "distract": "assets/audio/distraccion.mp3",
+    "music": "assets/audio/musica.mp3",
+    "entertainment": "assets/audio/ver.mp3",
+    "entertainment-potter": "assets/audio/harry.mp3",
+    "trivia": "assets/audio/trivia.mp3",
+    "nerd": "assets/audio/nerd.mp3",
+    "game": "assets/audio/juego.mp3",
+    "surprise": "assets/audio/sorpresa.mp3",
+    "organizer": "assets/audio/organizador.mp3",
+    "house": "assets/audio/harry.mp3"
+  },
   "whatsapp": "524111447037"
 }

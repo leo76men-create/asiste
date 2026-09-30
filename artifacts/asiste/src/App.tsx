@@ -68,6 +68,7 @@ interface Config {
   audioCarta?: string;
   audioMenu?: string;
   audioHarry?: string;
+  audioPistas?: Record<string, string>;
   whatsapp?: string;
 }
 
@@ -156,6 +157,7 @@ const fallbackContent: Content = {
       audioMenu: '',
       audioHarry: '',
       whatsapp: '',
+    audioPistas: {},
   },
   carta: {
     parrafos: [
@@ -229,6 +231,7 @@ const initialSession = {
   lastExperience: null as string | null,
   lastPhrase: null as string | null,
   lastCategory: null as string | null,
+  triviaTopic: null as string | null,
 };
 
 const sessionState = { ...initialSession };
@@ -351,7 +354,22 @@ function normalize(text: string) {
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '');
 }
+function shuffleArray<T>(array: T[]): T[] {
+  const copy = [...array];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
 
+function shuffleQueue(length: number, avoidFirst?: number): number[] {
+  const shuffled = shuffleArray(Array.from({ length }, (_, index) => index));
+  if (avoidFirst !== undefined && shuffled.length > 1 && shuffled[0] === avoidFirst) {
+    [shuffled[0], shuffled[1]] = [shuffled[1], shuffled[0]];
+  }
+  return shuffled;
+}
 function PageHeader({ screen, onHome, config }: { screen: Screen; onHome: () => void; config: Config }) {
   const labels: Partial<Record<Screen, string>> = {
     write: 'papelito temporal',
@@ -653,7 +671,7 @@ function Distract({ content, onNavigate }: { content: Content; onNavigate: (scre
       <h1 className="asiste-heading">Elige una <span className="asiste-script">distracción.</span></h1>
       <p className="asiste-subheading">Pocas opciones, ninguna obligación.</p>
       <div className="asiste-two-col" style={{ marginTop: 28 }}>
-        {options.map((item) => 'href' in item ? <a className="asiste-card asiste-result" href={item.href} target="_blank" rel="noreferrer" onClick={notifyVideoOpened} key={item.title}><span className="choice-icon"><item.icon size={18} /></span><div><h3>{item.title}</h3><p>{item.text}</p></div><ExternalLink size={16} /></a> : <button className="asiste-card asiste-result" onClick={() => onNavigate(item.screen)} key={item.title}><span className="choice-icon"><item.icon size={18} /></span><div><h3>{item.title}</h3><p>{item.text}</p></div><ChevronRight size={16} /></button>)}
+        {options.map((item) => 'href' in item ? <a className="asiste-card asiste-result" href={item.href} target="_blank" rel="noreferrer" onClick={notifyVideoOpened} key={item.title}><span className="choice-icon"><item.icon size={18} /></span><div><h3>{item.title}</h3><p>{item.text}</p></div><ExternalLink size={16} /></a> :<button className="asiste-card asiste-result" onClick={() => { if (item.screen === 'trivia') sessionState.triviaTopic = null; onNavigate(item.screen); }} key={item.title}><span className="choice-icon"><item.icon size={18} /></span><div><h3>{item.title}</h3><p>{item.text}</p></div><ChevronRight size={16} /></button>)}
       </div>
       <button className="asiste-small-link" onClick={() => { sessionState.timeAvailable = null; setTime(null); }} style={{ marginTop: 20 }}>Cambiar tiempo</button>
     </main>
@@ -733,7 +751,7 @@ function Entertainment({ content, onNavigate, onCategoryChange }: { content: Con
       ) : category === 'tequila' ? (
         <section className="asiste-card asiste-note" style={{ marginTop: 18 }}><h2>Archivo de Tequila</h2><p>Estas fotos son detalles escondidos del espacio. Puedes sumar más desde tu dispositivo.</p><div className="tequila-gallery">{content.tequila.fotos.map((photo, index) => <img src={photo} alt={`Tequila, foto ${index + 1}`} key={photo} onError={(event) => { event.currentTarget.style.display = 'none'; }} />)}{localTequilaPhotos.map((photo, index) => <img src={photo} alt={`Foto extra de Tequila ${index + 1}`} key={photo} />)}</div><LocalPhotoPicker label="Agregar fotos de Tequila" photos={localTequilaPhotos} onChange={setLocalTequilaPhotos} /></section>
       ) : category === 'potter' ? (
-        <section className="asiste-card asiste-note" style={{ marginTop: 18 }}><h2>Una visita breve al mundo mágico</h2><div className="asiste-actions"><button className="asiste-btn asiste-btn-primary" onClick={() => onNavigate('trivia')}>Trivia</button><button className="asiste-btn asiste-btn-ghost" onClick={() => onNavigate('house')}>Sortear casa</button></div>{videos.map((item) => <a className="asiste-small-link" style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0' }} href={item.url} target="_blank" rel="noreferrer" onClick={notifyVideoOpened} key={item.id}>{item.titulo} <ExternalLink size={14} /></a>)}</section>
+        <section className="asiste-card asiste-note" style={{ marginTop: 18 }}><h2>Una visita breve al mundo mágico</h2><div className="asiste-actions"><button className="asiste-btn asiste-btn-primary" onClick={() => { sessionState.triviaTopic = 'Harry Potter'; onNavigate('trivia'); }}>Trivia</button><button className="asiste-btn asiste-btn-ghost" onClick={() => onNavigate('house')}>Sortear casa</button></div>{videos.map((item) => <a className="asiste-small-link" style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0' }} href={item.url} target="_blank" rel="noreferrer" onClick={notifyVideoOpened} key={item.id}>{item.titulo} <ExternalLink size={14} /></a>)}</section>
       ) : category === 'custom' ? (
         <section className="asiste-card asiste-note" style={{ marginTop: 18 }}><div className="organizer-heading"><div><h2>Mi selección</h2><p>Agrega o elimina lo que sí quieras encontrar aquí.</p></div><button className="asiste-chip" onClick={() => setShowEditor((value) => !value)}><Plus size={14} /> Agregar</button></div>{showEditor && <div className="custom-editor"><input className="asiste-input" value={newTitle} onChange={(event) => setNewTitle(event.target.value)} placeholder="Título" aria-label="Título del contenido" /><input className="asiste-input" value={newUrl} onChange={(event) => setNewUrl(event.target.value)} placeholder="URL o búsqueda pública" aria-label="URL del contenido" /><div className="asiste-actions"><input className="asiste-input" type="number" min="1" value={newMinutes} onChange={(event) => setNewMinutes(event.target.value)} aria-label="Minutos" /><button className="asiste-btn asiste-btn-primary" onClick={addCustomVideo}>Guardar</button></div></div>}{videos.length === 0 && <p className="asiste-muted-text">Todavía no agregas nada.</p>}{videos.map((item) => <div className="custom-content-row" key={item.id}><a className="asiste-card asiste-result" href={item.url} target="_blank" rel="noreferrer" onClick={notifyVideoOpened}><span className="choice-icon"><Film size={18} /></span><div><h3>{item.titulo}</h3><p>{item.minutos} min · contenido personal</p></div><ExternalLink size={16} /></a><button className="asiste-small-link" onClick={() => removeCustomVideo(item.id)} aria-label={`Eliminar ${item.titulo}`}><Trash2 size={14} /></button></div>)}</section>
       ) : (
@@ -774,15 +792,45 @@ function Music({ content }: { content: Content }) {
 }
 
 function Trivia({ content }: { content: Content }) {
-  const [question, setQuestion] = useState(0);
+  const topic = sessionState.triviaTopic;
+  const pool = useMemo(() => {
+    const filtered = topic ? content.trivia.filter((item) => item.tema === topic) : content.trivia;
+    return filtered.length > 0 ? filtered : content.trivia;
+  }, [content.trivia, topic]);
+
+  const [queue, setQueue] = useState<number[]>(() => shuffleQueue(pool.length));
+  const [position, setPosition] = useState(0);
   const [answer, setAnswer] = useState<number | null>(null);
   const [showReward, setShowReward] = useState(false);
-  const current = content.trivia[question % content.trivia.length] ?? fallbackContent.trivia[0];
+
+  useEffect(() => {
+    setQueue(shuffleQueue(pool.length));
+    setPosition(0);
+    setAnswer(null);
+    setShowReward(false);
+  }, [pool]);
+
+  const currentIndex = queue[position] ?? 0;
+  const current = pool[currentIndex] ?? fallbackContent.trivia[0];
+
+  const nextQuestion = () => {
+    setAnswer(null);
+    setShowReward(false);
+    setPosition((value) => {
+      const next = value + 1;
+      if (next >= queue.length) {
+        setQueue(shuffleQueue(pool.length, currentIndex));
+        return 0;
+      }
+      return next;
+    });
+  };
+
   return (
     <main className="asiste-main" style={{ maxWidth: 720, margin: '0 auto' }}>
       <div className="asiste-eyebrow">{current.tema} · sin examen</div>
       <h1 className="asiste-heading">Una pregunta <span className="asiste-script">inofensiva.</span></h1>
-       <section className="asiste-card asiste-note" style={{ marginTop: 26 }}><h2 style={{ fontSize: 21 }}>{current.pregunta}</h2><div className="asiste-actions">{current.opciones.map((option, index) => <button className={`asiste-chip ${answer === index ? 'is-active' : ''}`} onClick={() => { setAnswer(index); setShowReward(true); }} key={option}>{option}</button>)}</div>{answer !== null && <p className="trivia-feedback">{answer === current.respuesta ? 'Correcto. Sistema estable.' : `Casi. Era: ${current.opciones[current.respuesta]}.`} {current.explicacion}</p>}<button className="asiste-small-link" onClick={() => { setQuestion((value) => value + 1); setAnswer(null); setShowReward(false); }} style={{ marginTop: 12 }}>Otra pregunta <ArrowRight size={14} /></button></section>
+       <section className="asiste-card asiste-note" style={{ marginTop: 26 }}><h2 style={{ fontSize: 21 }}>{current.pregunta}</h2><div className="asiste-actions">{current.opciones.map((option, index) => <button className={`asiste-chip ${answer === index ? 'is-active' : ''}`} onClick={() => { setAnswer(index); setShowReward(true); }} key={option}>{option}</button>)}</div>{answer !== null && <p className="trivia-feedback">{answer === current.respuesta ? 'Correcto. Sistema estable.' : `Casi. Era: ${current.opciones[current.respuesta]}.`} {current.explicacion}</p>}<button className="asiste-small-link" onClick={nextQuestion} style={{ marginTop: 12 }}>Otra pregunta <ArrowRight size={14} /></button></section>
        {showReward && <TequilaReward content={content} onClose={() => setShowReward(false)} />}
     </main>
   );
@@ -862,6 +910,7 @@ function Surprise({ content, onNavigate }: { content: Content; onNavigate: (scre
     if (!result) return;
     const destinations: Record<string, Screen> = { perros: 'entertainment', gatos: 'entertainment', disney: 'entertainment', trivia: 'trivia', memoria: 'game', dato: 'nerd', harry: 'entertainment', 'soy-luna': 'entertainment', zombies: 'entertainment', yatra: 'music', danny: 'music' };
     const destination = destinations[result.id];
+    if (destination === 'trivia') sessionState.triviaTopic = null;
     if (destination) onNavigate(destination);
     else spin();
   };
@@ -1064,10 +1113,14 @@ function AppShell() {
     if (!content) return null;
     if (opening === 'letter') return content.config.audioCarta || null;
     if (opening !== 'home') return null;
+    const pistas = content.config.audioPistas || {};
     if (screen === 'entertainment' && entertainmentCategory === 'potter') {
-      return content.config.audioHarry || null;
+      return pistas['entertainment-potter'] || content.config.audioHarry || pistas.home || content.config.audioMenu || null;
     }
-    return content.config.audioMenu || null;
+    if (screen === 'house') {
+      return pistas.house || content.config.audioHarry || pistas.home || content.config.audioMenu || null;
+    }
+    return pistas[screen] || pistas.home || content.config.audioMenu || null;
   }, [content, opening, screen, entertainmentCategory]);
 
   useEffect(() => {
@@ -1173,7 +1226,7 @@ return (
         </button>
         {content.config.whatsapp && (
           <a className="spidey-corner" href={`https://wa.me/${content.config.whatsapp}`} target="_blank" rel="noreferrer" aria-label="Un atajo escondido">
-            🕸️
+            <img src="assets/img/spidey.png" alt="" />
           </a>
         )}
       </>
