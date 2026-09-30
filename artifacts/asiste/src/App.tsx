@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { Toaster } from '@/components/ui/toaster';
@@ -6,6 +6,8 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import {
   ArrowLeft,
   ArrowRight,
+  Volume2,
+  VolumeX,
   BookOpen,
   Check,
   ChevronRight,
@@ -63,6 +65,10 @@ interface Config {
   tagline?: string;
   brandLogo?: string;
   audio?: string;
+  audioCarta?: string;
+  audioMenu?: string;
+  audioHarry?: string;
+  whatsapp?: string;
 }
 
 interface Carta {
@@ -140,12 +146,16 @@ interface Content {
 
 const fallbackContent: Content = {
   config: {
-    nombre: '[[NOMBRE]]',
-    tuNombre: '[[TU NOMBRE]]',
+    nombre: '[Xime]',
+    tuNombre: '[Leo]',
     starbucksUrl: 'https://www.starbucks.com.mx/',
     appTitle: '',
     tagline: '',
     brandLogo: '',
+    audioCarta: '',
+      audioMenu: '',
+      audioHarry: '',
+      whatsapp: '',
   },
   carta: {
     parrafos: [
@@ -296,7 +306,9 @@ function storageRemove(key: string) {
     // Nothing to do when browser storage is blocked.
   }
 }
-
+function notifyVideoOpened() {
+  window.dispatchEvent(new Event('asiste-video-opened'));
+}
 async function loadJson<T>(file: string, fallback: T): Promise<T> {
   try {
     const response = await fetch(`data/${file}`);
@@ -641,15 +653,19 @@ function Distract({ content, onNavigate }: { content: Content; onNavigate: (scre
       <h1 className="asiste-heading">Elige una <span className="asiste-script">distracción.</span></h1>
       <p className="asiste-subheading">Pocas opciones, ninguna obligación.</p>
       <div className="asiste-two-col" style={{ marginTop: 28 }}>
-        {options.map((item) => 'href' in item ? <a className="asiste-card asiste-result" href={item.href} target="_blank" rel="noreferrer" key={item.title}><span className="choice-icon"><item.icon size={18} /></span><div><h3>{item.title}</h3><p>{item.text}</p></div><ExternalLink size={16} /></a> : <button className="asiste-card asiste-result" onClick={() => onNavigate(item.screen)} key={item.title}><span className="choice-icon"><item.icon size={18} /></span><div><h3>{item.title}</h3><p>{item.text}</p></div><ChevronRight size={16} /></button>)}
+        {options.map((item) => 'href' in item ? <a className="asiste-card asiste-result" href={item.href} target="_blank" rel="noreferrer" onClick={notifyVideoOpened} key={item.title}><span className="choice-icon"><item.icon size={18} /></span><div><h3>{item.title}</h3><p>{item.text}</p></div><ExternalLink size={16} /></a> : <button className="asiste-card asiste-result" onClick={() => onNavigate(item.screen)} key={item.title}><span className="choice-icon"><item.icon size={18} /></span><div><h3>{item.title}</h3><p>{item.text}</p></div><ChevronRight size={16} /></button>)}
       </div>
       <button className="asiste-small-link" onClick={() => { sessionState.timeAvailable = null; setTime(null); }} style={{ marginTop: 20 }}>Cambiar tiempo</button>
     </main>
   );
 }
 
-function Entertainment({ content, onNavigate }: { content: Content; onNavigate: (screen: Screen) => void }) {
+function Entertainment({ content, onNavigate, onCategoryChange }: { content: Content; onNavigate: (screen: Screen) => void; onCategoryChange?: (category: string) => void }) {
   const [category, setCategory] = useState<'disney' | 'series' | 'animals' | 'potter' | 'tequila' | 'custom'>('disney');
+  useEffect(() => {
+    onCategoryChange?.(category);
+    return () => onCategoryChange?.('');
+  }, [category]);
   const [animal, setAnimal] = useState<'dog' | 'cat' | null>(null);
   const [count, setCount] = useState('1');
   const [animalUrls, setAnimalUrls] = useState<string[]>([]);
@@ -717,11 +733,11 @@ function Entertainment({ content, onNavigate }: { content: Content; onNavigate: 
       ) : category === 'tequila' ? (
         <section className="asiste-card asiste-note" style={{ marginTop: 18 }}><h2>Archivo de Tequila</h2><p>Estas fotos son detalles escondidos del espacio. Puedes sumar más desde tu dispositivo.</p><div className="tequila-gallery">{content.tequila.fotos.map((photo, index) => <img src={photo} alt={`Tequila, foto ${index + 1}`} key={photo} onError={(event) => { event.currentTarget.style.display = 'none'; }} />)}{localTequilaPhotos.map((photo, index) => <img src={photo} alt={`Foto extra de Tequila ${index + 1}`} key={photo} />)}</div><LocalPhotoPicker label="Agregar fotos de Tequila" photos={localTequilaPhotos} onChange={setLocalTequilaPhotos} /></section>
       ) : category === 'potter' ? (
-        <section className="asiste-card asiste-note" style={{ marginTop: 18 }}><h2>Una visita breve al mundo mágico</h2><div className="asiste-actions"><button className="asiste-btn asiste-btn-primary" onClick={() => onNavigate('trivia')}>Trivia</button><button className="asiste-btn asiste-btn-ghost" onClick={() => onNavigate('house')}>Sortear casa</button></div>{videos.map((item) => <a className="asiste-small-link" style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0' }} href={item.url} target="_blank" rel="noreferrer" key={item.id}>{item.titulo} <ExternalLink size={14} /></a>)}</section>
+        <section className="asiste-card asiste-note" style={{ marginTop: 18 }}><h2>Una visita breve al mundo mágico</h2><div className="asiste-actions"><button className="asiste-btn asiste-btn-primary" onClick={() => onNavigate('trivia')}>Trivia</button><button className="asiste-btn asiste-btn-ghost" onClick={() => onNavigate('house')}>Sortear casa</button></div>{videos.map((item) => <a className="asiste-small-link" style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0' }} href={item.url} target="_blank" rel="noreferrer" onClick={notifyVideoOpened} key={item.id}>{item.titulo} <ExternalLink size={14} /></a>)}</section>
       ) : category === 'custom' ? (
-        <section className="asiste-card asiste-note" style={{ marginTop: 18 }}><div className="organizer-heading"><div><h2>Mi selección</h2><p>Agrega o elimina lo que sí quieras encontrar aquí.</p></div><button className="asiste-chip" onClick={() => setShowEditor((value) => !value)}><Plus size={14} /> Agregar</button></div>{showEditor && <div className="custom-editor"><input className="asiste-input" value={newTitle} onChange={(event) => setNewTitle(event.target.value)} placeholder="Título" aria-label="Título del contenido" /><input className="asiste-input" value={newUrl} onChange={(event) => setNewUrl(event.target.value)} placeholder="URL o búsqueda pública" aria-label="URL del contenido" /><div className="asiste-actions"><input className="asiste-input" type="number" min="1" value={newMinutes} onChange={(event) => setNewMinutes(event.target.value)} aria-label="Minutos" /><button className="asiste-btn asiste-btn-primary" onClick={addCustomVideo}>Guardar</button></div></div>}{videos.length === 0 && <p className="asiste-muted-text">Todavía no agregas nada.</p>}{videos.map((item) => <div className="custom-content-row" key={item.id}><a className="asiste-card asiste-result" href={item.url} target="_blank" rel="noreferrer"><span className="choice-icon"><Film size={18} /></span><div><h3>{item.titulo}</h3><p>{item.minutos} min · contenido personal</p></div><ExternalLink size={16} /></a><button className="asiste-small-link" onClick={() => removeCustomVideo(item.id)} aria-label={`Eliminar ${item.titulo}`}><Trash2 size={14} /></button></div>)}</section>
+        <section className="asiste-card asiste-note" style={{ marginTop: 18 }}><div className="organizer-heading"><div><h2>Mi selección</h2><p>Agrega o elimina lo que sí quieras encontrar aquí.</p></div><button className="asiste-chip" onClick={() => setShowEditor((value) => !value)}><Plus size={14} /> Agregar</button></div>{showEditor && <div className="custom-editor"><input className="asiste-input" value={newTitle} onChange={(event) => setNewTitle(event.target.value)} placeholder="Título" aria-label="Título del contenido" /><input className="asiste-input" value={newUrl} onChange={(event) => setNewUrl(event.target.value)} placeholder="URL o búsqueda pública" aria-label="URL del contenido" /><div className="asiste-actions"><input className="asiste-input" type="number" min="1" value={newMinutes} onChange={(event) => setNewMinutes(event.target.value)} aria-label="Minutos" /><button className="asiste-btn asiste-btn-primary" onClick={addCustomVideo}>Guardar</button></div></div>}{videos.length === 0 && <p className="asiste-muted-text">Todavía no agregas nada.</p>}{videos.map((item) => <div className="custom-content-row" key={item.id}><a className="asiste-card asiste-result" href={item.url} target="_blank" rel="noreferrer" onClick={notifyVideoOpened}><span className="choice-icon"><Film size={18} /></span><div><h3>{item.titulo}</h3><p>{item.minutos} min · contenido personal</p></div><ExternalLink size={16} /></a><button className="asiste-small-link" onClick={() => removeCustomVideo(item.id)} aria-label={`Eliminar ${item.titulo}`}><Trash2 size={14} /></button></div>)}</section>
       ) : (
-        <section className="asiste-card asiste-note" style={{ marginTop: 18 }}><h2>{category === 'disney' ? 'Disney para no decidir demasiado' : 'Serie de respaldo'}</h2>{videos.length === 0 && <p>Agrega contenido en `public/data/videos.json`.</p>}{videos.map((item) => <a className="asiste-card asiste-result" style={{ marginTop: 10 }} href={item.url} target="_blank" rel="noreferrer" key={item.id}><span className="choice-icon"><Film size={18} /></span><div><h3>{item.titulo}</h3><p>{item.subcategoria} · {item.minutos} min</p></div><ExternalLink size={16} /></a>)}</section>
+        <section className="asiste-card asiste-note" style={{ marginTop: 18 }}><h2>{category === 'disney' ? 'Disney para no decidir demasiado' : 'Serie de respaldo'}</h2>{videos.length === 0 && <p>Agrega contenido en `public/data/videos.json`.</p>}{videos.map((item) => <a className="asiste-card asiste-result" style={{ marginTop: 10 }} href={item.url} target="_blank" rel="noreferrer" onClick={notifyVideoOpened} key={item.id}><span className="choice-icon"><Film size={18} /></span><div><h3>{item.titulo}</h3><p>{item.subcategoria} · {item.minutos} min</p></div><ExternalLink size={16} /></a>)}</section>
       )}
     </main>
   );
@@ -1039,6 +1055,46 @@ function AppShell() {
   const [content, setContent] = useState<Content | null>(null);
   const [screen, setScreen] = useState<Screen>('home');
   const [opening, setOpening] = useState<'intro' | 'letter' | 'home' | null>(null);
+  const [entertainmentCategory, setEntertainmentCategory] = useState('');
+  const [muted, setMuted] = useState(() => storageGet('asiste-muted') === '1');
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const lastTrackRef = useRef<string | null>(null);
+
+  const activeTrack = useMemo(() => {
+    if (!content) return null;
+    if (opening === 'letter') return content.config.audioCarta || null;
+    if (opening !== 'home') return null;
+    if (screen === 'entertainment' && entertainmentCategory === 'potter') {
+      return content.config.audioHarry || null;
+    }
+    return content.config.audioMenu || null;
+  }, [content, opening, screen, entertainmentCategory]);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (activeTrack === lastTrackRef.current) {
+      audio.muted = muted;
+      return;
+    }
+    lastTrackRef.current = activeTrack;
+    if (!activeTrack) {
+      audio.pause();
+      return;
+    }
+    audio.src = activeTrack;
+    audio.loop = true;
+    audio.muted = muted;
+    void audio.play().catch(() => {});
+  }, [activeTrack, muted]);
+
+  useEffect(() => { storageSet('asiste-muted', muted ? '1' : '0'); }, [muted]);
+
+  useEffect(() => {
+    const handler = () => audioRef.current?.pause();
+    window.addEventListener('asiste-video-opened', handler);
+    return () => window.removeEventListener('asiste-video-opened', handler);
+  }, []);
   useEffect(() => {
     void loadContent().then(setContent);
     let cancelled = false;
@@ -1064,21 +1120,32 @@ function AppShell() {
     return () => { cancelled = true; };
   }, []);
   const navigate = (next: Screen) => { sessionState.currentPath = next; setScreen(next); window.scrollTo({ top: 0, behavior: 'smooth' }); };
-  if (!content || opening === null) return <div className="asiste-app asiste-preparing" aria-label="Cargando Asiste" />;
-  if (opening === 'intro') return <div className="asiste-app"><div className="asiste-shell"><BirthdayIntro content={content} onOpen={() => setOpening('letter')} /></div></div>;
-  if (opening === 'letter') return <div className="asiste-app"><div className="asiste-shell"><Letter content={content} onOpen={() => { storageSet('carta_vista', '1'); setOpening('home'); setScreen('home'); }} /></div></div>;
+if (!content || opening === null) {
   return (
+    <>
+      <div className="asiste-app asiste-preparing" aria-label="Cargando Asiste" />
+      <audio ref={audioRef} />
+    </>
+  );
+}
+
+let body: JSX.Element;
+if (opening === 'intro') {
+  body = <div className="asiste-app"><div className="asiste-shell"><BirthdayIntro content={content} onOpen={() => setOpening('letter')} /></div></div>;
+} else if (opening === 'letter') {
+  body = <div className="asiste-app"><div className="asiste-shell"><Letter content={content} onOpen={() => { storageSet('carta_vista', '1'); setOpening('home'); setScreen('home'); }} /></div></div>;
+} else {
+  body = (
     <div className="asiste-app">
       <div className="asiste-shell">
         <PageHeader screen={screen} onHome={() => navigate('home')} config={content.config} />
-        <OptionalAudio path={content.config.audio} />
         {screen === 'home' && <Home content={content} onNavigate={navigate} />}
         {screen === 'write' && <FreeText content={content} onNavigate={navigate} />}
         {screen === 'rest' && <Rest content={content} onNavigate={navigate} />}
         {screen === 'quiet' && <Quiet content={content} onNavigate={navigate} />}
         {screen === 'distract' && <Distract content={content} onNavigate={navigate} />}
         {screen === 'music' && <Music content={content} />}
-        {screen === 'entertainment' && <Entertainment content={content} onNavigate={navigate} />}
+        {screen === 'entertainment' && <Entertainment content={content} onNavigate={navigate} onCategoryChange={setEntertainmentCategory} />}
         {screen === 'trivia' && <Trivia content={content} />}
         {screen === 'nerd' && <Nerd content={content} />}
         {screen === 'game' && <MemoryGame content={content} />}
@@ -1087,11 +1154,32 @@ function AppShell() {
         {screen === 'organizer' && <Organizer content={content} />}
         <footer className="asiste-footer-links">
           {screen !== 'home' && <button className="asiste-small-link" onClick={() => navigate('home')}><ArrowLeft size={13} /> Inicio</button>}
+          <button className="asiste-small-link" onClick={() => setOpening('letter')}><Gift size={13} /> Leer la carta</button>
           <span>{content.config.appTitle} · espacio personal</span>
         </footer>
       </div>
     </div>
   );
+}
+
+return (
+  <>
+    {body}
+    <audio ref={audioRef} />
+    {opening === 'home' && (
+      <>
+        <button className="asiste-mute-button" onClick={() => setMuted((value) => !value)} aria-label={muted ? 'Activar sonido' : 'Silenciar'}>
+          {muted ? <VolumeX size={16} /> : <Volume2 size={16} />}
+        </button>
+        {content.config.whatsapp && (
+          <a className="spidey-corner" href={`https://wa.me/${content.config.whatsapp}`} target="_blank" rel="noreferrer" aria-label="Un atajo escondido">
+            🕸️
+          </a>
+        )}
+      </>
+    )}
+  </>
+);
 }
 
 function Router() {

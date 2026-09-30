@@ -6,4 +6,8 @@
   "tagline": " ",
   "brandLogo": " ",
   "audio": "assets/audio/cancion.mp3"
+  "audioCarta": "assets/audio/carta.mp3",
+  "audioMenu": "assets/audio/menu.mp3",
+  "audioHarry": "assets/audio/harry.mp3",
+  "whatsapp": "524111447037"
 }
