@@ -968,13 +968,13 @@ function TequilaRunner() {
   const jump = () => {
     if (status !== 'playing' || isJumpingRef.current) return;
     isJumpingRef.current = true;
-    velocityRef.current = 11;
+    velocityRef.current = 13;
   };
 
   const start = () => {
     setScore(0);
     setObstacles([]);
-    speedRef.current = 4;
+    speedRef.current = 2.5;
     isJumpingRef.current = false;
     velocityRef.current = 0;
     setJumpY(0);
@@ -990,7 +990,7 @@ function TequilaRunner() {
       lastTime = time;
 
       if (isJumpingRef.current) {
-        velocityRef.current -= 0.6 * delta;
+        velocityRef.current -= 0.45 * delta;
         setJumpY((y) => {
           const next = y + velocityRef.current;
           if (next <= 0) {
@@ -1002,7 +1002,7 @@ function TequilaRunner() {
         });
       }
 
-      speedRef.current = Math.min(speedRef.current + 0.0015 * delta, 9);
+      speedRef.current = Math.min(speedRef.current + 0.0008 * delta, 6.5);
 
       setObstacles((prev) => {
         const stageWidth = stageRef.current?.clientWidth ?? 600;
@@ -1010,7 +1010,7 @@ function TequilaRunner() {
           .map((obstacle) => ({ ...obstacle, x: obstacle.x - speedRef.current * delta }))
           .filter((obstacle) => obstacle.x > -40);
         lastSpawnRef.current += delta;
-        const spawnThreshold = 55 - Math.min(speedRef.current * 3, 25);
+        const spawnThreshold = 90 - Math.min(speedRef.current * 3, 25);
         if (lastSpawnRef.current > spawnThreshold) {
           lastSpawnRef.current = 0;
           idCounter.current += 1;
@@ -1116,7 +1116,7 @@ function MemoryGame({ content }: { content: Content }) {
   return (
     <main className="asiste-main" style={{ maxWidth: 650, margin: '0 auto' }}>
       <div className="asiste-eyebrow">juego breve</div><h1 className="asiste-heading">Memoria <span className="asiste-script">suave.</span></h1><p className="asiste-subheading">Sin récord, sin ranking, sin motivo para hacerlo perfecto.</p>
-       <div className="asiste-card asiste-note" style={{ marginTop: 25, textAlign: 'center' }}><TequilaImage content={content} number={5} alt="Tequila completa, detalle decorativo" className="tequila-corner-image" /><div className="asiste-kicker">movimientos · {moves}</div><div className="asiste-memory">{cards.map((photo, index) => { const isVisible = flipped.includes(index) || matched.includes(index); return <button className={`memory-card ${isVisible ? 'is-flipped' : ''} ${matched.includes(index) ? 'is-matched' : ''}`} onClick={() => clickCard(index)} key={index} aria-label={`Carta ${index + 1}`}>{isVisible && <img src={photo} alt="Tequila" className="memory-card-image" />}</button>; })}</div>{matched.length === cards.length && <p className="trivia-feedback">Listo. Tequila aprueba este resultado.</p>}<button className="asiste-btn asiste-btn-ghost" onClick={reset}><RotateCcw size={15} /> Reiniciar</button></div>
+      <div className="asiste-card asiste-note" style={{ marginTop: 25, textAlign: 'center' }}><div className="asiste-kicker">movimientos · {moves}</div><div className="asiste-memory">{cards.map((photo, index) => { const isVisible = flipped.includes(index) || matched.includes(index); return <button className={`memory-card ${isVisible ? 'is-flipped' : ''} ${matched.includes(index) ? 'is-matched' : ''}`} onClick={() => clickCard(index)} key={index} aria-label={`Carta ${index + 1}`}>{isVisible && <img src={photo} alt="Tequila" className="memory-card-image" />}</button>; })}</div>{matched.length === cards.length && <p className="trivia-feedback">Listo. Tequila aprueba este resultado.</p>}<button className="asiste-btn asiste-btn-ghost" onClick={reset}><RotateCcw size={15} /> Reiniciar</button></div>
        {showReward && <TequilaReward content={content} onClose={() => setShowReward(false)} />}
     </main>
   );
@@ -1379,6 +1379,25 @@ function AppShell() {
     window.addEventListener('asiste-video-opened', handler);
     return () => window.removeEventListener('asiste-video-opened', handler);
   }, []);
+  useEffect(() => {
+    const handleVisibility = () => {
+      const audio = audioRef.current;
+      if (!audio) return;
+      if (document.hidden) {
+        audio.pause();
+      } else if (activeTrack && !muted) {
+        void audio.play().catch(() => {});
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+    window.addEventListener('blur', handleVisibility);
+    window.addEventListener('focus', handleVisibility);
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibility);
+      window.removeEventListener('blur', handleVisibility);
+      window.removeEventListener('focus', handleVisibility);
+    };
+  }, [activeTrack, muted]);
   useEffect(() => {
     void loadContent().then(setContent);
     let cancelled = false;

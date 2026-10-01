@@ -20,9 +20,10 @@
     "entertainment-potter": "assets/audio/harry.mp3",
     "trivia": "assets/audio/trivia.mp3",
     "nerd": "assets/audio/nerd.mp3",
-    "game": "assets/audio/juego.mp3",
+    "game": "assets/audio/ver.mp3",
     "surprise": "assets/audio/sorpresa.mp3",
     "organizer": "assets/audio/organizador.mp3",
+    "memory": "assets/audio/ver.mp3",
     "house": "assets/audio/harry.mp3",
     "runner": "assets/audio/flynn.mp3"
   },
