@@ -50,6 +50,8 @@ type Screen =
   | 'trivia'
   | 'nerd'
   | 'game'
+  | 'memory'
+  | 'runner'
   | 'surprise'
   | 'organizer'
   | 'house';
@@ -486,11 +488,11 @@ function TequilaCallout({ content, number, text, title }: { content: Content; nu
   );
 }
 
-function TequilaReward({ content, onClose }: { content: Content; onClose: () => void }) {
+function TequilaReward({ content, onClose, number = 6, text = 'Tequila está orgullosa de ti.' }: { content: Content; onClose: () => void; number?: number; text?: string }) {
   return (
     <aside className="tequila-reward" role="status">
-      <TequilaImage content={content} number={6} alt="Tequila recibiendo cariño" className="tequila-reward-image" />
-      <div><strong>Tequila está orgullosa de ti.</strong><button className="asiste-small-link" onClick={onClose}>cerrar</button></div>
+      <TequilaImage content={content} number={number} alt="Tequila" className="tequila-reward-image" />
+      <div><strong>{text}</strong><button className="asiste-small-link" onClick={onClose}>cerrar</button></div>
     </aside>
   );
 }
@@ -791,6 +793,42 @@ function Music({ content }: { content: Content }) {
   );
 }
 
+interface TriviaFeedback { number: number; text: string; }
+
+const triviaCorrectGeneric: TriviaFeedback[] = [
+  { number: 6, text: 'Tequila está orgullosa de ti.' },
+  { number: 3, text: 'Tequila aprueba esta respuesta.' },
+  { number: 2, text: 'Acertaste. Tequila ya se volvió a dormir.' },
+  { number: 4, text: 'El algoritmo también lo hubiera dicho.' },
+];
+
+const triviaIncorrectGeneric: TriviaFeedback[] = [
+  { number: 1, text: 'Tequila finge que no vio nada.' },
+  { number: 5, text: 'Nadie es perfecto. Ni Tequila.' },
+  { number: 3, text: 'Casi. Tequila tampoco lo sabía.' },
+];
+
+const triviaIncorrectRare: TriviaFeedback[] = [
+  { number: 3, text: 'Como cuando dices que el esquite amarillo es mejor.' },
+];
+
+const triviaCorrectByTopic: Record<string, TriviaFeedback[]> = {
+  'Harry Potter': [{ number: 4, text: 'Hermione estaría orgullosa.' }],
+  Disney: [{ number: 2, text: 'Tequila también lo hubiera adivinado.' }],
+};
+
+const triviaIncorrectByTopic: Record<string, TriviaFeedback[]> = {
+  'Harry Potter': [{ number: 1, text: 'Ni con el Mapa del Merodeador.' }],
+};
+
+function pickTriviaFeedback(isCorrect: boolean, tema: string): TriviaFeedback {
+  const topicPool = isCorrect ? triviaCorrectByTopic[tema] : triviaIncorrectByTopic[tema];
+  let pool = isCorrect ? triviaCorrectGeneric : triviaIncorrectGeneric;
+  if (topicPool && Math.random() < 0.5) pool = topicPool;
+  if (!isCorrect && Math.random() < 0.12) pool = triviaIncorrectRare;
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
 function Trivia({ content }: { content: Content }) {
   const topic = sessionState.triviaTopic;
   const pool = useMemo(() => {
@@ -801,20 +839,30 @@ function Trivia({ content }: { content: Content }) {
   const [queue, setQueue] = useState<number[]>(() => shuffleQueue(pool.length));
   const [position, setPosition] = useState(0);
   const [answer, setAnswer] = useState<number | null>(null);
+  const [feedback, setFeedback] = useState<TriviaFeedback | null>(null);
   const [showReward, setShowReward] = useState(false);
 
   useEffect(() => {
     setQueue(shuffleQueue(pool.length));
     setPosition(0);
     setAnswer(null);
+    setFeedback(null);
     setShowReward(false);
   }, [pool]);
 
   const currentIndex = queue[position] ?? 0;
   const current = pool[currentIndex] ?? fallbackContent.trivia[0];
 
+  const selectAnswer = (index: number) => {
+    setAnswer(index);
+    const isCorrect = index === current.respuesta;
+    setFeedback(pickTriviaFeedback(isCorrect, current.tema));
+    setShowReward(true);
+  };
+
   const nextQuestion = () => {
     setAnswer(null);
+    setFeedback(null);
     setShowReward(false);
     setPosition((value) => {
       const next = value + 1;
@@ -830,21 +878,35 @@ function Trivia({ content }: { content: Content }) {
     <main className="asiste-main" style={{ maxWidth: 720, margin: '0 auto' }}>
       <div className="asiste-eyebrow">{current.tema} · sin examen</div>
       <h1 className="asiste-heading">Una pregunta <span className="asiste-script">inofensiva.</span></h1>
-       <section className="asiste-card asiste-note" style={{ marginTop: 26 }}><h2 style={{ fontSize: 21 }}>{current.pregunta}</h2><div className="asiste-actions">{current.opciones.map((option, index) => <button className={`asiste-chip ${answer === index ? 'is-active' : ''}`} onClick={() => { setAnswer(index); setShowReward(true); }} key={option}>{option}</button>)}</div>{answer !== null && <p className="trivia-feedback">{answer === current.respuesta ? 'Correcto. Sistema estable.' : `Casi. Era: ${current.opciones[current.respuesta]}.`} {current.explicacion}</p>}<button className="asiste-small-link" onClick={nextQuestion} style={{ marginTop: 12 }}>Otra pregunta <ArrowRight size={14} /></button></section>
-       {showReward && <TequilaReward content={content} onClose={() => setShowReward(false)} />}
+       <section className="asiste-card asiste-note" style={{ marginTop: 26 }}><h2 style={{ fontSize: 21 }}>{current.pregunta}</h2><div className="asiste-actions">{current.opciones.map((option, index) => <button className={`asiste-chip ${answer === index ? 'is-active' : ''}`} onClick={() => selectAnswer(index)} key={option}>{option}</button>)}</div>{answer !== null && <p className="trivia-feedback">{answer === current.respuesta ? 'Correcto. Sistema estable.' : `Casi. Era: ${current.opciones[current.respuesta]}.`} {current.explicacion}</p>}<button className="asiste-small-link" onClick={nextQuestion} style={{ marginTop: 12 }}>Otra pregunta <ArrowRight size={14} /></button></section>
+       {showReward && feedback && <TequilaReward content={content} onClose={() => setShowReward(false)} number={feedback.number} text={feedback.text} />}
     </main>
   );
 }
 
 function Nerd({ content }: { content: Content }) {
-  const [fact, setFact] = useState(0);
-  const current = content.datos[fact % Math.max(content.datos.length, 1)] ?? fallbackContent.datos[0];
+  const [queue, setQueue] = useState<number[]>(() => shuffleQueue(content.datos.length));
+  const [position, setPosition] = useState(0);
+  const currentIndex = queue[position] ?? 0;
+  const current = content.datos[currentIndex] ?? fallbackContent.datos[0];
+
+  const next = () => {
+    setPosition((value) => {
+      const nextValue = value + 1;
+      if (nextValue >= queue.length) {
+        setQueue(shuffleQueue(content.datos.length, currentIndex));
+        return 0;
+      }
+      return nextValue;
+    });
+  };
+
   return (
     <main className="asiste-main">
       <div className="asiste-eyebrow">ok, esto ya se puso nerd</div>
       <h1 className="asiste-heading">Modo <span className="asiste-script">nerd.</span></h1>
       <p className="asiste-subheading">Datos cortitos de cosas que hacen clic en la cabeza.</p>
-      <section className="asiste-card asiste-note" style={{ marginTop: 26 }}><div className="choice-icon"><Wrench size={19} /></div><div className="asiste-eyebrow" style={{ marginTop: 16 }}>{current.categoria}</div><h2>{current.titulo}</h2><p>{current.texto}</p><button className="asiste-btn asiste-btn-primary" onClick={() => setFact((value) => value + 1)}>Otro dato <ArrowRight size={15} /></button></section>
+      <section className="asiste-card asiste-note" style={{ marginTop: 26 }}><div className="choice-icon"><Wrench size={19} /></div><div className="asiste-eyebrow" style={{ marginTop: 16 }}>{current.categoria}</div><h2>{current.titulo}</h2><p>{current.texto}</p><button className="asiste-btn asiste-btn-primary" onClick={next}>Otro dato <ArrowRight size={15} /></button></section>
     </main>
   );
 }
@@ -858,6 +920,175 @@ const memoryPhotos = [
 
 function shuffledMemoryCards() {
   return [...memoryPhotos, ...memoryPhotos].sort(() => Math.random() - 0.5);
+}
+
+function GameHub({ onNavigate }: { onNavigate: (screen: Screen) => void }) {
+  return (
+    <main className="asiste-main">
+      <div className="asiste-eyebrow">juegos breves</div>
+      <h1 className="asiste-heading">Un rato de <span className="asiste-script">juego.</span></h1>
+      <p className="asiste-subheading">Nada con puntajes que importen. Elige uno.</p>
+      <div className="asiste-grid" style={{ marginTop: 28 }}>
+        <button className="asiste-card asiste-choice" onClick={() => onNavigate('memory')}>
+          <span className="choice-icon"><Gamepad2 size={19} /></span>
+          <h3>Memoria</h3>
+          <p>Memoria de cartas con fotos de Tequila.</p>
+        </button>
+        <button className="asiste-card asiste-choice" onClick={() => onNavigate('runner')}>
+          <span className="choice-icon"><Dog size={19} /></span>
+          <h3>Tequila corredora</h3>
+          <p>Salta obstáculos. Sin internet, sin problema.</p>
+        </button>
+        <a className="asiste-card asiste-choice" href="https://www.friv.com/" target="_blank" rel="noreferrer" onClick={notifyVideoOpened}>
+          <span className="choice-icon"><ExternalLink size={19} /></span>
+          <h3>Más juegos</h3>
+          <p>Un atajo externo, por si quieres algo distinto.</p>
+        </a>
+      </div>
+    </main>
+  );
+}
+
+interface RunnerObstacle { id: number; x: number; }
+
+function TequilaRunner() {
+  const [status, setStatus] = useState<'idle' | 'playing' | 'over'>('idle');
+  const [score, setScore] = useState(0);
+  const [best, setBest] = useState(() => Number(storageGet('asiste-runner-best') || 0));
+  const [jumpY, setJumpY] = useState(0);
+  const [obstacles, setObstacles] = useState<RunnerObstacle[]>([]);
+  const velocityRef = useRef(0);
+  const isJumpingRef = useRef(false);
+  const speedRef = useRef(4);
+  const frameRef = useRef<number>();
+  const lastSpawnRef = useRef(0);
+  const idCounter = useRef(0);
+  const stageRef = useRef<HTMLDivElement | null>(null);
+
+  const jump = () => {
+    if (status !== 'playing' || isJumpingRef.current) return;
+    isJumpingRef.current = true;
+    velocityRef.current = 11;
+  };
+
+  const start = () => {
+    setScore(0);
+    setObstacles([]);
+    speedRef.current = 4;
+    isJumpingRef.current = false;
+    velocityRef.current = 0;
+    setJumpY(0);
+    setStatus('playing');
+  };
+
+  useEffect(() => {
+    if (status !== 'playing') return;
+    let lastTime = performance.now();
+
+    const loop = (time: number) => {
+      const delta = (time - lastTime) / 16.67;
+      lastTime = time;
+
+      if (isJumpingRef.current) {
+        velocityRef.current -= 0.6 * delta;
+        setJumpY((y) => {
+          const next = y + velocityRef.current;
+          if (next <= 0) {
+            isJumpingRef.current = false;
+            velocityRef.current = 0;
+            return 0;
+          }
+          return next;
+        });
+      }
+
+      speedRef.current = Math.min(speedRef.current + 0.0015 * delta, 9);
+
+      setObstacles((prev) => {
+        const stageWidth = stageRef.current?.clientWidth ?? 600;
+        const moved = prev
+          .map((obstacle) => ({ ...obstacle, x: obstacle.x - speedRef.current * delta }))
+          .filter((obstacle) => obstacle.x > -40);
+        lastSpawnRef.current += delta;
+        const spawnThreshold = 55 - Math.min(speedRef.current * 3, 25);
+        if (lastSpawnRef.current > spawnThreshold) {
+          lastSpawnRef.current = 0;
+          idCounter.current += 1;
+          moved.push({ id: idCounter.current, x: stageWidth + 20 });
+        }
+        return moved;
+      });
+
+      setScore((value) => value + delta * 0.12);
+      frameRef.current = window.requestAnimationFrame(loop);
+    };
+
+    frameRef.current = window.requestAnimationFrame(loop);
+    return () => { if (frameRef.current) window.cancelAnimationFrame(frameRef.current); };
+  }, [status]);
+
+  useEffect(() => {
+    if (status !== 'playing') return;
+    const tequilaLeft = 40;
+    const tequilaRight = tequilaLeft + 42;
+    const hit = obstacles.some((obstacle) => {
+      const overlapsX = obstacle.x + 24 > tequilaLeft && obstacle.x < tequilaRight;
+      const overlapsY = jumpY < 34;
+      return overlapsX && overlapsY;
+    });
+    if (hit) {
+      setStatus('over');
+      setBest((value) => {
+        const rounded = Math.floor(score);
+        const next = Math.max(value, rounded);
+        storageSet('asiste-runner-best', String(next));
+        return next;
+      });
+    }
+  }, [obstacles, jumpY, status, score]);
+
+  useEffect(() => {
+    const handler = (event: KeyboardEvent) => {
+      if (event.code === 'Space') { event.preventDefault(); status === 'playing' ? jump() : start(); }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [status]);
+
+  return (
+    <main className="asiste-main" style={{ maxWidth: 720, margin: '0 auto' }}>
+      <div className="asiste-eyebrow">sin internet, sin problema</div>
+      <h1 className="asiste-heading">Tequila <span className="asiste-script">corredora.</span></h1>
+      <p className="asiste-subheading">Toca la pantalla o usa la barra espaciadora para saltar.</p>
+      <div className="asiste-card asiste-note" style={{ marginTop: 24, textAlign: 'center' }}>
+        <div className="runner-score">puntos · {Math.floor(score)} &nbsp;&nbsp; mejor · {best}</div>
+        <div
+          className="runner-stage"
+          ref={stageRef}
+          onClick={() => (status === 'playing' ? jump() : start())}
+          role="button"
+          tabIndex={0}
+          aria-label="Área del juego, toca para saltar o empezar"
+        >
+          <div className="runner-ground" />
+          <img
+            src="assets/img/tequila/tequila_runner.png"
+            alt="Tequila corriendo"
+            className="runner-tequila"
+            style={{ transform: `translateY(${-jumpY}px)` }}
+          />
+          {obstacles.map((obstacle) => (
+            <div className="runner-obstacle" key={obstacle.id} style={{ left: obstacle.x }} />
+          ))}
+          {status === 'idle' && <div className="runner-overlay">Toca para empezar</div>}
+          {status === 'over' && <div className="runner-overlay">Se acabó. Toca para otra vuelta.</div>}
+        </div>
+        <button className="asiste-btn asiste-btn-ghost" onClick={start} style={{ marginTop: 16 }}>
+          <RotateCcw size={15} /> Reiniciar
+        </button>
+      </div>
+    </main>
+  );
 }
 
 function MemoryGame({ content }: { content: Content }) {
@@ -908,7 +1139,7 @@ function Surprise({ content, onNavigate }: { content: Content; onNavigate: (scre
   };
   const openResult = () => {
     if (!result) return;
-    const destinations: Record<string, Screen> = { perros: 'entertainment', gatos: 'entertainment', disney: 'entertainment', trivia: 'trivia', memoria: 'game', dato: 'nerd', harry: 'entertainment', 'soy-luna': 'entertainment', zombies: 'entertainment', yatra: 'music', danny: 'music' };
+    const destinations: Record<string, Screen> = { perros: 'entertainment', gatos: 'entertainment', disney: 'entertainment', trivia: 'trivia', memoria: 'memory', dato: 'nerd', harry: 'entertainment', 'soy-luna': 'entertainment', zombies: 'entertainment', yatra: 'music', danny: 'music' };
     const destination = destinations[result.id];
     if (destination === 'trivia') sessionState.triviaTopic = null;
     if (destination) onNavigate(destination);
@@ -1201,7 +1432,9 @@ if (opening === 'intro') {
         {screen === 'entertainment' && <Entertainment content={content} onNavigate={navigate} onCategoryChange={setEntertainmentCategory} />}
         {screen === 'trivia' && <Trivia content={content} />}
         {screen === 'nerd' && <Nerd content={content} />}
-        {screen === 'game' && <MemoryGame content={content} />}
+        {screen === 'game' && <GameHub onNavigate={navigate} />}
+        {screen === 'memory' && <MemoryGame content={content} />}
+        {screen === 'runner' && <TequilaRunner />}
         {screen === 'surprise' && <Surprise content={content} onNavigate={navigate} />}
         {screen === 'house' && <HouseSorting />}
         {screen === 'organizer' && <Organizer content={content} />}
