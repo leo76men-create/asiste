@@ -682,6 +682,7 @@ function Distract({ content, onNavigate }: { content: Content; onNavigate: (scre
 
 function Entertainment({ content, onNavigate, onCategoryChange }: { content: Content; onNavigate: (screen: Screen) => void; onCategoryChange?: (category: string) => void }) {
   const [category, setCategory] = useState<'disney' | 'series' | 'animals' | 'potter' | 'tequila' | 'custom'>('disney');
+  const [disneySub, setDisneySub] = useState<string | null>(null);
   useEffect(() => {
     onCategoryChange?.(category);
     return () => onCategoryChange?.('');
@@ -702,8 +703,18 @@ function Entertainment({ content, onNavigate, onCategoryChange }: { content: Con
   const [error, setError] = useState(false);
   const videos = (category === 'custom'
     ? customVideos
-    : content.videos.filter((item) => category === 'disney' ? item.categoria === 'Disney' : category === 'series' ? item.categoria === 'Series' : category === 'potter' ? item.categoria === 'Harry Potter' : false)
+    : content.videos.filter((item) => {
+        if (category === 'disney') return item.categoria === 'Disney' && (!disneySub || item.subcategoria === disneySub);
+        if (category === 'series') return item.categoria === 'Series';
+        if (category === 'potter') return item.categoria === 'Harry Potter';
+        return false;
+      })
   ).slice().sort((a, b) => (b.prioridad ?? 0) - (a.prioridad ?? 0));
+
+  const disneySubcategories = useMemo(
+  () => Array.from(new Set(content.videos.filter((item) => item.categoria === 'Disney').map((item) => item.subcategoria).filter(Boolean))) as string[],
+  [content.videos]
+  );
   const fetchAnimals = async () => {
     if (!animal) return;
     setLoading(true); setError(false);
@@ -746,7 +757,7 @@ function Entertainment({ content, onNavigate, onCategoryChange }: { content: Con
       <h1 className="asiste-heading">Algo para <span className="asiste-script">ver.</span></h1>
       <p className="asiste-subheading">Las búsquedas son abiertas. Puedes dejar lo predefinido o armar tu propia selección.</p>
       <div className="asiste-toolbar" role="tablist" aria-label="Categorías de entretenimiento">
-        {([['disney', 'Disney'], ['series', 'Series'], ['animals', 'Animales'], ['potter', 'Harry Potter'], ['tequila', 'Tequila'], ['custom', 'Mi selección']] as const).map(([id, label]) => <button className={`asiste-chip ${category === id ? 'is-active' : ''}`} onClick={() => { setCategory(id); setAnimal(null); }} key={id} role="tab" aria-selected={category === id}>{label}</button>)}
+        {([['disney', 'Disney'], ['series', 'Series'], ['animals', 'Animales'], ['potter', 'Harry Potter'], ['tequila', 'Tequila'], ['custom', 'Mi selección']] as const).map(([id, label]) => <button className={`asiste-chip ${category === id ? 'is-active' : ''}`} onClick={() => { setCategory(id); setAnimal(null); setDisneySub(null); }} key={id} role="tab" aria-selected={category === id}>{label}</button>)}
       </div>
       {category === 'animals' ? (
         <section className="asiste-card asiste-note" style={{ marginTop: 18 }}>
@@ -757,9 +768,19 @@ function Entertainment({ content, onNavigate, onCategoryChange }: { content: Con
         <section className="asiste-card asiste-note" style={{ marginTop: 18 }}><h2>Una visita breve al mundo mágico</h2><div className="asiste-actions"><button className="asiste-btn asiste-btn-primary" onClick={() => { sessionState.triviaTopic = 'Harry Potter'; onNavigate('trivia'); }}>Trivia</button><button className="asiste-btn asiste-btn-ghost" onClick={() => onNavigate('house')}>Sortear casa</button></div>{videos.map((item) => <a className="asiste-small-link" style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0' }} href={item.url} target="_blank" rel="noreferrer" onClick={notifyVideoOpened} key={item.id}>{item.titulo} <ExternalLink size={14} /></a>)}</section>
       ) : category === 'custom' ? (
         <section className="asiste-card asiste-note" style={{ marginTop: 18 }}><div className="organizer-heading"><div><h2>Mi selección</h2><p>Agrega o elimina lo que sí quieras encontrar aquí.</p></div><button className="asiste-chip" onClick={() => setShowEditor((value) => !value)}><Plus size={14} /> Agregar</button></div>{showEditor && <div className="custom-editor"><input className="asiste-input" value={newTitle} onChange={(event) => setNewTitle(event.target.value)} placeholder="Título" aria-label="Título del contenido" /><input className="asiste-input" value={newUrl} onChange={(event) => setNewUrl(event.target.value)} placeholder="URL o búsqueda pública" aria-label="URL del contenido" /><div className="asiste-actions"><input className="asiste-input" type="number" min="1" value={newMinutes} onChange={(event) => setNewMinutes(event.target.value)} aria-label="Minutos" /><button className="asiste-btn asiste-btn-primary" onClick={addCustomVideo}>Guardar</button></div></div>}{videos.length === 0 && <p className="asiste-muted-text">Todavía no agregas nada.</p>}{videos.map((item) => <div className="custom-content-row" key={item.id}><a className="asiste-card asiste-result" href={item.url} target="_blank" rel="noreferrer" onClick={notifyVideoOpened}><span className="choice-icon"><Film size={18} /></span><div><h3>{item.titulo}</h3><p>{item.minutos} min · contenido personal</p></div><ExternalLink size={16} /></a><button className="asiste-small-link" onClick={() => removeCustomVideo(item.id)} aria-label={`Eliminar ${item.titulo}`}><Trash2 size={14} /></button></div>)}</section>
-      ) : (
-        <section className="asiste-card asiste-note" style={{ marginTop: 18 }}><h2>{category === 'disney' ? 'Disney para no decidir demasiado' : 'Serie de respaldo'}</h2>{videos.length === 0 && <p>Agrega contenido en `public/data/videos.json`.</p>}{videos.map((item) => <a className="asiste-card asiste-result" style={{ marginTop: 10 }} href={item.url} target="_blank" rel="noreferrer" onClick={notifyVideoOpened} key={item.id}><span className="choice-icon"><Film size={18} /></span><div><h3>{item.titulo}</h3><p>{item.subcategoria} · {item.minutos} min</p></div><ExternalLink size={16} /></a>)}</section>
-      )}
+    ) : (
+      <section className="asiste-card asiste-note" style={{ marginTop: 18 }}>
+        {category === 'disney' && disneySubcategories.length > 0 && (
+          <div className="asiste-toolbar" role="tablist" aria-label="Subcategorías de Disney" style={{ marginTop: 0, marginBottom: 18 }}>
+            <button className={`asiste-chip ${disneySub === null ? 'is-active' : ''}`} onClick={() => setDisneySub(null)}>Todas</button>
+            {disneySubcategories.map((sub) => <button className={`asiste-chip ${disneySub === sub ? 'is-active' : ''}`} onClick={() => setDisneySub(sub)} key={sub}>{sub}</button>)}
+          </div>
+        )}
+        <h2>{category === 'disney' ? (disneySub || 'Disney para no decidir demasiado') : 'Serie de respaldo'}</h2>
+        {videos.length === 0 && <p>Agrega contenido en `public/data/videos.json`.</p>}
+        {videos.map((item) => <a className="asiste-card asiste-result" style={{ marginTop: 10 }} href={item.url} target="_blank" rel="noreferrer" onClick={notifyVideoOpened} key={item.id}><span className="choice-icon"><Film size={18} /></span><div><h3>{item.titulo}</h3><p>{item.subcategoria} · {item.minutos} min</p></div><ExternalLink size={16} /></a>)}
+      </section>
+    )}
     </main>
   );
 }

@@ -172,7 +172,7 @@
 .asiste-home-button { border:1px solid hsl(var(--border)); background:hsl(var(--card) / .68); border-radius:999px; min-height:38px; padding: 0 14px; color:hsl(var(--muted-foreground)); cursor:pointer; transition:transform .2s ease, background .2s ease; }
 .asiste-home-button:hover { transform: translateY(-2px); background:hsl(var(--card)); }
 .asiste-heading { font-size:clamp(2.25rem, 9vw, 4.8rem); line-height:.96; letter-spacing:-.075em; max-width:760px; margin: 0; }
-.asiste-script { font-style: italic; font-weight:600; letter-spacing: -.02em; }
+.asiste-script { font-style: normal; font-weight: inherit; letter-spacing: inherit; }
 .asiste-subheading { color:hsl(var(--muted-foreground)); max-width:540px; line-height:1.65; margin-top:18px; font-size:15px; }
 .asiste-eyebrow { display:flex; align-items:center; gap:9px; font-family:var(--app-font-mono); text-transform:uppercase; letter-spacing:.13em; font-size:10px; color:hsl(var(--accent)); margin-bottom:14px; }
 .asiste-eyebrow::before { content:''; width:22px; height:1px; background:hsl(var(--accent)); }
