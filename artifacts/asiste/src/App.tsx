@@ -103,6 +103,7 @@ interface VideoItem {
   url: string;
   minutos: number;
   placeholder?: boolean;
+  prioridad?: number;
 }
 
 interface TriviaItem {
@@ -425,7 +426,6 @@ interface ChoiceProps {
 function ChoiceCard({ icon: Icon, title, description, id, onClick }: ChoiceProps) {
   return (
     <button className="asiste-card asiste-choice" onClick={onClick} data-testid={`button-choice-${id}`}>
-      <span className="choice-code">{id === 'write' ? '01' : id === 'rest' ? '02' : id === 'distract' ? '03' : id === 'music' ? '04' : id === 'entertainment' ? '05' : '06'}</span>
       <span className="choice-icon"><Icon size={18} strokeWidth={1.7} aria-hidden="true" /></span>
       <h3>{title}</h3>
       <p>{description}</p>
@@ -447,7 +447,7 @@ function Home({ content, onNavigate }: { content: Content; onNavigate: (screen: 
         <p className="asiste-subheading">Este pequeño lugar es tuyo. No tienes que hablar con nadie ni resolver nada.</p>
       </section>
       <section className="asiste-section" aria-labelledby="options-title">
-        <div className="asiste-section-title"><h2 id="options-title">Elige una puerta</h2><span>sin orden correcto</span></div>
+        <div className="asiste-section-title"><h2 id="options-title">Elige una puerta</h2></div>
         <div className="asiste-grid">
           {choiceDefinitions.map((choice) => <ChoiceCard key={choice.id} {...choice} onClick={() => onNavigate(choice.id as Screen)} />)}
         </div>
@@ -700,9 +700,10 @@ function Entertainment({ content, onNavigate, onCategoryChange }: { content: Con
   const [newMinutes, setNewMinutes] = useState('10');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
-  const videos = category === 'custom'
+  const videos = (category === 'custom'
     ? customVideos
-    : content.videos.filter((item) => category === 'disney' ? item.categoria === 'Disney' : category === 'series' ? item.categoria === 'Series' : category === 'potter' ? item.categoria === 'Harry Potter' : false);
+    : content.videos.filter((item) => category === 'disney' ? item.categoria === 'Disney' : category === 'series' ? item.categoria === 'Series' : category === 'potter' ? item.categoria === 'Harry Potter' : false)
+  ).slice().sort((a, b) => (b.prioridad ?? 0) - (a.prioridad ?? 0));
   const fetchAnimals = async () => {
     if (!animal) return;
     setLoading(true); setError(false);
@@ -749,7 +750,7 @@ function Entertainment({ content, onNavigate, onCategoryChange }: { content: Con
       </div>
       {category === 'animals' ? (
         <section className="asiste-card asiste-note" style={{ marginTop: 18 }}>
-          {!animal ? <><h2>¿Cuántos perros o gatos necesitas?</h2><p>También puedes agregar fotos propias, solo se quedan en esta visita.</p><div className="asiste-actions"><button className="asiste-btn asiste-btn-primary" onClick={() => setAnimal('dog')}><Dog size={16} /> Perros</button><button className="asiste-btn asiste-btn-ghost" onClick={() => setAnimal('cat')}>Gatos</button></div><LocalPhotoPicker label="Agregar fotos de animales" photos={localAnimalPhotos} onChange={setLocalAnimalPhotos} /></> : <><div className="asiste-toolbar">{['1', '5', '10'].map((item) => <button className={`asiste-chip ${count === item ? 'is-active' : ''}`} key={item} onClick={() => setCount(item)}>{item}</button>)}<button className="asiste-chip" onClick={() => setCount(String(Math.ceil(Math.random() * 8)))}>Sorpréndeme</button></div>{loading && <div className="asiste-loading">Buscando caritas en la red pública...</div>}{error && <div className="asiste-error"><TequilaCallout content={content} number={1} text="Los animales están teniendo problemas técnicos. Tequila quizá tapó la cámara." /><button className="asiste-small-link" onClick={() => void fetchAnimals()}>Reintentar</button></div>}{(animalUrls.length > 0 || localAnimalPhotos.length > 0) && <div className="animal-gallery">{animal === 'dog' && <TequilaImage content={content} number={4} alt="Tequila mirando a cámara" className="animal-tequila-photo" />}{localAnimalPhotos.map((url) => <img src={url} alt="Foto propia de animal" key={url} />)}{animalUrls.map((url) => <img src={url} alt={animal === 'dog' ? 'Perro sorpresa' : 'Gato sorpresa'} key={url} />)}</div>}<LocalPhotoPicker label="Agregar más fotos" photos={localAnimalPhotos} onChange={setLocalAnimalPhotos} /><div className="asiste-actions"><button className="asiste-btn asiste-btn-muted" onClick={() => void fetchAnimals()}><RotateCcw size={15} /> Más</button><button className="asiste-small-link" onClick={() => setAnimal(null)}>Cambiar</button></div></>}</section>
+          {!animal ? <><h2>¿Cuántos perros o gatos necesitas?</h2><p>También puedes agregar fotos propias, solo se quedan en esta visita.</p><div className="asiste-actions"><button className="asiste-btn asiste-btn-primary" onClick={() => setAnimal('dog')}><Dog size={16} /> Perros</button><button className="asiste-btn asiste-btn-ghost" onClick={() => setAnimal('cat')}>Gatos</button></div><LocalPhotoPicker label="Agregar fotos de animales" photos={localAnimalPhotos} onChange={setLocalAnimalPhotos} /></> : <><div className="asiste-toolbar">{['1', '5', '10'].map((item) => <button className={`asiste-chip ${count === item ? 'is-active' : ''}`} key={item} onClick={() => setCount(item)}>{item}</button>)}<button className="asiste-chip" onClick={() => setCount(String(Math.ceil(Math.random() * 8)))}>Sorpréndeme</button></div>{loading && <div className="asiste-loading">Buscando caritas en la red pública...</div>}{error && <div className="asiste-error"><TequilaCallout content={content} number={1} text="Los animales están teniendo problemas técnicos. Tequila quizá tapó la cámara." /><button className="asiste-small-link" onClick={() => void fetchAnimals()}>Reintentar</button></div>}{(animalUrls.length > 0 || localAnimalPhotos.length > 0) && <div className="animal-gallery">{localAnimalPhotos.map((url) => <img src={url} alt="Foto propia de animal" key={url} />)}{animalUrls.map((url) => <img src={url} alt={animal === 'dog' ? 'Perro sorpresa' : 'Gato sorpresa'} key={url} />)}</div>}<LocalPhotoPicker label="Agregar más fotos" photos={localAnimalPhotos} onChange={setLocalAnimalPhotos} /><div className="asiste-actions"><button className="asiste-btn asiste-btn-muted" onClick={() => void fetchAnimals()}><RotateCcw size={15} /> Más</button><button className="asiste-small-link" onClick={() => setAnimal(null)}>Cambiar</button></div></>}</section>
       ) : category === 'tequila' ? (
         <section className="asiste-card asiste-note" style={{ marginTop: 18 }}><h2>Archivo de Tequila</h2><p>Estas fotos son detalles escondidos del espacio. Puedes sumar más desde tu dispositivo.</p><div className="tequila-gallery">{content.tequila.fotos.map((photo, index) => <img src={photo} alt={`Tequila, foto ${index + 1}`} key={photo} onError={(event) => { event.currentTarget.style.display = 'none'; }} />)}{localTequilaPhotos.map((photo, index) => <img src={photo} alt={`Foto extra de Tequila ${index + 1}`} key={photo} />)}</div><LocalPhotoPicker label="Agregar fotos de Tequila" photos={localTequilaPhotos} onChange={setLocalTequilaPhotos} /></section>
       ) : category === 'potter' ? (
@@ -1460,7 +1461,6 @@ if (opening === 'intro') {
         <footer className="asiste-footer-links">
           {screen !== 'home' && <button className="asiste-small-link" onClick={() => navigate('home')}><ArrowLeft size={13} /> Inicio</button>}
           <button className="asiste-small-link" onClick={() => setOpening('letter')}><Gift size={13} /> Leer la carta</button>
-          <span>{content.config.appTitle} · espacio personal</span>
         </footer>
       </div>
     </div>
