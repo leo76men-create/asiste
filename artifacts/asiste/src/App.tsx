@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { Toaster } from '@/components/ui/toaster';
@@ -366,6 +366,21 @@ function shuffleArray<T>(array: T[]): T[] {
   return copy;
 }
 
+function getYouTubeEmbedUrl(url: string): string | null {
+  try {
+    const parsed = new URL(url);
+    let id: string | null = null;
+    if (parsed.hostname.includes('youtu.be')) {
+      id = parsed.pathname.slice(1);
+    } else if (parsed.hostname.includes('youtube.com') && parsed.pathname === '/watch') {
+      id = parsed.searchParams.get('v');
+    }
+    return id ? `https://www.youtube-nocookie.com/embed/${id}` : null;
+  } catch {
+    return null;
+  }
+}
+
 function shuffleQueue(length: number, avoidFirst?: number): number[] {
   const shuffled = shuffleArray(Array.from({ length }, (_, index) => index));
   if (avoidFirst !== undefined && shuffled.length > 1 && shuffled[0] === avoidFirst) {
@@ -683,6 +698,7 @@ function Distract({ content, onNavigate }: { content: Content; onNavigate: (scre
 function Entertainment({ content, onNavigate, onCategoryChange }: { content: Content; onNavigate: (screen: Screen) => void; onCategoryChange?: (category: string) => void }) {
   const [category, setCategory] = useState<'disney' | 'series' | 'animals' | 'potter' | 'tequila' | 'custom'>('disney');
   const [disneySub, setDisneySub] = useState<string | null>(null);
+  const [nowPlaying, setNowPlaying] = useState<VideoItem | null>(null);
   useEffect(() => {
     onCategoryChange?.(category);
     return () => onCategoryChange?.('');
@@ -701,20 +717,37 @@ function Entertainment({ content, onNavigate, onCategoryChange }: { content: Con
   const [newMinutes, setNewMinutes] = useState('10');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
-  const videos = (category === 'custom'
+
+  const disneySubcategories = useMemo(
+    () => Array.from(new Set(content.videos.filter((item) => item.categoria === 'Disney').map((item) => item.subcategoria).filter(Boolean))) as string[],
+    [content.videos]
+  );
+
+  useEffect(() => {
+    if (category === 'disney' && !disneySub && disneySubcategories.length > 0) {
+      setDisneySub(disneySubcategories[0]);
+    }
+  }, [category, disneySub, disneySubcategories]);
+
+  const videos = useMemo(() => (category === 'custom'
     ? customVideos
     : content.videos.filter((item) => {
-        if (category === 'disney') return item.categoria === 'Disney' && (!disneySub || item.subcategoria === disneySub);
+        if (category === 'disney') return item.categoria === 'Disney' && item.subcategoria === disneySub;
         if (category === 'series') return item.categoria === 'Series';
         if (category === 'potter') return item.categoria === 'Harry Potter';
         return false;
       })
-  ).slice().sort((a, b) => (b.prioridad ?? 0) - (a.prioridad ?? 0));
+  ).slice().sort((a, b) => (b.prioridad ?? 0) - (a.prioridad ?? 0)), [category, disneySub, customVideos, content.videos]);
 
-  const disneySubcategories = useMemo(
-  () => Array.from(new Set(content.videos.filter((item) => item.categoria === 'Disney').map((item) => item.subcategoria).filter(Boolean))) as string[],
-  [content.videos]
-  );
+  useEffect(() => {
+    if (category === 'disney' || category === 'series' || category === 'potter') {
+      const first = videos.find((item) => getYouTubeEmbedUrl(item.url));
+      setNowPlaying(first ?? null);
+    } else {
+      setNowPlaying(null);
+    }
+  }, [videos, category]);
+
   const fetchAnimals = async () => {
     if (!animal) return;
     setLoading(true); setError(false);
@@ -751,6 +784,7 @@ function Entertainment({ content, onNavigate, onCategoryChange }: { content: Con
     setCustomVideos(next);
     storageSet('asiste-contenido-personal', JSON.stringify(next));
   };
+
   return (
     <main className="asiste-main">
       <div className="asiste-eyebrow">pantalla para ver</div>
@@ -761,26 +795,93 @@ function Entertainment({ content, onNavigate, onCategoryChange }: { content: Con
       </div>
       {category === 'animals' ? (
         <section className="asiste-card asiste-note" style={{ marginTop: 18 }}>
-          {!animal ? <><h2>¿Cuántos perros o gatos necesitas?</h2><p>También puedes agregar fotos propias, solo se quedan en esta visita.</p><div className="asiste-actions"><button className="asiste-btn asiste-btn-primary" onClick={() => setAnimal('dog')}><Dog size={16} /> Perros</button><button className="asiste-btn asiste-btn-ghost" onClick={() => setAnimal('cat')}>Gatos</button></div><LocalPhotoPicker label="Agregar fotos de animales" photos={localAnimalPhotos} onChange={setLocalAnimalPhotos} /></> : <><div className="asiste-toolbar">{['1', '5', '10'].map((item) => <button className={`asiste-chip ${count === item ? 'is-active' : ''}`} key={item} onClick={() => setCount(item)}>{item}</button>)}<button className="asiste-chip" onClick={() => setCount(String(Math.ceil(Math.random() * 8)))}>Sorpréndeme</button></div>{loading && <div className="asiste-loading">Buscando caritas en la red pública...</div>}{error && <div className="asiste-error"><TequilaCallout content={content} number={1} text="Los animales están teniendo problemas técnicos. Tequila quizá tapó la cámara." /><button className="asiste-small-link" onClick={() => void fetchAnimals()}>Reintentar</button></div>}{(animalUrls.length > 0 || localAnimalPhotos.length > 0) && <div className="animal-gallery">{localAnimalPhotos.map((url) => <img src={url} alt="Foto propia de animal" key={url} />)}{animalUrls.map((url) => <img src={url} alt={animal === 'dog' ? 'Perro sorpresa' : 'Gato sorpresa'} key={url} />)}</div>}<LocalPhotoPicker label="Agregar más fotos" photos={localAnimalPhotos} onChange={setLocalAnimalPhotos} /><div className="asiste-actions"><button className="asiste-btn asiste-btn-muted" onClick={() => void fetchAnimals()}><RotateCcw size={15} /> Más</button><button className="asiste-small-link" onClick={() => setAnimal(null)}>Cambiar</button></div></>}</section>
+          {!animal ? <><h2>¿Cuántos perros o gatos necesitas?</h2><p>También puedes agregar fotos propias, solo se quedan en esta visita.</p><div className="asiste-actions"><button className="asiste-btn asiste-btn-primary" onClick={() => setAnimal('dog')}><Dog size={16} /> Perros</button><button className="asiste-btn asiste-btn-ghost" onClick={() => setAnimal('cat')}>Gatos</button></div><LocalPhotoPicker label="Agregar fotos de animales" photos={localAnimalPhotos} onChange={setLocalAnimalPhotos} /></> : <><div className="asiste-toolbar">{['1', '5', '10'].map((item) => <button className={`asiste-chip ${count === item ? 'is-active' : ''}`} key={item} onClick={() => setCount(item)}>{item}</button>)}<button className="asiste-chip" onClick={() => setCount(String(Math.ceil(Math.random() * 8)))}>Sorpréndeme</button></div>{loading && <div className="asiste-loading">Buscando caritas en la red pública...</div>}{error && <div className="asiste-error"><TequilaCallout content={content} number={1} text="Los animales están teniendo problemas técnicos. Tequila quizá tapó la cámara." /><button className="asiste-small-link" onClick={() => void fetchAnimals()}>Reintentar</button></div>}{(animalUrls.length > 0 || localAnimalPhotos.length > 0) && <div className="animal-gallery">{localAnimalPhotos.map((url) => <img src={url} alt="Foto propia de animal" key={url} />)}{animalUrls.map((url) => <img src={url} alt={animal === 'dog' ? 'Perro sorpresa' : 'Gato sorpresa'} key={url} />)}</div>}<LocalPhotoPicker label="Agregar más fotos" photos={localAnimalPhotos} onChange={setLocalAnimalPhotos} /><div className="asiste-actions"><button className="asiste-btn asiste-btn-muted" onClick={() => void fetchAnimals()}><RotateCcw size={15} /> Más</button><button className="asiste-small-link" onClick={() => setAnimal(null)}>Cambiar</button></div></>}
+        </section>
       ) : category === 'tequila' ? (
         <section className="asiste-card asiste-note" style={{ marginTop: 18 }}><h2>Archivo de Tequila</h2><p>Estas fotos son detalles escondidos del espacio. Puedes sumar más desde tu dispositivo.</p><div className="tequila-gallery">{content.tequila.fotos.map((photo, index) => <img src={photo} alt={`Tequila, foto ${index + 1}`} key={photo} onError={(event) => { event.currentTarget.style.display = 'none'; }} />)}{localTequilaPhotos.map((photo, index) => <img src={photo} alt={`Foto extra de Tequila ${index + 1}`} key={photo} />)}</div><LocalPhotoPicker label="Agregar fotos de Tequila" photos={localTequilaPhotos} onChange={setLocalTequilaPhotos} /></section>
       ) : category === 'potter' ? (
-        <section className="asiste-card asiste-note" style={{ marginTop: 18 }}><h2>Una visita breve al mundo mágico</h2><div className="asiste-actions"><button className="asiste-btn asiste-btn-primary" onClick={() => { sessionState.triviaTopic = 'Harry Potter'; onNavigate('trivia'); }}>Trivia</button><button className="asiste-btn asiste-btn-ghost" onClick={() => onNavigate('house')}>Sortear casa</button></div>{videos.map((item) => <a className="asiste-small-link" style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0' }} href={item.url} target="_blank" rel="noreferrer" onClick={notifyVideoOpened} key={item.id}>{item.titulo} <ExternalLink size={14} /></a>)}</section>
+        <section className="asiste-card asiste-note" style={{ marginTop: 18 }}>
+          <h2>Una visita breve al mundo mágico</h2>
+          <div className="asiste-actions"><button className="asiste-btn asiste-btn-primary" onClick={() => { sessionState.triviaTopic = 'Harry Potter'; onNavigate('trivia'); }}>Trivia</button><button className="asiste-btn asiste-btn-ghost" onClick={() => onNavigate('house')}>Sortear casa</button></div>
+          {nowPlaying && getYouTubeEmbedUrl(nowPlaying.url) && (
+            <div className="video-player-wrap">
+              <iframe
+                key={nowPlaying.id}
+                src={getYouTubeEmbedUrl(nowPlaying.url) ?? undefined}
+                title={nowPlaying.titulo}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="video-player-frame"
+              />
+              <p className="video-player-caption">{nowPlaying.titulo}</p>
+            </div>
+          )}
+          {videos.map((item) => {
+            const embedUrl = getYouTubeEmbedUrl(item.url);
+            if (embedUrl) {
+              return (
+                <button className={`asiste-small-link video-list-item-inline ${nowPlaying?.id === item.id ? 'is-active' : ''}`} style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0', width: '100%' }} onClick={() => { setNowPlaying(item); notifyVideoOpened(); }} key={item.id}>
+                  {item.titulo} <Play size={14} />
+                </button>
+              );
+            }
+            return (
+              <a className="asiste-small-link" style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0' }} href={item.url} target="_blank" rel="noreferrer" onClick={notifyVideoOpened} key={item.id}>
+                {item.titulo} <ExternalLink size={14} />
+              </a>
+            );
+          })}
+        </section>
       ) : category === 'custom' ? (
         <section className="asiste-card asiste-note" style={{ marginTop: 18 }}><div className="organizer-heading"><div><h2>Mi selección</h2><p>Agrega o elimina lo que sí quieras encontrar aquí.</p></div><button className="asiste-chip" onClick={() => setShowEditor((value) => !value)}><Plus size={14} /> Agregar</button></div>{showEditor && <div className="custom-editor"><input className="asiste-input" value={newTitle} onChange={(event) => setNewTitle(event.target.value)} placeholder="Título" aria-label="Título del contenido" /><input className="asiste-input" value={newUrl} onChange={(event) => setNewUrl(event.target.value)} placeholder="URL o búsqueda pública" aria-label="URL del contenido" /><div className="asiste-actions"><input className="asiste-input" type="number" min="1" value={newMinutes} onChange={(event) => setNewMinutes(event.target.value)} aria-label="Minutos" /><button className="asiste-btn asiste-btn-primary" onClick={addCustomVideo}>Guardar</button></div></div>}{videos.length === 0 && <p className="asiste-muted-text">Todavía no agregas nada.</p>}{videos.map((item) => <div className="custom-content-row" key={item.id}><a className="asiste-card asiste-result" href={item.url} target="_blank" rel="noreferrer" onClick={notifyVideoOpened}><span className="choice-icon"><Film size={18} /></span><div><h3>{item.titulo}</h3><p>{item.minutos} min · contenido personal</p></div><ExternalLink size={16} /></a><button className="asiste-small-link" onClick={() => removeCustomVideo(item.id)} aria-label={`Eliminar ${item.titulo}`}><Trash2 size={14} /></button></div>)}</section>
-    ) : (
-      <section className="asiste-card asiste-note" style={{ marginTop: 18 }}>
-        {category === 'disney' && disneySubcategories.length > 0 && (
-          <div className="asiste-toolbar" role="tablist" aria-label="Subcategorías de Disney" style={{ marginTop: 0, marginBottom: 18 }}>
-            <button className={`asiste-chip ${disneySub === null ? 'is-active' : ''}`} onClick={() => setDisneySub(null)}>Todas</button>
-            {disneySubcategories.map((sub) => <button className={`asiste-chip ${disneySub === sub ? 'is-active' : ''}`} onClick={() => setDisneySub(sub)} key={sub}>{sub}</button>)}
-          </div>
-        )}
-        <h2>{category === 'disney' ? (disneySub || 'Disney para no decidir demasiado') : 'Serie de respaldo'}</h2>
-        {videos.length === 0 && <p>Agrega contenido en `public/data/videos.json`.</p>}
-        {videos.map((item) => <a className="asiste-card asiste-result" style={{ marginTop: 10 }} href={item.url} target="_blank" rel="noreferrer" onClick={notifyVideoOpened} key={item.id}><span className="choice-icon"><Film size={18} /></span><div><h3>{item.titulo}</h3><p>{item.subcategoria} · {item.minutos} min</p></div><ExternalLink size={16} /></a>)}
-      </section>
-    )}
+      ) : (
+        <section className="asiste-card asiste-note" style={{ marginTop: 18 }}>
+          {category === 'disney' && disneySubcategories.length > 0 && (
+            <div className="asiste-toolbar" role="tablist" aria-label="Subcategorías de Disney" style={{ marginTop: 0, marginBottom: 18 }}>
+              {disneySubcategories.map((sub) => <button className={`asiste-chip ${disneySub === sub ? 'is-active' : ''}`} onClick={() => setDisneySub(sub)} key={sub}>{sub}</button>)}
+            </div>
+          )}
+          <h2>{category === 'disney' ? (disneySub ?? 'Disney') : 'Serie de respaldo'}</h2>
+          {videos.length === 0 && <p>Agrega contenido en `public/data/videos.json`.</p>}
+          {nowPlaying && getYouTubeEmbedUrl(nowPlaying.url) && (
+            <div className="video-player-wrap">
+              <iframe
+                key={nowPlaying.id}
+                src={getYouTubeEmbedUrl(nowPlaying.url) ?? undefined}
+                title={nowPlaying.titulo}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="video-player-frame"
+              />
+              <p className="video-player-caption">{nowPlaying.titulo}</p>
+            </div>
+          )}
+          {videos.map((item) => {
+            const embedUrl = getYouTubeEmbedUrl(item.url);
+            if (embedUrl) {
+              return (
+                <button
+                  className={`asiste-card asiste-result video-list-item ${nowPlaying?.id === item.id ? 'is-active' : ''}`}
+                  style={{ marginTop: 10 }}
+                  onClick={() => { setNowPlaying(item); notifyVideoOpened(); }}
+                  key={item.id}
+                >
+                  <span className="choice-icon"><Film size={18} /></span>
+                  <div><h3>{item.titulo}</h3><p>{item.subcategoria} · {item.minutos} min</p></div>
+                  <Play size={16} />
+                </button>
+              );
+            }
+            return (
+              <a className="asiste-card asiste-result" style={{ marginTop: 10 }} href={item.url} target="_blank" rel="noreferrer" onClick={notifyVideoOpened} key={item.id}>
+                <span className="choice-icon"><Film size={18} /></span>
+                <div><h3>{item.titulo}</h3><p>{item.subcategoria} · {item.minutos} min</p></div>
+                <ExternalLink size={16} />
+              </a>
+            );
+          })}
+        </section>
+      )}
     </main>
   );
 }
@@ -982,7 +1083,7 @@ function TequilaRunner() {
   const velocityRef = useRef(0);
   const isJumpingRef = useRef(false);
   const speedRef = useRef(4);
-  const frameRef = useRef<number>();
+  const frameRef = useRef<number | undefined>(undefined);
   const lastSpawnRef = useRef(0);
   const idCounter = useRef(0);
   const stageRef = useRef<HTMLDivElement | null>(null);
@@ -1454,7 +1555,7 @@ if (!content || opening === null) {
   );
 }
 
-let body: JSX.Element;
+  let body: ReactNode;
 if (opening === 'intro') {
   body = <div className="asiste-app"><div className="asiste-shell"><BirthdayIntro content={content} onOpen={() => setOpening('letter')} /></div></div>;
 } else if (opening === 'letter') {
