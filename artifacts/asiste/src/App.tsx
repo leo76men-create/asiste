@@ -366,6 +366,97 @@ function shuffleArray<T>(array: T[]): T[] {
   return copy;
 }
 
+declare global {
+  interface Window {
+    YT?: any;
+    onYouTubeIframeAPIReady?: () => void;
+  }
+}
+
+function getYouTubeId(url: string): string | null {
+  try {
+    const parsed = new URL(url);
+    if (parsed.hostname.includes('youtu.be')) return parsed.pathname.slice(1) || null;
+    if (parsed.hostname.includes('youtube.com') && parsed.pathname === '/watch') {
+      return parsed.searchParams.get('v');
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+function emitVideoState(playing: boolean) {
+  window.dispatchEvent(new CustomEvent('asiste-video-state', { detail: playing }));
+}
+
+let youTubeApiPromise: Promise<any> | null = null;
+function loadYouTubeApi(): Promise<any> {
+  if (window.YT?.Player) return Promise.resolve(window.YT);
+  if (youTubeApiPromise) return youTubeApiPromise;
+  youTubeApiPromise = new Promise((resolve) => {
+    const previous = window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady = () => {
+      previous?.();
+      resolve(window.YT);
+    };
+    const script = document.createElement('script');
+    script.src = 'https://www.youtube.com/iframe_api';
+    document.head.appendChild(script);
+  });
+  return youTubeApiPromise;
+}
+
+function YouTubePlayer({ videoId, title, autoplay }: { videoId: string; title: string; autoplay: boolean }) {
+  const hostRef = useRef<HTMLDivElement | null>(null);
+  const playerRef = useRef<any>(null);
+  const readyRef = useRef(false);
+  const latest = useRef({ videoId, autoplay });
+  latest.current = { videoId, autoplay };
+
+  useEffect(() => {
+    let cancelled = false;
+    void loadYouTubeApi().then((YT) => {
+      if (cancelled || !hostRef.current) return;
+      const mount = document.createElement('div');
+      hostRef.current.appendChild(mount);
+      playerRef.current = new YT.Player(mount, {
+        host: 'https://www.youtube-nocookie.com',
+        videoId: latest.current.videoId,
+        playerVars: { rel: 0, playsinline: 1, autoplay: latest.current.autoplay ? 1 : 0 },
+        events: {
+          onReady: () => { readyRef.current = true; },
+          onStateChange: (event: { data: number }) => {
+            // 1 = reproduciendo, 3 = cargando (buffering)
+            emitVideoState(event.data === 1 || event.data === 3);
+          },
+        },
+      });
+    });
+    return () => {
+      cancelled = true;
+      emitVideoState(false);
+      try { playerRef.current?.destroy(); } catch { /* nada que hacer */ }
+      playerRef.current = null;
+      readyRef.current = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    const player = playerRef.current;
+    if (!player || !readyRef.current) return;
+    if (autoplay) player.loadVideoById(videoId);
+    else player.cueVideoById(videoId);
+  }, [videoId, autoplay]);
+
+  return (
+    <div className="video-player-wrap">
+      <div ref={hostRef} className="video-player-frame" aria-label={title} />
+      <p className="video-player-caption">{title}</p>
+    </div>
+  );
+}
+
 function getYouTubeEmbedUrl(url: string): string | null {
   try {
     const parsed = new URL(url);
@@ -699,6 +790,7 @@ function Entertainment({ content, onNavigate, onCategoryChange }: { content: Con
   const [category, setCategory] = useState<'disney' | 'series' | 'animals' | 'potter' | 'tequila' | 'custom'>('disney');
   const [disneySub, setDisneySub] = useState<string | null>(null);
   const [nowPlaying, setNowPlaying] = useState<VideoItem | null>(null);
+  const [autoplayNext, setAutoplayNext] = useState(false);
   useEffect(() => {
     onCategoryChange?.(category);
     return () => onCategoryChange?.('');
@@ -743,6 +835,7 @@ function Entertainment({ content, onNavigate, onCategoryChange }: { content: Con
     if (category === 'disney' || category === 'series' || category === 'potter') {
       const first = videos.find((item) => getYouTubeEmbedUrl(item.url));
       setNowPlaying(first ?? null);
+      setAutoplayNext(false);
     } else {
       setNowPlaying(null);
     }
@@ -805,14 +898,9 @@ function Entertainment({ content, onNavigate, onCategoryChange }: { content: Con
           <div className="asiste-actions"><button className="asiste-btn asiste-btn-primary" onClick={() => { sessionState.triviaTopic = 'Harry Potter'; onNavigate('trivia'); }}>Trivia</button><button className="asiste-btn asiste-btn-ghost" onClick={() => onNavigate('house')}>Sortear casa</button></div>
           {nowPlaying && getYouTubeEmbedUrl(nowPlaying.url) && (
             <div className="video-player-wrap">
-              <iframe
-                key={nowPlaying.id}
-                src={getYouTubeEmbedUrl(nowPlaying.url) ?? undefined}
-                title={nowPlaying.titulo}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="video-player-frame"
-              />
+              {nowPlaying && getYouTubeId(nowPlaying.url) && (
+                <YouTubePlayer videoId={getYouTubeId(nowPlaying.url) as string} title={nowPlaying.titulo} autoplay={autoplayNext} />
+              )}
               <p className="video-player-caption">{nowPlaying.titulo}</p>
             </div>
           )}
@@ -820,7 +908,7 @@ function Entertainment({ content, onNavigate, onCategoryChange }: { content: Con
             const embedUrl = getYouTubeEmbedUrl(item.url);
             if (embedUrl) {
               return (
-                <button className={`asiste-small-link video-list-item-inline ${nowPlaying?.id === item.id ? 'is-active' : ''}`} style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0', width: '100%' }} onClick={() => { setNowPlaying(item); notifyVideoOpened(); }} key={item.id}>
+                <button className={`asiste-small-link video-list-item-inline ${nowPlaying?.id === item.id ? 'is-active' : ''}`} style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0', width: '100%' }} onClick={() => { setNowPlaying(item); setAutoplayNext(true); }} key={item.id}>
                   {item.titulo} <Play size={14} />
                 </button>
               );
@@ -845,14 +933,9 @@ function Entertainment({ content, onNavigate, onCategoryChange }: { content: Con
           {videos.length === 0 && <p>Agrega contenido en `public/data/videos.json`.</p>}
           {nowPlaying && getYouTubeEmbedUrl(nowPlaying.url) && (
             <div className="video-player-wrap">
-              <iframe
-                key={nowPlaying.id}
-                src={getYouTubeEmbedUrl(nowPlaying.url) ?? undefined}
-                title={nowPlaying.titulo}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="video-player-frame"
-              />
+              {nowPlaying && getYouTubeId(nowPlaying.url) && (
+                <YouTubePlayer videoId={getYouTubeId(nowPlaying.url) as string} title={nowPlaying.titulo} autoplay={autoplayNext} />
+              )}
               <p className="video-player-caption">{nowPlaying.titulo}</p>
             </div>
           )}
@@ -863,7 +946,7 @@ function Entertainment({ content, onNavigate, onCategoryChange }: { content: Con
                 <button
                   className={`asiste-card asiste-result video-list-item ${nowPlaying?.id === item.id ? 'is-active' : ''}`}
                   style={{ marginTop: 10 }}
-                  onClick={() => { setNowPlaying(item); notifyVideoOpened(); }}
+                  onClick={() => { setNowPlaying(item); setAutoplayNext(true); }}
                   key={item.id}
                 >
                   <span className="choice-icon"><Film size={18} /></span>
@@ -1497,16 +1580,26 @@ function AppShell() {
 
   useEffect(() => { storageSet('asiste-muted', muted ? '1' : '0'); }, [muted]);
 
+  const [videoPlaying, setVideoPlaying] = useState(false);
+
   useEffect(() => {
-    const handler = () => audioRef.current?.pause();
-    window.addEventListener('asiste-video-opened', handler);
-    return () => window.removeEventListener('asiste-video-opened', handler);
+    const handler = (event: Event) => setVideoPlaying(Boolean((event as CustomEvent<boolean>).detail));
+    window.addEventListener('asiste-video-state', handler);
+    return () => window.removeEventListener('asiste-video-state', handler);
   }, []);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio || !activeTrack) return;
+    if (videoPlaying) audio.pause();
+    else if (!document.hidden) void audio.play().catch(() => {});
+  }, [videoPlaying, activeTrack]);
+
   useEffect(() => {
     const handleVisibility = () => {
       const audio = audioRef.current;
       if (!audio) return;
-      if (document.hidden) {
+      if (document.hidden || videoPlaying) {
         audio.pause();
       } else if (activeTrack && !muted) {
         void audio.play().catch(() => {});
@@ -1520,7 +1613,7 @@ function AppShell() {
       window.removeEventListener('blur', handleVisibility);
       window.removeEventListener('focus', handleVisibility);
     };
-  }, [activeTrack, muted]);
+  }, [activeTrack, muted, videoPlaying]);
   useEffect(() => {
     void loadContent().then(setContent);
     let cancelled = false;

@@ -180,8 +180,14 @@
 .video-player-frame {
   width: 100%;
   aspect-ratio: 16 / 9;
-  border: 0;
   border-radius: 16px;
+  overflow: hidden;
+  background: hsl(var(--secondary) / .4);
+}
+.video-player-frame iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
   display: block;
 }
 .video-player-caption {
