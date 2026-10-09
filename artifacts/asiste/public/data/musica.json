@@ -1,44 +1,43 @@
 [
+  { "id": "yatra", "titulo": "Sebastián Yatra", "tipo": "artista", "consulta": "Sebastian Yatra" },
+  { "id": "danny", "titulo": "Danny Ocean", "tipo": "artista", "consulta": "Danny Ocean" },
+  { "id": "morat", "titulo": "Morat", "tipo": "artista", "consulta": "Morat" },
   {
-    "id": "yatra",
-    "titulo": "Sebastián Yatra",
-    "tipo": "artista",
-    "consulta": "Sebastian Yatra",
-    "icono": "music"
-  },
-  {
-    "id": "danny",
-    "titulo": "Danny Ocean",
-    "tipo": "artista",
-    "consulta": "Danny Ocean",
-    "icono": "music"
-  },
-  {
-    "id": "morat",
-    "titulo": "Morat",
-    "tipo": "artista",
-    "consulta": "Morat",
-    "icono": "music"
-  },
-  {
-    "id": "tranquilo",
-    "titulo": "Algo tranquilo",
+    "id": "white-girl",
+    "titulo": "White girl music",
     "tipo": "playlist",
-    "consulta": "soft chill playlist",
-    "icono": "moon"
+    "consulta": "white girl music",
+    "url": "https://open.spotify.com/playlist/0ftYNPgAI2t3heJGPrg0fv"
   },
   {
-    "id": "entrenar",
-    "titulo": "Algo para entrenar",
-    "tipo": "playlist",
-    "consulta": "workout pop playlist",
-    "icono": "bolt"
-  },
-  {
-    "id": "sorpresa",
+    "id": "sorprendeme",
     "titulo": "Sorpréndeme",
-    "tipo": "random",
-    "consulta": "pop mix",
-    "icono": "sparkles"
+    "tipo": "algo que yo escucharía en cualquier ocasión",
+    "consulta": "",
+    "urls": [
+      "https://open.spotify.com/track/3h5T5JypYU7huFiVYhv1dr",
+      "https://open.spotify.com/track/3XJmD5suzFUBHJ7sizBAiy",
+      "https://open.spotify.com/track/3ugSNE8PdPr2sfRWSNfCtX",
+      "https://open.spotify.com/track/7dnLbhOrka4iruYAk7XwJA",
+      "https://open.spotify.com/track/22LGgFochmXJw5vVr5knDl",
+      "https://open.spotify.com/track/2LsbizbOeNa4x6qsi2jAMb",
+      "https://open.spotify.com/track/29OzJTIOTjCgR7fLyEXY7u",
+      "https://open.spotify.com/track/6CLdnyg83r7ZRjLhiSykyK",
+      "https://open.spotify.com/track/6Ac4NVYYl2U73QiTt11ZKd",
+      "https://open.spotify.com/track/54gJmxMx9Ea5zRaAKNodqp",
+      "https://open.spotify.com/track/1lwDY40WKKZ2aT5yAmQpWF",
+      "https://open.spotify.com/track/5Ohxk2dO5COHF1krpoPigN",
+      "https://open.spotify.com/track/4tPL9PeVZY4c0jUPtSD5nx",
+      "https://open.spotify.com/track/1TEjSXPdAakDotj2Wji3PU",
+      "https://open.spotify.com/track/3iEUDvanZwQhLCIqUmCR7N",
+      "https://open.spotify.com/track/2SLwbpExuoBDZBpjfefCtV",
+      "https://open.spotify.com/track/6RtPijgfPKROxEzTHNRiDp",
+      "https://open.spotify.com/track/71t9GoojGIMZLySI6imKFY",
+      "https://open.spotify.com/track/1hj6nYHeGclSY0VNTHMi27",
+      "https://open.spotify.com/track/58HfaJinOwdtvIusPS04Im",
+      "https://open.spotify.com/track/5KQVSvivJ89ZFAPdsLLtyq",
+      "https://open.spotify.com/track/0n4bITAu0Y0nigrz3MFJMb",
+      "https://open.spotify.com/track/7l4cSfrED7RrtT0t5CSOzv"
+    ]
   }
 ]

@@ -85,6 +85,7 @@ interface MusicItem {
   tipo?: string;
   consulta: string;
   url?: string;
+  urls?: string[];
   icono?: string;
 }
 
@@ -246,6 +247,7 @@ const choiceDefinitions: Omit<ChoiceProps, 'onClick'>[] = [
     title: 'Tengo demasiadas cosas en la cabeza',
     description: 'Escribe si quieres. No tienes que hacerlo bonito.',
   },
+  
   {
     id: 'rest',
     icon: Coffee,
@@ -277,7 +279,12 @@ const choiceDefinitions: Omit<ChoiceProps, 'onClick'>[] = [
     description: 'El algoritmo decide poquito.',
   },
 ];
-
+    const organizerChoice: Omit<ChoiceProps, 'onClick'> = {
+      id: 'organizer',
+      icon: ListTodo,
+      title: 'Mis pendientes',
+      description: 'Una cosa a la vez, sin presión.',
+    };
 function replacePersonal(text: string, config: Config) {
   return text
     .replaceAll('[[NOMBRE]]', config.nombre)
@@ -479,6 +486,15 @@ function shuffleQueue(length: number, avoidFirst?: number): number[] {
   }
   return shuffled;
 }
+
+let lastRandomTrack: string | null = null;
+function pickRandomTrack(urls: string[]) {
+  const options = urls.length > 1 ? urls.filter((url) => url !== lastRandomTrack) : urls;
+  const pick = options[Math.floor(Math.random() * options.length)];
+  lastRandomTrack = pick;
+  return pick;
+}
+
 function PageHeader({ screen, onHome, config }: { screen: Screen; onHome: () => void; config: Config }) {
   const labels: Partial<Record<Screen, string>> = {
     write: 'papelito temporal',
@@ -539,7 +555,8 @@ function ChoiceCard({ icon: Icon, title, description, id, onClick }: ChoiceProps
   );
 }
 
-function Home({ content, onNavigate }: { content: Content; onNavigate: (screen: Screen) => void }) {
+  function Home({ content, onNavigate, organizerOn, onToggleOrganizer }: { content: Content; onNavigate: (screen: Screen) => void; organizerOn: boolean; onToggleOrganizer: (next: boolean) => void }) {
+    {(organizerOn ? [...choiceDefinitions, organizerChoice] : choiceDefinitions).map((choice) => <ChoiceCard key={choice.id} {...choice} onClick={() => onNavigate(choice.id as Screen)} />)}
   const [greeting, setGreeting] = useState('');
   const [booped, setBooped] = useState(false);
   useEffect(() => {
@@ -563,6 +580,9 @@ function Home({ content, onNavigate }: { content: Content; onNavigate: (screen: 
           <div className="asiste-eyebrow">nota</div>
           <p>No tienes que hacer nada con lo que pase por aquí.</p>
           <p className="asiste-muted-text">Lo que escribas no se guarda. El organizador solo aparece si tú lo eliges.</p>
+          <button className="asiste-small-link" onClick={() => onToggleOrganizer(!organizerOn)}>
+            {organizerOn ? 'Quitar el organizador de aquí' : 'Poner el organizador aquí'}
+          </button>
         </div>
       </section>
       <button className="boop-trigger" onClick={() => setBooped(true)} aria-label="Boop secreto">·</button>
@@ -891,7 +911,7 @@ function Entertainment({ content, onNavigate, onCategoryChange }: { content: Con
           {!animal ? <><h2>¿Cuántos perros o gatos necesitas?</h2><p>También puedes agregar fotos propias, solo se quedan en esta visita.</p><div className="asiste-actions"><button className="asiste-btn asiste-btn-primary" onClick={() => setAnimal('dog')}><Dog size={16} /> Perros</button><button className="asiste-btn asiste-btn-ghost" onClick={() => setAnimal('cat')}>Gatos</button></div><LocalPhotoPicker label="Agregar fotos de animales" photos={localAnimalPhotos} onChange={setLocalAnimalPhotos} /></> : <><div className="asiste-toolbar">{['1', '5', '10'].map((item) => <button className={`asiste-chip ${count === item ? 'is-active' : ''}`} key={item} onClick={() => setCount(item)}>{item}</button>)}<button className="asiste-chip" onClick={() => setCount(String(Math.ceil(Math.random() * 8)))}>Sorpréndeme</button></div>{loading && <div className="asiste-loading">Buscando caritas en la red pública...</div>}{error && <div className="asiste-error"><TequilaCallout content={content} number={1} text="Los animales están teniendo problemas técnicos. Tequila quizá tapó la cámara." /><button className="asiste-small-link" onClick={() => void fetchAnimals()}>Reintentar</button></div>}{(animalUrls.length > 0 || localAnimalPhotos.length > 0) && <div className="animal-gallery">{localAnimalPhotos.map((url) => <img src={url} alt="Foto propia de animal" key={url} />)}{animalUrls.map((url) => <img src={url} alt={animal === 'dog' ? 'Perro sorpresa' : 'Gato sorpresa'} key={url} />)}</div>}<LocalPhotoPicker label="Agregar más fotos" photos={localAnimalPhotos} onChange={setLocalAnimalPhotos} /><div className="asiste-actions"><button className="asiste-btn asiste-btn-muted" onClick={() => void fetchAnimals()}><RotateCcw size={15} /> Más</button><button className="asiste-small-link" onClick={() => setAnimal(null)}>Cambiar</button></div></>}
         </section>
       ) : category === 'tequila' ? (
-        <section className="asiste-card asiste-note" style={{ marginTop: 18 }}><h2>Archivo de Tequila</h2><p>Estas fotos son detalles escondidos del espacio. Puedes sumar más desde tu dispositivo.</p><div className="tequila-gallery">{content.tequila.fotos.map((photo, index) => <img src={photo} alt={`Tequila, foto ${index + 1}`} key={photo} onError={(event) => { event.currentTarget.style.display = 'none'; }} />)}{localTequilaPhotos.map((photo, index) => <img src={photo} alt={`Foto extra de Tequila ${index + 1}`} key={photo} />)}</div><LocalPhotoPicker label="Agregar fotos de Tequila" photos={localTequilaPhotos} onChange={setLocalTequilaPhotos} /></section>
+        <section className="asiste-card asiste-note" style={{ marginTop: 18 }}><h2>Archivo de Tequila</h2><p>Tequi siempre cae bien. Puedes sumar más desde tu dispositivo.</p><div className="tequila-gallery">{content.tequila.fotos.map((photo, index) => <img src={photo} alt={`Tequila, foto ${index + 1}`} key={photo} onError={(event) => { event.currentTarget.style.display = 'none'; }} />)}{localTequilaPhotos.map((photo, index) => <img src={photo} alt={`Foto extra de Tequila ${index + 1}`} key={photo} />)}</div><LocalPhotoPicker label="Agregar fotos de Tequila" photos={localTequilaPhotos} onChange={setLocalTequilaPhotos} /></section>
       ) : category === 'potter' ? (
         <section className="asiste-card asiste-note" style={{ marginTop: 18 }}>
           <h2>Una visita breve al mundo mágico</h2>
@@ -987,14 +1007,27 @@ function Music({ content }: { content: Content }) {
     setCustomMusic(next);
     storageSet('asiste-musica-personal', JSON.stringify(next));
   };
-  const MusicLink = ({ item }: { item: MusicItem }) => <a className="asiste-card asiste-result" href={item.url || `https://open.spotify.com/search/${encodeURIComponent(item.consulta)}`} target="_blank" rel="noreferrer" key={item.id}><span className="choice-icon"><Music2 size={18} /></span><div><h3>{item.titulo}</h3><p>{item.tipo || 'búsqueda en Spotify'}</p></div><span className="asiste-kicker">abrir <Play size={11} style={{ verticalAlign: 'middle' }} /></span></a>;
+  const MusicLink = ({ item }: { item: MusicItem }) => (
+    <a
+      className="asiste-card asiste-result"
+      href={item.url || item.urls?.[0] || `https://open.spotify.com/search/${encodeURIComponent(item.consulta)}`}
+      onClick={(event) => { if (item.urls?.length) event.currentTarget.href = pickRandomTrack(item.urls); }}
+      target="_blank"
+      rel="noreferrer"
+      key={item.id}
+    >
+      <span className="choice-icon"><Music2 size={18} /></span>
+      <div><h3>{item.titulo}</h3><p>{item.tipo || 'búsqueda en Spotify'}</p></div>
+      <span className="asiste-kicker">abrir <Play size={11} style={{ verticalAlign: 'middle' }} /></span>
+    </a>
+  );
   return (
     <main className="asiste-main">
       <div className="asiste-eyebrow">banda sonora opcional</div>
       <h1 className="asiste-heading">Dale play a <span className="asiste-script">algo.</span></h1>
       <p className="asiste-subheading">No hay reproductor propio. Tú decides qué artista se queda y puedes agregar tus gustos.</p>
       <section className="asiste-card asiste-note" style={{ marginTop: 28 }}><div className="organizer-heading"><div><h2>Tus gustos</h2><p>Morat, artistas y búsquedas que tú agregues.</p></div><button className="asiste-chip" onClick={() => setShowAdd((value) => !value)}><Plus size={14} /> Agregar</button></div>{showAdd && <div className="custom-editor"><input className="asiste-input" value={newTaste} onChange={(event) => setNewTaste(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter') addTaste(); }} placeholder="Artista, canción o playlist" aria-label="Nuevo gusto musical" /><button className="asiste-btn asiste-btn-primary" onClick={addTaste}>Guardar</button></div>}<div className="asiste-two-col" style={{ marginTop: 18 }}>{[...content.musica, ...customMusic].map((item) => <div className="custom-content-row" key={item.id}><MusicLink item={item} />{customMusic.some((custom) => custom.id === item.id) && <button className="asiste-small-link" onClick={() => removeTaste(item.id)} aria-label={`Eliminar ${item.titulo}`}><Trash2 size={14} /></button>}</div>)}</div></section>
-      <section className="asiste-section"><div className="asiste-section-title"><h2>Canciones para distintas situaciones</h2><span>editable en JSON</span></div>{content.musicaSituaciones.map((situation) => <div className="asiste-card asiste-note music-situation" key={situation.id}><h3>{situation.titulo}</h3>{situation.descripcion && <p className="asiste-muted-text">{situation.descripcion}</p>}<div className="asiste-two-col">{situation.items.map((item) => <MusicLink item={item} key={item.id} />)}</div></div>)}</section>
+      
     </main>
   );
 }
@@ -1360,8 +1393,7 @@ function Surprise({ content, onNavigate }: { content: Content; onNavigate: (scre
   );
 }
 
-function Organizer({ content }: { content: Content }) {
-  const [enabled, setEnabled] = useState(() => storageGet('asiste-organizer') === 'on');
+function Organizer({ content, enabled, onToggle }: { content: Content; enabled: boolean; onToggle: (next: boolean) => void }) {
   const [task, setTask] = useState('');
   const [tasks, setTasks] = useState<{ text: string; done: boolean }[]>(() => { try { return JSON.parse(storageGet('asiste-pendientes') ?? '[]'); } catch { return []; } });
   const [timer, setTimer] = useState(0);
@@ -1372,7 +1404,7 @@ function Organizer({ content }: { content: Content }) {
   return (
     <main className="asiste-main" style={{ maxWidth: 720, margin: '0 auto' }}>
       <div className="asiste-eyebrow">solo si te sirve</div><h1 className="asiste-heading">Una cosa <span className="asiste-script">a la vez.</span></h1><p className="asiste-subheading">Se guarda solo en este dispositivo y únicamente porque tú activaste esta parte.</p>
-       <section className="asiste-card asiste-note" style={{ marginTop: 25 }}><div className="organizer-heading"><div><h2 style={{ fontSize: 18, margin: 0 }}>Pendientes locales</h2><p style={{ fontSize: 13, marginTop: 5 }}>Sin calendario, metas ni estadísticas.</p></div><button className={`asiste-chip ${enabled ? 'is-active' : ''}`} onClick={() => { const next = !enabled; setEnabled(next); storageSet('asiste-organizer', next ? 'on' : 'off'); }}>{enabled ? 'activo' : 'activar'}</button></div>{enabled && <><div style={{ display: 'flex', gap: 8, marginTop: 18 }}><input className="asiste-input" value={task} onChange={(event) => setTask(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter') add(); }} placeholder="pendiente pequeño" aria-label="Nuevo pendiente" /><button className="asiste-btn asiste-btn-primary" onClick={add}><Check size={16} /></button></div><div style={{ marginTop: 12 }}>{tasks.length === 0 ? <><TequilaCallout content={content} number={5} text="Nada pendiente. Tequila descansa." /></> : tasks.map((item, index) => <div className={`asiste-task ${item.done ? 'is-done' : ''}`} key={`${item.text}-${index}`}><label><input type="checkbox" checked={item.done} onChange={() => { if (!item.done) setShowReward(true); persist(tasks.map((taskItem, taskIndex) => taskIndex === index ? { ...taskItem, done: !taskItem.done } : taskItem)); }} /><span>{item.text}</span></label><button className="asiste-small-link" onClick={() => persist(tasks.filter((_, taskIndex) => taskIndex !== index))} aria-label={`Borrar ${item.text}`}><Trash2 size={14} /></button></div>)}</div><div className="asiste-actions" style={{ marginTop: 18 }}><button className="asiste-btn asiste-btn-muted" onClick={() => setTimer(timer ? 0 : 25 * 60)}><Clock3 size={15} /> {timer ? `${Math.floor(timer / 60)}:${String(timer % 60).padStart(2, '0')}` : 'Temporizador 25 min'}</button><button className="asiste-small-link" onClick={() => { const pending = tasks.find((item) => !item.done); if (pending) window.alert(`Uno solo: ${pending.text}`); }}>Elegir uno solo para empezar</button></div></>}</section>
+       <section className="asiste-card asiste-note" style={{ marginTop: 25 }}><div className="organizer-heading"><div><h2 style={{ fontSize: 18, margin: 0 }}>Pendientes locales</h2><p style={{ fontSize: 13, marginTop: 5 }}>Sin calendario, metas ni estadísticas.</p></div><button className={`asiste-chip ${enabled ? 'is-active' : ''}`} onClick={() => onToggle(!enabled)}>{enabled ? 'activo' : 'activar'}</button></div>{enabled && <><div style={{ display: 'flex', gap: 8, marginTop: 18 }}><input className="asiste-input" value={task} onChange={(event) => setTask(event.target.value)} onKeyDown={(event) => { if (event.key === 'Enter') add(); }} placeholder="pendiente pequeño" aria-label="Nuevo pendiente" /><button className="asiste-btn asiste-btn-primary" onClick={add}><Check size={16} /></button></div><div style={{ marginTop: 12 }}>{tasks.length === 0 ? <><TequilaCallout content={content} number={5} text="Nada pendiente. Tequila descansa." /></> : tasks.map((item, index) => <div className={`asiste-task ${item.done ? 'is-done' : ''}`} key={`${item.text}-${index}`}><label><input type="checkbox" checked={item.done} onChange={() => { if (!item.done) setShowReward(true); persist(tasks.map((taskItem, taskIndex) => taskIndex === index ? { ...taskItem, done: !taskItem.done } : taskItem)); }} /><span>{item.text}</span></label><button className="asiste-small-link" onClick={() => persist(tasks.filter((_, taskIndex) => taskIndex !== index))} aria-label={`Borrar ${item.text}`}><Trash2 size={14} /></button></div>)}</div><div className="asiste-actions" style={{ marginTop: 18 }}><button className="asiste-btn asiste-btn-muted" onClick={() => setTimer(timer ? 0 : 25 * 60)}><Clock3 size={15} /> {timer ? `${Math.floor(timer / 60)}:${String(timer % 60).padStart(2, '0')}` : 'Temporizador 25 min'}</button><button className="asiste-small-link" onClick={() => { const pending = tasks.find((item) => !item.done); if (pending) window.alert(`Uno solo: ${pending.text}`); }}>Elegir uno solo para empezar</button></div></>}</section>
        {showReward && <TequilaReward content={content} onClose={() => setShowReward(false)} />}
     </main>
   );
@@ -1538,6 +1570,12 @@ function HouseSorting() {
 }
 
 function AppShell() {
+  const [organizerOn, setOrganizerOn] = useState(() => storageGet('asiste-organizer') === 'on');
+  const toggleOrganizer = (next: boolean) => {
+    setOrganizerOn(next);
+    storageSet('asiste-organizer', next ? 'on' : 'off');
+  };
+  
   const [content, setContent] = useState<Content | null>(null);
   const [screen, setScreen] = useState<Screen>('home');
   const [opening, setOpening] = useState<'intro' | 'letter' | 'home' | null>(null);
@@ -1658,7 +1696,7 @@ if (opening === 'intro') {
     <div className="asiste-app">
       <div className="asiste-shell">
         <PageHeader screen={screen} onHome={() => navigate('home')} config={content.config} />
-        {screen === 'home' && <Home content={content} onNavigate={navigate} />}
+        {screen === 'home' && <Home content={content} onNavigate={navigate} organizerOn={organizerOn} onToggleOrganizer={toggleOrganizer} />}
         {screen === 'write' && <FreeText content={content} onNavigate={navigate} />}
         {screen === 'rest' && <Rest content={content} onNavigate={navigate} />}
         {screen === 'quiet' && <Quiet content={content} onNavigate={navigate} />}
@@ -1672,7 +1710,7 @@ if (opening === 'intro') {
         {screen === 'runner' && <TequilaRunner />}
         {screen === 'surprise' && <Surprise content={content} onNavigate={navigate} />}
         {screen === 'house' && <HouseSorting />}
-        {screen === 'organizer' && <Organizer content={content} />}
+        {screen === 'organizer' && <Organizer content={content} enabled={organizerOn} onToggle={toggleOrganizer} />}
         <footer className="asiste-footer-links">
           {screen !== 'home' && <button className="asiste-small-link" onClick={() => navigate('home')}><ArrowLeft size={13} /> Inicio</button>}
           <button className="asiste-small-link" onClick={() => setOpening('letter')}><Gift size={13} /> Leer la carta</button>
