@@ -279,7 +279,7 @@ const choiceDefinitions: Omit<ChoiceProps, 'onClick'>[] = [
     description: 'El algoritmo decide poquito.',
   },
 ];
-    const organizerChoice: Omit<ChoiceProps, 'onClick'> = {
+const organizerChoice: Omit<ChoiceProps, 'onClick'> = {
       id: 'organizer',
       icon: ListTodo,
       title: 'Mis pendientes',
