@@ -177,6 +177,8 @@
 .video-player-wrap {
   margin: 0 0 18px;
 }
+.asiste-header-actions { display:flex; align-items:center; gap:8px; }
+.asiste-home-button { display:inline-flex; align-items:center; gap:6px; white-space:nowrap; }
 .video-player-frame {
   width: 100%;
   aspect-ratio: 16 / 9;

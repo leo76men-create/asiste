@@ -33,6 +33,7 @@ import {
   Trash2,
   Wrench,
   X,
+  Home as HomeIcon,
 } from 'lucide-react';
 import NotFound from '@/pages/not-found';
 import { Route, Switch, Router as WouterRouter } from 'wouter';
@@ -236,6 +237,7 @@ const initialSession = {
   lastPhrase: null as string | null,
   lastCategory: null as string | null,
   triviaTopic: null as string | null,
+  entertainmentCategory: null as string | null,
 };
 
 const sessionState = { ...initialSession };
@@ -280,11 +282,11 @@ const choiceDefinitions: Omit<ChoiceProps, 'onClick'>[] = [
   },
 ];
 const organizerChoice: Omit<ChoiceProps, 'onClick'> = {
-      id: 'organizer',
-      icon: ListTodo,
-      title: 'Mis pendientes',
-      description: 'Una cosa a la vez, sin presión.',
-    };
+  id: 'organizer',
+  icon: ListTodo,
+  title: 'Mis pendientes',
+  description: 'Una cosa a la vez, sin presión.',
+};
 function replacePersonal(text: string, config: Config) {
   return text
     .replaceAll('[[NOMBRE]]', config.nombre)
@@ -495,7 +497,7 @@ function pickRandomTrack(urls: string[]) {
   return pick;
 }
 
-function PageHeader({ screen, onHome, config }: { screen: Screen; onHome: () => void; config: Config }) {
+function PageHeader({ screen, onBack, onHome, config }: { screen: Screen; onBack: () => void; onHome: () => void; config: Config }) {
   const labels: Partial<Record<Screen, string>> = {
     write: 'papelito temporal',
     rest: 'descanso',
@@ -519,9 +521,14 @@ function PageHeader({ screen, onHome, config }: { screen: Screen; onHome: () => 
         </span>
       </button>
       {screen !== 'home' && (
-        <button className="asiste-home-button" onClick={onHome}>
-          <ArrowLeft size={15} aria-hidden="true" /> Volver
-        </button>
+        <div className="asiste-header-actions">
+          <button className="asiste-home-button" onClick={onBack}>
+            <ArrowLeft size={15} aria-hidden="true" /> Volver
+          </button>
+          <button className="asiste-home-button" onClick={onHome} aria-label="Ir al inicio">
+            <HomeIcon size={15} aria-hidden="true" />
+          </button>
+        </div>
       )}
       {labels[screen] && <span className="asiste-kicker asiste-header-label">{labels[screen]}</span>}
     </header>
@@ -555,8 +562,7 @@ function ChoiceCard({ icon: Icon, title, description, id, onClick }: ChoiceProps
   );
 }
 
-  function Home({ content, onNavigate, organizerOn, onToggleOrganizer }: { content: Content; onNavigate: (screen: Screen) => void; organizerOn: boolean; onToggleOrganizer: (next: boolean) => void }) {
-    {(organizerOn ? [...choiceDefinitions, organizerChoice] : choiceDefinitions).map((choice) => <ChoiceCard key={choice.id} {...choice} onClick={() => onNavigate(choice.id as Screen)} />)}
+function Home({ content, onNavigate, organizerOn }: { content: Content; onNavigate: (screen: Screen) => void; organizerOn: boolean }) {
   const [greeting, setGreeting] = useState('');
   const [booped, setBooped] = useState(false);
   useEffect(() => {
@@ -572,17 +578,14 @@ function ChoiceCard({ icon: Icon, title, description, id, onClick }: ChoiceProps
       <section className="asiste-section" aria-labelledby="options-title">
         <div className="asiste-section-title"><h2 id="options-title">Elige una puerta</h2></div>
         <div className="asiste-grid">
-          {choiceDefinitions.map((choice) => <ChoiceCard key={choice.id} {...choice} onClick={() => onNavigate(choice.id as Screen)} />)}
+          {(organizerOn ? [...choiceDefinitions, organizerChoice] : choiceDefinitions).map((choice) => <ChoiceCard key={choice.id} {...choice} onClick={() => onNavigate(choice.id as Screen)} />)}
         </div>
       </section>
       <section className="asiste-section asiste-two-col">
         <div className="asiste-card asiste-note">
           <div className="asiste-eyebrow">nota</div>
           <p>No tienes que hacer nada con lo que pase por aquí.</p>
-          <p className="asiste-muted-text">Lo que escribas no se guarda. El organizador solo aparece si tú lo eliges.</p>
-          <button className="asiste-small-link" onClick={() => onToggleOrganizer(!organizerOn)}>
-            {organizerOn ? 'Quitar el organizador de aquí' : 'Poner el organizador aquí'}
-          </button>
+          <p className="asiste-muted-text">Lo que escribas no se guarda.</p>
         </div>
       </section>
       <button className="boop-trigger" onClick={() => setBooped(true)} aria-label="Boop secreto">·</button>
@@ -807,11 +810,14 @@ function Distract({ content, onNavigate }: { content: Content; onNavigate: (scre
 }
 
 function Entertainment({ content, onNavigate, onCategoryChange }: { content: Content; onNavigate: (screen: Screen) => void; onCategoryChange?: (category: string) => void }) {
-  const [category, setCategory] = useState<'disney' | 'series' | 'animals' | 'potter' | 'tequila' | 'custom'>('disney');
+  const [category, setCategory] = useState<'disney' | 'series' | 'animals' | 'potter' | 'tequila' | 'custom'>(
+    () => (sessionState.entertainmentCategory as 'disney' | 'series' | 'animals' | 'potter' | 'tequila' | 'custom' | null) ?? 'disney',
+  );
   const [disneySub, setDisneySub] = useState<string | null>(null);
   const [nowPlaying, setNowPlaying] = useState<VideoItem | null>(null);
   const [autoplayNext, setAutoplayNext] = useState(false);
   useEffect(() => {
+    sessionState.entertainmentCategory = category;
     onCategoryChange?.(category);
     return () => onCategoryChange?.('');
   }, [category]);
@@ -1583,6 +1589,7 @@ function AppShell() {
   const [muted, setMuted] = useState(() => storageGet('asiste-muted') === '1');
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const lastTrackRef = useRef<string | null>(null);
+  const [navStack, setNavStack] = useState<Screen[]>([]);
 
   const activeTrack = useMemo(() => {
     if (!content) return null;
@@ -1676,7 +1683,21 @@ function AppShell() {
     setOpening(params.get('carta') === '1' ? 'letter' : storageGet('carta_vista') === '1' ? 'home' : 'intro');
     return () => { cancelled = true; };
   }, []);
-  const navigate = (next: Screen) => { sessionState.currentPath = next; setScreen(next); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+  const navigate = (next: Screen) => {
+    if (next === screen) return;
+    sessionState.currentPath = next;
+      if (next === 'home') { setNavStack([]); sessionState.entertainmentCategory = null; }
+    else setNavStack((prev) => [...prev, screen]);
+    setScreen(next);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const goBack = () => {
+    const previous = navStack[navStack.length - 1];
+    setNavStack(navStack.slice(0, -1));
+    setScreen(previous ?? 'home');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 if (!content || opening === null) {
   return (
     <>
@@ -1695,8 +1716,8 @@ if (opening === 'intro') {
   body = (
     <div className="asiste-app">
       <div className="asiste-shell">
-        <PageHeader screen={screen} onHome={() => navigate('home')} config={content.config} />
-        {screen === 'home' && <Home content={content} onNavigate={navigate} organizerOn={organizerOn} onToggleOrganizer={toggleOrganizer} />}
+        <PageHeader screen={screen} onBack={goBack} onHome={() => navigate('home')} config={content.config} />
+        {screen === 'home' && <Home content={content} onNavigate={navigate} organizerOn={organizerOn} />}
         {screen === 'write' && <FreeText content={content} onNavigate={navigate} />}
         {screen === 'rest' && <Rest content={content} onNavigate={navigate} />}
         {screen === 'quiet' && <Quiet content={content} onNavigate={navigate} />}
