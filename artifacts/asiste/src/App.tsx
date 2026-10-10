@@ -1499,7 +1499,7 @@ function Letter({ content, onOpen }: { content: Content; onOpen: () => void }) {
       <article className="asiste-letter">
         <div className="letter-seal"><Gift size={29} strokeWidth={1.4} aria-hidden="true" /></div>
         <div className="letter-title-row">
-          <h1>Para ti, <span className="asiste-script">{replacePersonal('[[NOMBRE]]', content.config)}.</span></h1>
+          <h1>Feliz cumpleaños, <span className="asiste-script">{replacePersonal('[[NOMBRE]]', content.config)}.</span></h1>
           <img className="letter-hat-decoration" src="assets/img/tequila/tequi_hat.png" alt="Tequila con sombrero de fiesta" />
         </div>
         <div className="letter-copy">{content.carta.parrafos.map((paragraph, index) => <p key={`${paragraph}-${index}`}>{replacePersonal(paragraph, content.config)}</p>)}</div>
