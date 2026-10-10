@@ -1247,7 +1247,7 @@ function TequilaRunner() {
         });
       }
 
-      speedRef.current = Math.min(speedRef.current + 0.0008 * delta, 6.5);
+      speedRef.current = Math.min(speedRef.current + 0.0015 * delta, 7.5);
 
       setObstacles((prev) => {
         const stageWidth = stageRef.current?.clientWidth ?? 600;
