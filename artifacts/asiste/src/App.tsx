@@ -1515,7 +1515,7 @@ function BirthdayIntro({ content, onOpen }: { content: Content; onOpen: () => vo
   return (
     <main className="birthday-intro asiste-main">
       <h1>Feliz cumpleaños, <span className="asiste-script">{replacePersonal('[[NOMBRE]]', content.config)}.</span></h1>
-      <p>Hay algo aquí que hice pensando en ti.</p>
+      <p>Bienvenida a los 20.</p>
       <button className="asiste-btn asiste-btn-primary" onClick={onOpen}>Abrir <ArrowRight size={16} /></button>
     </main>
   );
